@@ -1,0 +1,33 @@
+@model OLI_it.Web.Models.Code
+
+<div class="entity-card code-card">
+    <div class="entity-card-header">
+        <h3>Code (Description)</h3>
+        <a href="/browse?stamm=@ViewData["StammGuid"]&postit=@Model.PostItGuid" class="close-btn" title="Close">&times;</a>
+    </div>
+    <div class="entity-card-body">
+        <div class="entity-info">
+            @if (Model.CodeZust.HasValue)
+            {
+                <div class="info-group">
+                    <span class="label">Status:</span>
+                    <span class="value">@Model.CodeZust</span>
+                </div>
+            }
+            <div class="info-group">
+                <span class="label">Scanned:</span>
+                <span class="value">@(Model.Gescannt ? "Yes" : "No")</span>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Versionsnummer))
+            {
+                <div class="info-group">
+                    <span class="label">Version:</span>
+                    <span class="value">@Model.Versionsnummer</span>
+                </div>
+            }
+        </div>
+        <div class="entity-description">
+            <strong>Comment:</strong> @Model.Kommentar
+        </div>
+    </div>
+</div>

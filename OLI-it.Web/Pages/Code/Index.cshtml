@@ -1,0 +1,48 @@
+@page "{id:guid}"
+@model OLI_it.Web.Pages.Code.IndexModel
+@{
+    ViewData["Title"] = "Code Details";
+}
+
+<div class="page-header">
+    <h1>Code (Description) Details</h1>
+</div>
+
+<div class="content-section">
+    @if (Model.Code != null)
+    {
+        <dl class="detail-list">
+            <dt>Comment</dt>
+            <dd>@Model.Code.Kommentar</dd>
+
+            <dt>PostIt</dt>
+            <dd>
+                <a href="/postit/@Model.Code.PostItGuid">@(Model.Code.PostIt.Titel ?? "Untitled PostIt")</a>
+            </dd>
+
+            @if (Model.Code.CodeZust.HasValue)
+            {
+                <dt>Status</dt>
+                <dd>@Model.Code.CodeZust</dd>
+            }
+
+            <dt>Scanned</dt>
+            <dd>@(Model.Code.Gescannt ? "Yes" : "No")</dd>
+
+            @if (!string.IsNullOrEmpty(Model.Code.Versionsnummer))
+            {
+                <dt>Version</dt>
+                <dd>@Model.Code.Versionsnummer</dd>
+            }
+        </dl>
+
+        <div class="action-links">
+            <a href="/postit/@Model.Code.PostItGuid/code" class="btn btn-secondary">Back to PostIt's Codes</a>
+            <a href="/postit/@Model.Code.PostItGuid" class="btn btn-secondary">View PostIt</a>
+        </div>
+    }
+    else
+    {
+        <p>Code not found.</p>
+    }
+</div>

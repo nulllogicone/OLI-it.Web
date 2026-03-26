@@ -1,0 +1,33 @@
+@model OLI_it.Web.Models.Angler
+
+<div class="entity-card angler-card">
+    <div class="entity-card-header">
+        <h3>Angler: @Model.Angler1</h3>
+        <a href="/browse?stamm=@Model.StammGuid" class="close-btn" title="Close">&times;</a>
+    </div>
+    <div class="entity-card-body">
+        <div class="entity-info">
+            <div class="info-group">
+                <span class="label">Date Created:</span>
+                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Scanned:</span>
+                <span class="value">@(Model.Gescannt ? "Yes" : "No")</span>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Versionsnummer))
+            {
+                <div class="info-group">
+                    <span class="label">Version:</span>
+                    <span class="value">@Model.Versionsnummer</span>
+                </div>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Beschreibung))
+        {
+            <div class="entity-description">
+                <strong>Description:</strong> @Model.Beschreibung
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,64 @@
+@page "{id:guid}"
+@model OLI_it.Web.Pages.PostIt.IndexModel
+@{
+    ViewData["Title"] = "PostIt Details";
+}
+
+<div class="page-header">
+    <h1>PostIt Details</h1>
+</div>
+
+<div class="content-section">
+    @if (Model.PostIt != null)
+    {
+        <dl class="detail-list">
+            @if (!string.IsNullOrEmpty(Model.PostIt.Titel))
+            {
+                <dt>Title</dt>
+                <dd>@Model.PostIt.Titel</dd>
+            }
+
+            <dt>Content</dt>
+            <dd>@Model.PostIt.PostIt1</dd>
+
+            <dt>Date</dt>
+            <dd>@Model.PostIt.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            <dt>Balance (KooK)</dt>
+            <dd>@Model.PostIt.KooK.ToString("C")</dd>
+
+            <dt>Type</dt>
+            <dd>@Model.PostIt.Typ</dd>
+
+            @if (Model.PostIt.PostItZust.HasValue)
+            {
+                <dt>Status</dt>
+                <dd>@Model.PostIt.PostItZust</dd>
+            }
+
+            <dt>Hits</dt>
+            <dd>@Model.PostIt.Hits</dd>
+
+            @if (!string.IsNullOrEmpty(Model.PostIt.Url))
+            {
+                <dt>URL</dt>
+                <dd><a href="@Model.PostIt.Url" target="_blank">@Model.PostIt.Url</a></dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.PostIt.Datei))
+            {
+                <dt>File</dt>
+                <dd>@Model.PostIt.Datei</dd>
+            }
+        </dl>
+
+        <div class="action-links">
+            <a href="/postit/@Model.PostIt.PostItGuid/code" class="btn btn-primary">View Code (Descriptions)</a>
+            <a href="/postit/@Model.PostIt.PostItGuid/toplab" class="btn btn-secondary">View TopLab (Answers)</a>
+        </div>
+    }
+    else
+    {
+        <p>PostIt not found.</p>
+    }
+</div>

@@ -1,0 +1,34 @@
+@{
+    var currentCulture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+}
+
+<header class="app-header">
+    <div class="header-left">
+        <a href="/" class="logo-link">
+            <img src="~/images/oli-it-logo.svg" alt="OLI-it" class="logo" />
+        </a>
+        <div class="language-selector">
+            <a href="?lang=en" class="@(currentCulture == "EN" ? "active" : "")">EN</a>
+            <span class="separator">|</span>
+            <a href="?lang=de" class="@(currentCulture == "DE" ? "active" : "")">DE</a>
+            <span class="separator">|</span>
+            <a href="?lang=es" class="@(currentCulture == "ES" ? "active" : "")">ES</a>
+        </div>
+    </div>
+    <div class="header-right">
+        @* TODO: Replace with actual authentication check *@
+        @if (false)
+        {
+            <div class="user-info">
+                <span class="username">@User.Identity?.Name</span>
+                <a href="/logout" class="logout-link">Logout</a>
+            </div>
+        }
+        else
+        {
+            <div class="auth-links">
+                <a href="/login" class="login-link">Login</a>
+            </div>
+        }
+    </div>
+</header>

@@ -1,0 +1,49 @@
+@model dynamic
+
+@{
+    var stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? "";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+}
+
+<nav class="sidebar-menu">
+    <ul class="menu-list">
+        <li class="menu-item">
+            <a href="/stamm/@stammGuid" class="@(currentPage.Contains("Stamm/Index") ? "active" : "")">
+                stamm details
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/stamm/@stammGuid/postit" class="@(currentPage.Contains("Stamm/PostIt") ? "active" : "")">
+                postit
+            </a>
+            <span class="menu-description">messages</span>
+        </li>
+        <li class="menu-item">
+            <a href="/stamm/@stammGuid/angler" class="@(currentPage.Contains("Stamm/Angler") ? "active" : "")">
+                angler
+            </a>
+            <span class="menu-description">filter profiles</span>
+        </li>
+        <li class="menu-item">
+            <a href="/stamm/@stammGuid/toplab" class="@(currentPage.Contains("Stamm/TopLab") ? "active" : "")">
+                toplab
+            </a>
+            <span class="menu-description">answers written</span>
+        </li>
+
+        @* Divider *@
+        <li class="menu-divider"></li>
+
+        @* General menu items *@
+        <li class="menu-item">
+            <a href="/">
+                home
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/journal">
+                timeline
+            </a>
+        </li>
+    </ul>
+</nav>

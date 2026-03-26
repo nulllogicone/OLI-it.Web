@@ -1,0 +1,226 @@
+@page
+@model BrowseModel
+@{
+    ViewData["Title"] = "Browse";
+    var stammGuid = Model.Stamm?.StammGuid.ToString() ?? "";
+    var postitGuid = Model.PostIt?.PostItGuid.ToString() ?? "";
+}
+
+<div class="browse-container">
+    <div class="entity-stack">
+        @* Stamm Card *@
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
+
+        @* PostIt Card *@
+        @if (Model.PostIt != null)
+        {
+            ViewData["StammGuid"] = stammGuid;
+            @await Html.PartialAsync("_PostItCard", Model.PostIt)
+        }
+
+        @* Angler Card *@
+        @if (Model.Angler != null)
+        {
+            @await Html.PartialAsync("_AnglerCard", Model.Angler)
+        }
+
+        @* TopLab Card *@
+        @if (Model.TopLab != null)
+        {
+            ViewData["StammGuid"] = stammGuid;
+            @await Html.PartialAsync("_TopLabCard", Model.TopLab)
+        }
+
+        @* Code Card *@
+        @if (Model.Code != null)
+        {
+            ViewData["StammGuid"] = stammGuid;
+            @await Html.PartialAsync("_CodeCard", Model.Code)
+        }
+    </div>
+
+    <div class="child-lists">
+        @* Show Stamm's children *@
+        @if (Model.Stamm != null && Model.PostIt == null && Model.Angler == null && Model.TopLab == null)
+        {
+            @if (Model.StammPostIts?.Any() == true)
+            {
+                <div class="child-list-section">
+                    <h3>PostIts (Messages)</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Balance</th>
+                                <th>Answers</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var wurzel in Model.StammPostIts.Take(10))
+                            {
+                                var answersCount = wurzel.PostIt.TopLabs?.Count ?? 0;
+                                <tr>
+                                    <td>@(wurzel.PostIt.Titel ?? "(no title)")</td>
+                                    <td>@wurzel.PostIt.Datum.ToString("yyyy-MM-dd")</td>
+                                    <td>@wurzel.Bezahlt.ToString("C")</td>
+                                    <td><span class="count-badge">@answersCount</span></td>
+                                    <td>
+                                        <a href="/browse?stamm=@stammGuid&postit=@wurzel.PostItGuid">view</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (Model.StammAnglers?.Any() == true)
+            {
+                <div class="child-list-section">
+                    <h3>Anglers (Filter Profiles)</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Scanned</th>
+                                <th>Catches</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var angler in Model.StammAnglers.Take(10))
+                            {
+                                var catchesCount = angler.News?.Count ?? 0;
+                                <tr>
+                                    <td>@angler.Angler1</td>
+                                    <td>@angler.Datum.ToString("yyyy-MM-dd")</td>
+                                    <td>@(angler.Gescannt ? "Yes" : "No")</td>
+                                    <td><span class="count-badge">@catchesCount</span></td>
+                                    <td>
+                                        <a href="/browse?stamm=@stammGuid&angler=@angler.AnglerGuid">view</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (Model.StammTopLabs?.Any() == true)
+            {
+                <div class="child-list-section">
+                    <h3>TopLabs (Answers Written)</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>PostIt</th>
+                                <th>Date</th>
+                                <th>Reward</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var toplab in Model.StammTopLabs.Take(10))
+                            {
+                                <tr>
+                                    <td>@(toplab.Titel ?? "(no title)")</td>
+                                    <td>@(toplab.PostIt?.Titel ?? "Untitled")</td>
+                                    <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                                    <td>@toplab.Lohn.ToString("C")</td>
+                                    <td>
+                                        <a href="/browse?stamm=@stammGuid&postit=@toplab.PostItGuid&toplab=@toplab.TopLabGuid">view</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+
+        @* Show PostIt's children *@
+        @if (Model.PostIt != null && Model.TopLab == null && Model.Code == null)
+        {
+            @if (Model.PostItCodes?.Any() == true)
+            {
+                <div class="child-list-section">
+                    <h3>Codes (Descriptions)</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th>Comment</th>
+                                <th>Status</th>
+                                <th>Scanned</th>
+                                <th>Receivers</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var code in Model.PostItCodes.Take(10))
+                            {
+                                var receiversCount = code.Spiegels?.Count ?? 0;
+                                <tr>
+                                    <td>@code.Kommentar</td>
+                                    <td>@(code.CodeZust?.ToString() ?? "-")</td>
+                                    <td>@(code.Gescannt ? "Yes" : "No")</td>
+                                    <td><span class="count-badge">@receiversCount</span></td>
+                                    <td>
+                                        <a href="/browse?stamm=@stammGuid&postit=@postitGuid&code=@code.CodeGuid">view</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (Model.PostItTopLabs?.Any() == true)
+            {
+                <div class="child-list-section">
+                    <h3>TopLabs (Answers)</h3>
+                    <table class="simple-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Date</th>
+                                <th>Reward</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var toplab in Model.PostItTopLabs.Take(10))
+                            {
+                                <tr>
+                                    <td>@(toplab.Titel ?? "(no title)")</td>
+                                    <td>@toplab.Stamm.Stamm1</td>
+                                    <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                                    <td>@toplab.Lohn.ToString("C")</td>
+                                    <td>
+                                        <a href="/browse?stamm=@stammGuid&postit=@postitGuid&toplab=@toplab.TopLabGuid">view</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+
+        @* Welcome message if nothing selected *@
+        @if (Model.Stamm == null)
+        {
+            <div class="welcome-message">
+                <h2>Welcome to OLI-it Browse</h2>
+                <p>Select a Stamm from the home page or use the search to start browsing.</p>
+            </div>
+        }
+    </div>
+</div>

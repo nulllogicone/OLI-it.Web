@@ -1,0 +1,64 @@
+@page "{id:guid}"
+@model OLI_it.Web.Pages.Stamm.IndexModel
+@{
+    ViewData["Title"] = "Stamm Details";
+}
+
+<div class="page-header">
+    <h1>Stamm Details</h1>
+</div>
+
+<div class="content-section">
+    @if (Model.Stamm != null)
+    {
+        <dl class="detail-list">
+            <dt>Username</dt>
+            <dd>@Model.Stamm.Stamm1</dd>
+
+            <dt>Email</dt>
+            <dd>@Model.Stamm.EMail</dd>
+
+            @if (Model.Stamm.GebDate.HasValue)
+            {
+                <dt>Birth Date</dt>
+                <dd>@Model.Stamm.GebDate.Value.ToShortDateString()</dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Stamm.Tel))
+            {
+                <dt>Phone</dt>
+                <dd>@Model.Stamm.Tel</dd>
+            }
+
+            <dt>Registration Date</dt>
+            <dd>@Model.Stamm.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            @if (Model.Stamm.KooK.HasValue)
+            {
+                <dt>Balance</dt>
+                <dd>@Model.Stamm.KooK.Value.ToString("C")</dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Stamm.Beschreibung))
+            {
+                <dt>Description</dt>
+                <dd>@Model.Stamm.Beschreibung</dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Stamm.Link))
+            {
+                <dt>Link</dt>
+                <dd><a href="@Model.Stamm.Link" target="_blank">@Model.Stamm.Link</a></dd>
+            }
+        </dl>
+
+        <div class="action-links">
+            <a href="/stamm/@Model.Stamm.StammGuid/postit" class="btn btn-primary">View PostIt (Messages)</a>
+            <a href="/stamm/@Model.Stamm.StammGuid/angler" class="btn btn-secondary">View Angler (Filters)</a>
+        </div>
+    }
+    else
+    {
+        <p>Stamm not found.</p>
+    }
+</div>

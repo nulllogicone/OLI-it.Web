@@ -1,41 +1,68 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "OLI-it - Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">OLI-it Database</h1>
-    <p>First 10 Stamm (User) names</p>
+<div class="page-header">
+    <h1>OLI-it</h1>
+    <p>An intelligent network of individual communication</p>
 </div>
 
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Registration Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var stamm in Model.StammList)
-                {
-                    <tr>
-                        <td>@stamm.Stamm1</td>
-                        <td>@stamm.EMail</td>
-                        <td>@stamm.Datum.ToShortDateString()</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        @if (!Model.StammList.Any())
-        {
-            <div class="alert alert-info">
-                No Stamm records found in the database.
-            </div>
-        }
+<div class="content-section">
+    <div class="intro-text">
+        <p>
+            You can ask questions, post classified ads or search partners. private, and professional. 
+            In general and very specific.
+        </p>
+        <p>
+            The author of a message describes itself the contents of the message (motivation & Topic) 
+            and the properties of the desired receiver. In a hierarchical word space with colored dots.
+        </p>
     </div>
+
+    <div class="feature-highlight">
+        <h2>Everyone can read all messages and replies</h2>
+        <p>You must be logged in to write.</p>
+
+        <div class="feature-list">
+            <h3>If you're logged in, you can:</h3>
+            <ul>
+                <li>create new messages</li>
+                <li>search with your filter profiles for messages</li>
+                <li>provide answers and evaluate them</li>
+                <li>and earn money!</li>
+            </ul>
+        </div>
+    </div>
+
+    @if (Model.StammList.Any())
+    {
+        <div class="stamm-list">
+            <h3>Recent Users</h3>
+            <table class="simple-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Registration Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stamm in Model.StammList.Take(5))
+                    {
+                        <tr>
+                            <td>@stamm.Stamm1</td>
+                            <td>@stamm.EMail</td>
+                            <td>@stamm.Datum.ToShortDateString()</td>
+                            <td>
+                                <a href="/browse?stamm=@stamm.StammGuid">view</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

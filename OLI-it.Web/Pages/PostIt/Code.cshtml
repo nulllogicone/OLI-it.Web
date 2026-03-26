@@ -1,0 +1,45 @@
+@page "~/postit/{id:guid}/code"
+@model OLI_it.Web.Pages.PostIt.CodeModel
+@{
+    ViewData["Title"] = "Code (Descriptions)";
+}
+
+<div class="page-header">
+    <h1>Code (Descriptions)</h1>
+    <p>Descriptions for PostIt: <strong>@(Model.PostIt?.Titel ?? "Untitled")</strong></p>
+</div>
+
+<div class="content-section">
+    @if (Model.Codes.Any())
+    {
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Comment</th>
+                    <th>Status</th>
+                    <th>Scanned</th>
+                    <th>Version</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var code in Model.Codes)
+                {
+                    <tr>
+                        <td>@code.Kommentar</td>
+                        <td>@(code.CodeZust?.ToString() ?? "-")</td>
+                        <td>@(code.Gescannt ? "Yes" : "No")</td>
+                        <td>@(code.Versionsnummer ?? "-")</td>
+                        <td>
+                            <a href="/code/@code.CodeGuid">view</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-data">No Code (descriptions) found for this PostIt.</p>
+    }
+</div>

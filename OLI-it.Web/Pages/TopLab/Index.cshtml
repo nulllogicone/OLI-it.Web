@@ -1,0 +1,73 @@
+@page "{id:guid}"
+@model OLI_it.Web.Pages.TopLab.IndexModel
+@{
+    ViewData["Title"] = "TopLab Details";
+}
+
+<div class="page-header">
+    <h1>TopLab (Answer) Details</h1>
+</div>
+
+<div class="content-section">
+    @if (Model.TopLab != null)
+    {
+        <dl class="detail-list">
+            @if (!string.IsNullOrEmpty(Model.TopLab.Titel))
+            {
+                <dt>Title</dt>
+                <dd>@Model.TopLab.Titel</dd>
+            }
+
+            <dt>Content</dt>
+            <dd>@Model.TopLab.TopLab1</dd>
+
+            <dt>PostIt (Question)</dt>
+            <dd>
+                <a href="/postit/@Model.TopLab.PostItGuid">@(Model.TopLab.PostIt.Titel ?? "Untitled PostIt")</a>
+            </dd>
+
+            <dt>Author (Stamm)</dt>
+            <dd>
+                <a href="/stamm/@Model.TopLab.StammGuid">@Model.TopLab.Stamm.Stamm1</a>
+            </dd>
+
+            <dt>Date</dt>
+            <dd>@Model.TopLab.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            <dt>Reward (Lohn)</dt>
+            <dd>@Model.TopLab.Lohn.ToString("C")</dd>
+
+            <dt>Type</dt>
+            <dd>@Model.TopLab.Typ</dd>
+
+            @if (!string.IsNullOrEmpty(Model.TopLab.Url))
+            {
+                <dt>URL</dt>
+                <dd><a href="@Model.TopLab.Url" target="_blank">@Model.TopLab.Url</a></dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.TopLab.Datei))
+            {
+                <dt>File</dt>
+                <dd>@Model.TopLab.Datei</dd>
+            }
+
+            @if (Model.TopLab.TopTopLab != null)
+            {
+                <dt>Reply To</dt>
+                <dd>
+                    <a href="/toplab/@Model.TopLab.TopTopLabGuid">@(Model.TopLab.TopTopLab.Titel ?? "Parent Answer")</a>
+                </dd>
+            }
+        </dl>
+
+        <div class="action-links">
+            <a href="/postit/@Model.TopLab.PostItGuid/toplab" class="btn btn-secondary">Back to PostIt's Answers</a>
+            <a href="/postit/@Model.TopLab.PostItGuid" class="btn btn-secondary">View PostIt</a>
+        </div>
+    }
+    else
+    {
+        <p>TopLab not found.</p>
+    }
+</div>

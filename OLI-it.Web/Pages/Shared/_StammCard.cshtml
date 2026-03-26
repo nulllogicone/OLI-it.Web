@@ -1,0 +1,47 @@
+@model OLI_it.Web.Models.Stamm
+
+<div class="entity-card stamm-card">
+    <div class="entity-card-header">
+        <h2>Stamm: @Model.Stamm1</h2>
+        <a href="/browse" class="close-btn" title="Close">&times;</a>
+    </div>
+    <div class="entity-card-body">
+        <div class="entity-info">
+            <div class="info-group">
+                <span class="label">Email:</span>
+                <span class="value">@Model.EMail</span>
+            </div>
+            @if (Model.GebDate.HasValue)
+            {
+                <div class="info-group">
+                    <span class="label">Birth Date:</span>
+                    <span class="value">@Model.GebDate.Value.ToShortDateString()</span>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Tel))
+            {
+                <div class="info-group">
+                    <span class="label">Phone:</span>
+                    <span class="value">@Model.Tel</span>
+                </div>
+            }
+            <div class="info-group">
+                <span class="label">Registration:</span>
+                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
+            </div>
+            @if (Model.KooK.HasValue)
+            {
+                <div class="info-group">
+                    <span class="label">Balance:</span>
+                    <span class="value">@Model.KooK.Value.ToString("C")</span>
+                </div>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Beschreibung))
+        {
+            <div class="entity-description">
+                <strong>Description:</strong> @Model.Beschreibung
+            </div>
+        }
+    </div>
+</div>

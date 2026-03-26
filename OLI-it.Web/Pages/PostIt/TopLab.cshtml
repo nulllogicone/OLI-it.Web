@@ -1,0 +1,49 @@
+@page "~/postit/{id:guid}/toplab"
+@model OLI_it.Web.Pages.PostIt.TopLabModel
+@{
+    ViewData["Title"] = "TopLab (Answers)";
+}
+
+<div class="page-header">
+    <h1>TopLab (Answers)</h1>
+    <p>Answers for PostIt: <strong>@(Model.PostIt?.Titel ?? "Untitled")</strong></p>
+</div>
+
+<div class="content-section">
+    @if (Model.TopLabs.Any())
+    {
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author (Stamm)</th>
+                    <th>Date</th>
+                    <th>Reward (Lohn)</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var toplab in Model.TopLabs)
+                {
+                    <tr>
+                        <td>@(toplab.Titel ?? "(no title)")</td>
+                        <td>
+                            <a href="/stamm/@toplab.StammGuid">@toplab.Stamm.Stamm1</a>
+                        </td>
+                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                        <td>@toplab.Lohn.ToString("C")</td>
+                        <td>@toplab.Typ</td>
+                        <td>
+                            <a href="/toplab/@toplab.TopLabGuid">view</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-data">No TopLab (answers) found for this PostIt.</p>
+    }
+</div>

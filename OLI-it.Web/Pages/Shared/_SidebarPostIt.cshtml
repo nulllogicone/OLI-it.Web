@@ -1,0 +1,43 @@
+@model dynamic
+
+@{
+    var postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? "";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+}
+
+<nav class="sidebar-menu">
+    <ul class="menu-list">
+        <li class="menu-item">
+            <a href="/postit/@postitGuid" class="@(currentPage.Contains("PostIt/Index") ? "active" : "")">
+                postit details
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/postit/@postitGuid/code" class="@(currentPage.Contains("PostIt/Code") ? "active" : "")">
+                code
+            </a>
+            <span class="menu-description">descriptions</span>
+        </li>
+        <li class="menu-item">
+            <a href="/postit/@postitGuid/toplab" class="@(currentPage.Contains("PostIt/TopLab") ? "active" : "")">
+                toplab
+            </a>
+            <span class="menu-description">answers</span>
+        </li>
+        
+        @* Divider *@
+        <li class="menu-divider"></li>
+        
+        @* General menu items *@
+        <li class="menu-item">
+            <a href="/">
+                home
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/journal">
+                timeline
+            </a>
+        </li>
+    </ul>
+</nav>

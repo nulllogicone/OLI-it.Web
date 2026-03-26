@@ -1,0 +1,50 @@
+@page "{id:guid}"
+@model OLI_it.Web.Pages.Angler.IndexModel
+@{
+    ViewData["Title"] = "Angler Details";
+}
+
+<div class="page-header">
+    <h1>Angler (Filter Profile) Details</h1>
+</div>
+
+<div class="content-section">
+    @if (Model.Angler != null)
+    {
+        <dl class="detail-list">
+            <dt>Name</dt>
+            <dd>@Model.Angler.Angler1</dd>
+
+            <dt>Owner (Stamm)</dt>
+            <dd>
+                <a href="/stamm/@Model.Angler.StammGuid">@Model.Angler.Stamm.Stamm1</a>
+            </dd>
+
+            <dt>Date Created</dt>
+            <dd>@Model.Angler.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            <dt>Scanned</dt>
+            <dd>@(Model.Angler.Gescannt ? "Yes" : "No")</dd>
+
+            @if (!string.IsNullOrEmpty(Model.Angler.Beschreibung))
+            {
+                <dt>Description</dt>
+                <dd>@Model.Angler.Beschreibung</dd>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Angler.Versionsnummer))
+            {
+                <dt>Version</dt>
+                <dd>@Model.Angler.Versionsnummer</dd>
+            }
+        </dl>
+
+        <div class="action-links">
+            <a href="/stamm/@Model.Angler.StammGuid/angler" class="btn btn-secondary">Back to Stamm's Anglers</a>
+        </div>
+    }
+    else
+    {
+        <p>Angler not found.</p>
+    }
+</div>

@@ -1,0 +1,44 @@
+@model OLI_it.Web.Models.PostIt
+
+<div class="entity-card postit-card">
+    <div class="entity-card-header">
+        <h3>PostIt: @(Model.Titel ?? "Untitled")</h3>
+        <a href="/browse?stamm=@ViewData["StammGuid"]" class="close-btn" title="Close">&times;</a>
+    </div>
+    <div class="entity-card-body">
+        <div class="entity-info">
+            <div class="info-group">
+                <span class="label">Date:</span>
+                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Balance (KooK):</span>
+                <span class="value">@Model.KooK.ToString("C")</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Type:</span>
+                <span class="value">@Model.Typ</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Hits:</span>
+                <span class="value">@Model.Hits</span>
+            </div>
+            @if (Model.PostItZust.HasValue)
+            {
+                <div class="info-group">
+                    <span class="label">Status:</span>
+                    <span class="value">@Model.PostItZust</span>
+                </div>
+            }
+        </div>
+        <div class="entity-description">
+            <strong>Content:</strong> @Model.PostIt1
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Url))
+        {
+            <div class="entity-link">
+                <a href="@Model.Url" target="_blank">@Model.Url</a>
+            </div>
+        }
+    </div>
+</div>

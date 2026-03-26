@@ -1,0 +1,51 @@
+@page "~/stamm/{id:guid}/postit"
+@model OLI_it.Web.Pages.Stamm.PostItModel
+@{
+    ViewData["Title"] = "PostIt Messages";
+}
+
+<div class="page-header">
+    <h1>PostIt Messages</h1>
+    <p>Messages for <strong>@Model.Stamm?.Stamm1</strong></p>
+</div>
+
+<div class="content-section">
+    @if (Model.PostIts.Any())
+    {
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Balance (KooK)</th>
+                    <th>Deadline</th>
+                    <th>Paid</th>
+                    <th>Closed</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var wurzel in Model.PostIts)
+                {
+                    <tr>
+                        <td>@(wurzel.PostIt.Titel ?? "(no title)")</td>
+                        <td>@wurzel.PostIt.Datum.ToString("yyyy-MM-dd")</td>
+                        <td>@wurzel.StammZust</td>
+                        <td>@wurzel.Bezahlt.ToString("C")</td>
+                        <td>@(wurzel.Frist?.ToString("yyyy-MM-dd") ?? "-")</td>
+                        <td>@(wurzel.Gemailt ? "Yes" : "No")</td>
+                        <td>@(wurzel.Closed ? "Yes" : "No")</td>
+                        <td>
+                            <a href="/postit/@wurzel.PostItGuid">view</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-data">No PostIt messages found for this Stamm.</p>
+    }
+</div>

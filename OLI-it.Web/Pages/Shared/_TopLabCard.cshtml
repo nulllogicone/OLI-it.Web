@@ -1,0 +1,33 @@
+@model OLI_it.Web.Models.TopLab
+
+<div class="entity-card toplab-card">
+    <div class="entity-card-header">
+        <h3>TopLab: @(Model.Titel ?? "Untitled Answer")</h3>
+        <a href="/browse?stamm=@ViewData["StammGuid"]&postit=@Model.PostItGuid" class="close-btn" title="Close">&times;</a>
+    </div>
+    <div class="entity-card-body">
+        <div class="entity-info">
+            <div class="info-group">
+                <span class="label">Date:</span>
+                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Reward (Lohn):</span>
+                <span class="value">@Model.Lohn.ToString("C")</span>
+            </div>
+            <div class="info-group">
+                <span class="label">Type:</span>
+                <span class="value">@Model.Typ</span>
+            </div>
+        </div>
+        <div class="entity-description">
+            <strong>Answer:</strong> @Model.TopLab1
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Url))
+        {
+            <div class="entity-link">
+                <a href="@Model.Url" target="_blank">@Model.Url</a>
+            </div>
+        }
+    </div>
+</div>

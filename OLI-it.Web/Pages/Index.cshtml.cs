@@ -15,7 +15,7 @@ namespace OLI_it.Web.Pages
             _context = context;
         }
 
-        public List<Stamm> StammList { get; set; } = new();
+        public List<Models.Stamm> StammList { get; set; } = new();
 
         public async Task OnGetAsync()
         {
