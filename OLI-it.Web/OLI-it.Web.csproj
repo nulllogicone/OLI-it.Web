@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>OLI_it.Web</RootNamespace>
+    <UserSecretsId>936429e2-4c07-4bde-9c3e-40e1f6531612</UserSecretsId>
+  </PropertyGroup>
+
+</Project>
