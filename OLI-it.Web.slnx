@@ -2,5 +2,17 @@
   <Folder Name="/Solution Items/">
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/Solution Items/docs/">
+    <File Path="docs/00-vision.md" />
+    <File Path="docs/01-domain-entities.md" />
+    <File Path="docs/02-data-model.md" />
+    <File Path="docs/03-use-cases.md" />
+    <File Path="docs/04-ui-ia.md" />
+    <File Path="docs/05-ui-wireframes.md" />
+    <File Path="docs/06-architecture.md" />
+    <File Path="docs/08-backlog.md" />
+    <File Path="docs/99-open-questions.md" />
+    <File Path="docs/README.md" />
+  </Folder>
   <Project Path="OLI-it.Web/OLI-it.Web.csproj" />
 </Solution>

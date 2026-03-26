@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using OLI_it.Web.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Add DbContext with connection string from configuration
+builder.Services.AddDbContext<OliItDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OliItDb")));
 
 var app = builder.Build();
 

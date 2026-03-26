@@ -5,6 +5,37 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">OLI-it Database</h1>
+    <p>First 10 Stamm (User) names</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var stamm in Model.StammList)
+                {
+                    <tr>
+                        <td>@stamm.Stamm1</td>
+                        <td>@stamm.EMail</td>
+                        <td>@stamm.Datum.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (!Model.StammList.Any())
+        {
+            <div class="alert alert-info">
+                No Stamm records found in the database.
+            </div>
+        }
+    </div>
 </div>
