@@ -61,6 +61,13 @@
             }
         </dl>
 
+        @if (!string.IsNullOrEmpty(Model.TopLab.Datei))
+        {
+            <div class="entity-file-section">
+                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.TopLab.Datei, altText = $"TopLab {Model.TopLab.Titel ?? "Untitled"} Image", width = 150, height = 150 })
+            </div>
+        }
+
         <div class="action-links">
             <a href="/postit/@Model.TopLab.PostItGuid/toplab" class="btn btn-secondary">Back to PostIt's Answers</a>
             <a href="/postit/@Model.TopLab.PostItGuid" class="btn btn-secondary">View PostIt</a>

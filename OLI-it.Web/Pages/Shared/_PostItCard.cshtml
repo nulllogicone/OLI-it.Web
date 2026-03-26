@@ -2,7 +2,15 @@
 
 <div class="entity-card postit-card">
     <div class="entity-card-header">
-        <h3>PostIt: @(Model.Titel ?? "Untitled")</h3>
+        <div class="header-left-content">
+            @if (!string.IsNullOrEmpty(Model.Datei))
+            {
+                <div class="header-thumbnail">
+                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"PostIt {Model.Titel ?? "Untitled"} Image", width = 60, height = 60 })
+                </div>
+            }
+            <h3>PostIt: @(Model.Titel ?? "Untitled")</h3>
+        </div>
         <a href="/browse?stamm=@ViewData["StammGuid"]" class="close-btn" title="Close">&times;</a>
     </div>
     <div class="entity-card-body">
@@ -42,3 +50,4 @@
         }
     </div>
 </div>
+

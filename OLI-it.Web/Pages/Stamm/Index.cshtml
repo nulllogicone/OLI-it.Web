@@ -50,7 +50,20 @@
                 <dt>Link</dt>
                 <dd><a href="@Model.Stamm.Link" target="_blank">@Model.Stamm.Link</a></dd>
             }
+
+            @if (!string.IsNullOrEmpty(Model.Stamm.Datei))
+            {
+                <dt>Image Path (Datei)</dt>
+                <dd>@Model.Stamm.Datei</dd>
+            }
         </dl>
+
+        @if (!string.IsNullOrEmpty(Model.Stamm.Datei))
+        {
+            <div class="entity-file-section">
+                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Stamm.Datei, altText = $"Stamm {Model.Stamm.Stamm1} Image", width = 150, height = 150 })
+            </div>
+        }
 
         <div class="action-links">
             <a href="/stamm/@Model.Stamm.StammGuid/postit" class="btn btn-primary">View PostIt (Messages)</a>

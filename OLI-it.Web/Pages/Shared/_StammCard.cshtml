@@ -2,7 +2,15 @@
 
 <div class="entity-card stamm-card">
     <div class="entity-card-header">
-        <h2>Stamm: @Model.Stamm1</h2>
+        <div class="header-left-content">
+            @if (!string.IsNullOrEmpty(Model.Datei))
+            {
+                <div class="header-thumbnail">
+                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"Stamm {Model.Stamm1} Image", width = 60, height = 60 })
+                </div>
+            }
+            <h2>Stamm: @Model.Stamm1</h2>
+        </div>
         <a href="/browse" class="close-btn" title="Close">&times;</a>
     </div>
     <div class="entity-card-body">

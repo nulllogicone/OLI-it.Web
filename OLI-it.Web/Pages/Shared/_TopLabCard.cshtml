@@ -2,7 +2,15 @@
 
 <div class="entity-card toplab-card">
     <div class="entity-card-header">
-        <h3>TopLab: @(Model.Titel ?? "Untitled Answer")</h3>
+        <div class="header-left-content">
+            @if (!string.IsNullOrEmpty(Model.Datei))
+            {
+                <div class="header-thumbnail">
+                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"TopLab {Model.Titel ?? "Untitled"} Image", width = 60, height = 60 })
+                </div>
+            }
+            <h3>TopLab: @(Model.Titel ?? "Untitled Answer")</h3>
+        </div>
         <a href="/browse?stamm=@ViewData["StammGuid"]&postit=@Model.PostItGuid" class="close-btn" title="Close">&times;</a>
     </div>
     <div class="entity-card-body">
@@ -31,3 +39,4 @@
         }
     </div>
 </div>
+

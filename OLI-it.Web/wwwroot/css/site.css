@@ -281,6 +281,15 @@ body {
   text-decoration: underline;
 }
 
+.simple-table td .image-thumbnail {
+  margin: 0;
+}
+
+.simple-table td .thumbnail-img {
+  max-width: 80px;
+  max-height: 80px;
+}
+
 .count-badge {
   display: inline-block;
   background-color: #007bff;
@@ -430,6 +439,39 @@ body {
   color: #d9534f;
 }
 
+.header-left-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.header-right-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-thumbnail {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.header-thumbnail .image-thumbnail {
+  margin: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 60px;
+  height: 60px;
+}
+
+.header-thumbnail .thumbnail-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
 .entity-card-body {
   padding: 20px;
 }
@@ -572,3 +614,30 @@ body {
     padding-left: 35px;
   }
 }
+
+/* Image Thumbnail Component */
+.image-thumbnail {
+  margin: 15px 0;
+  display: inline-block;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+}
+
+.image-thumbnail .thumbnail-img {
+  display: block;
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.image-thumbnail:hover .thumbnail-img {
+  transform: scale(1.05);
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+
+
