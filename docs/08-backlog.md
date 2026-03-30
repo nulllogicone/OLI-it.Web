@@ -27,20 +27,21 @@ Status: draft
 
 ## Phase 2 — Enhancements
 
-| ID | Title | Notes |
-|----|-------|-------|
-| BL-101 | Mobile-responsive layout | Bootstrap responsive pass |
-| BL-102 | Notifications for matched messages | Email or in-app |
-| BL-103 | Admin moderation dashboard | Flag/review messages |
-| BL-104 | Advanced wordspace editing (drag-drop ordering) | |
-| BL-105 | Analytics/reporting for authors | Views, delivery count |
-| BL-106 | API exposure | REST API for external clients |
-| BL-107 | Implement rate limiting for login endpoint | Prevent brute force attacks; consider AspNetCoreRateLimit package |
-| BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints |
-| BL-109 | Hash passwords instead of plaintext storage | Use BCrypt or ASP.NET Core Identity password hasher |
-| BL-110 | Implement account lockout after failed login attempts | Lock account for X minutes after Y failed attempts |
+| ID | Title | Notes | Status |
+|----|-------|-------|--------|
+| BL-101 | Mobile-responsive layout | Bootstrap responsive pass | not started |
+| BL-102 | Notifications for matched messages | Email or in-app | not started |
+| BL-103 | Admin moderation dashboard | Flag/review messages | not started |
+| BL-104 | Advanced wordspace editing (drag-drop ordering) | | not started |
+| BL-105 | Analytics/reporting for authors | Views, delivery count | not started |
+| BL-106 | API exposure | REST API for external clients | not started |
+| BL-107 | Implement rate limiting for login endpoint | Fixed window: 5 attempts/minute per IP using built-in RateLimiter | ✅ completed |
+| BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints | not started |
+| BL-109 | Hash passwords instead of plaintext storage | Use BCrypt or ASP.NET Core Identity password hasher | not started |
+| BL-110 | Implement account lockout after failed login attempts | Lock account for X minutes after Y failed attempts | not started |
 
 ## Change Log
 
 - 2026-03-26: Initial backlog from use case and entity analysis.
 - 2026-03-26: Added authentication security enhancements (BL-107 to BL-110).
+- 2026-03-26: Completed BL-107 - Rate limiting implemented with fixed window (5 attempts/min).
