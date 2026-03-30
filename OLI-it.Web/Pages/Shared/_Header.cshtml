@@ -1,5 +1,8 @@
 @{
     var currentCulture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+    var stammName = User?.Identity?.Name ?? string.Empty;
+    var datei = User?.Claims?.FirstOrDefault(c => c.Type == "Datei")?.Value;
 }
 
 <header class="app-header">
@@ -16,19 +19,136 @@
         </div>
     </div>
     <div class="header-right">
-        @* TODO: Replace with actual authentication check *@
-        @if (false)
+        @if (isAuthenticated)
         {
             <div class="user-info">
-                <span class="username">@User.Identity?.Name</span>
-                <a href="/logout" class="logout-link">Logout</a>
+                @if (!string.IsNullOrEmpty(datei))
+                {
+                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = datei, altText = stammName, width = 40, height = 40 })
+                }
+                <span class="username">@stammName</span>
+                <button type="button" class="logout-button" onclick="handleLogout(event)">Logout</button>
             </div>
         }
         else
         {
             <div class="auth-links">
-                <a href="/login" class="login-link">Login</a>
+                <form id="headerLoginForm" class="inline-login-form" onsubmit="handleLogin(event)">
+                    <input type="text" name="stammName" id="stammName" placeholder="Stamm Name" required class="login-input" />
+                    <input type="password" name="unterschrift" id="unterschrift" placeholder="Unterschrift" required class="login-input" />
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+                <span id="loginError" class="login-error" style="display: none;"></span>
             </div>
         }
     </div>
 </header>
+
+<script>
+    async function handleLogin(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const stammName = form.stammName.value;
+        const unterschrift = form.unterschrift.value;
+        const errorSpan = document.getElementById('loginError');
+
+        console.log('Attempting login for:', stammName);
+
+        try {
+            const formData = new FormData();
+            formData.append('StammName', stammName);
+            formData.append('Unterschrift', unterschrift);
+
+            console.log('Form data entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key, '=', value);
+            }
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                body: formData
+            });
+
+            console.log('Response status:', response.status);
+            console.log('Response content-type:', response.headers.get('content-type'));
+
+            // Read the response body regardless of status
+            const text = await response.text();
+            console.log('Response body:', text);
+
+            if (!response.ok) {
+                errorSpan.textContent = `Server error (${response.status}). Check console.`;
+                errorSpan.style.display = 'inline-block';
+                setTimeout(() => {
+                    errorSpan.style.display = 'none';
+                }, 5000);
+                return;
+            }
+
+            // Try to parse as JSON
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                console.error('Failed to parse JSON:', e);
+                throw new Error('Server returned non-JSON response');
+            }
+
+            console.log('Login result:', result);
+
+            if (result.success) {
+                // Reload the page to show authenticated state
+                window.location.reload();
+            } else {
+                // Show error message
+                errorSpan.textContent = result.message || 'Login failed';
+                errorSpan.style.display = 'inline-block';
+                setTimeout(() => {
+                    errorSpan.style.display = 'none';
+                }, 5000);
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            errorSpan.textContent = 'An error occurred. Check console for details.';
+            errorSpan.style.display = 'inline-block';
+            setTimeout(() => {
+                errorSpan.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    async function handleLogout(event) {
+        event.preventDefault();
+
+        console.log('Attempting logout');
+
+        try {
+            const response = await fetch('/api/logout', {
+                method: 'POST'
+            });
+
+            console.log('Logout response status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Logout result:', result);
+
+            if (result.success) {
+                // Reload the page to show logged out state
+                window.location.reload();
+            } else {
+                console.error('Logout failed:', result.message);
+                // Reload anyway
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Reload anyway
+            window.location.reload();
+        }
+    }
+</script>

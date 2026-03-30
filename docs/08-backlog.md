@@ -35,7 +35,12 @@ Status: draft
 | BL-104 | Advanced wordspace editing (drag-drop ordering) | |
 | BL-105 | Analytics/reporting for authors | Views, delivery count |
 | BL-106 | API exposure | REST API for external clients |
+| BL-107 | Implement rate limiting for login endpoint | Prevent brute force attacks; consider AspNetCoreRateLimit package |
+| BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints |
+| BL-109 | Hash passwords instead of plaintext storage | Use BCrypt or ASP.NET Core Identity password hasher |
+| BL-110 | Implement account lockout after failed login attempts | Lock account for X minutes after Y failed attempts |
 
 ## Change Log
 
 - 2026-03-26: Initial backlog from use case and entity analysis.
+- 2026-03-26: Added authentication security enhancements (BL-107 to BL-110).
