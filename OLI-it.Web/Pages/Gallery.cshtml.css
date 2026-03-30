@@ -1,0 +1,156 @@
+.gallery-page {
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.gallery-grid {
+    margin-bottom: 40px;
+}
+
+.gallery-grid::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.gallery-item {
+    float: left;
+    margin: 10px;
+    padding: 10px;
+    border: solid 2px gold;
+    width: 240px;
+    height: 240px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(218, 165, 32, 0.4);
+}
+
+.gallery-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(218, 165, 32, 0.5);
+    border-color: #B8860B;
+}
+
+.gallery-thumbnail {
+    width: 220px;
+    height: 220px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.gallery-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 6px 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 220px;
+    height: 220px;
+}
+
+.gallery-type-badge {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.gallery-type-stamm {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.gallery-type-postit {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.gallery-type-toplab {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.gallery-title {
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin: 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #ffffff;
+}
+
+.gallery-date {
+    font-size: 0.55rem;
+    color: #cccccc;
+    margin: 0;
+}
+
+.gallery-description {
+    font-size: 0.7rem;
+    color: #999;
+    margin: 4px 0 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+}

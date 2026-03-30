@@ -1,0 +1,52 @@
+@page
+@model GalleryModel
+@{
+    ViewData["Title"] = "Gallery";
+}
+
+<link rel="stylesheet" href="~/Pages/Gallery.cshtml.css" />
+
+<div class="gallery-page">
+    <div class="page-header">
+        <h1>Image Gallery</h1>
+        <p class="subtitle">Latest images from Stamm, PostIt, and TopLab</p>
+    </div>
+
+    <div class="gallery-grid">
+        @foreach (var item in Model.GalleryItems)
+        {
+            var landingUrl = item.Type switch
+            {
+                "Stamm" => $"/browse?stamm={item.Guid}",
+                "PostIt" => $"/browse?postit={item.Guid}",
+                "TopLab" => $"/browse?toplab={item.Guid}",
+                _ => "#"
+            };
+            <div class="gallery-item" style="float:left; margin:10px; padding: 10px; border: solid 2px gold;">
+                <a href="@landingUrl" class="gallery-link">
+                    <div class="gallery-thumbnail">
+                        @await Component.InvokeAsync("ImageThumbnail", new { 
+                            dateiPath = item.ImagePath, 
+                            altText = $"{item.Type}: {item.Title}", 
+                            width = 220, 
+                            height = 220 
+                        })
+                        <div class="gallery-overlay">
+                            <span class="gallery-type-badge gallery-type-@item.Type.ToLower()">@item.Type</span>
+                            <div class="gallery-title">@item.Title</div>
+                            <div class="gallery-date">@item.Date.ToString("yyyy-MM-dd")</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    @if (!Model.GalleryItems.Any())
+    {
+        <div class="empty-state">
+            <p>No images found. Items must have a Datei field starting with /</p>
+        </div>
+    }
+</div>
+
