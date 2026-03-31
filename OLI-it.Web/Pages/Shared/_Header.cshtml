@@ -53,29 +53,18 @@
         const unterschrift = form.unterschrift.value;
         const errorSpan = document.getElementById('loginError');
 
-        console.log('Attempting login for:', stammName);
-
         try {
             const formData = new FormData();
             formData.append('StammName', stammName);
             formData.append('Unterschrift', unterschrift);
-
-            console.log('Form data entries:');
-            for (let [key, value] of formData.entries()) {
-                console.log(key, '=', value);
-            }
 
             const response = await fetch('/api/login', {
                 method: 'POST',
                 body: formData
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response content-type:', response.headers.get('content-type'));
-
             // Read the response body regardless of status
             const text = await response.text();
-            console.log('Response body:', text);
 
             if (!response.ok) {
                 errorSpan.textContent = `Server error (${response.status}). Check console.`;
@@ -95,11 +84,14 @@
                 throw new Error('Server returned non-JSON response');
             }
 
-            console.log('Login result:', result);
-
             if (result.success) {
-                // Reload the page to show authenticated state
-                window.location.reload();
+                // Redirect to stammcard if StammGuid is provided
+                if (result.stammGuid) {
+                    window.location.href = `/Stamm/${result.stammGuid}`;
+                } else {
+                    // Fallback: Reload the page to show authenticated state
+                    window.location.reload();
+                }
             } else {
                 // Show error message
                 errorSpan.textContent = result.message || 'Login failed';
@@ -121,27 +113,21 @@
     async function handleLogout(event) {
         event.preventDefault();
 
-        console.log('Attempting logout');
-
         try {
             const response = await fetch('/api/logout', {
                 method: 'POST'
             });
-
-            console.log('Logout response status:', response.status);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const result = await response.json();
-            console.log('Logout result:', result);
 
             if (result.success) {
                 // Reload the page to show logged out state
                 window.location.reload();
             } else {
-                console.error('Logout failed:', result.message);
                 // Reload anyway
                 window.location.reload();
             }

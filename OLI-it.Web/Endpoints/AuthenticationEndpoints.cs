@@ -67,7 +67,7 @@ public static class AuthenticationEndpoints
                 authProperties);
 
             logger.LogInformation("Login successful for user: {StammName}", stammName);
-            return Results.Json(new { success = true });
+            return Results.Json(new { success = true, stammGuid = stamm.StammGuid });
         }
         catch (Exception ex)
         {
