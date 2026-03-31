@@ -1,0 +1,41 @@
+@model List<OLI_it.Web.Models.News>
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>PostIt</th>
+                <th>Code</th>
+                <th>Matched Date</th>
+                <th>Read</th>
+                <th>Seen</th>
+                <th>Emailed</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var news in Model)
+            {
+                <tr>
+                    <td>@(news.Code?.PostIt?.Titel ?? "Unknown")</td>
+                    <td>@(news.Code?.Kommentar ?? "-")</td>
+                    <td>@(news.Datum?.ToString("yyyy-MM-dd") ?? "-")</td>
+                    <td>@(news.Gelesen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>@(news.Gesehen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>@(news.Gemailt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>
+                        @if (news.Code?.PostItGuid != null)
+                        {
+                            <a href="/postit/@news.Code.PostItGuid">view</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No catched PostIts found.</p>
+}

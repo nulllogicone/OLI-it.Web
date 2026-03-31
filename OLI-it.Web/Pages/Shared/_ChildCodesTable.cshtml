@@ -1,0 +1,35 @@
+@model List<OLI_it.Web.Models.Code>
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>Comment</th>
+                <th>Status</th>
+                <th>Scanned</th>
+                <th>Receivers</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var code in Model)
+            {
+                var receiversCount = code.Spiegels?.Count ?? 0;
+                <tr>
+                    <td>@code.Kommentar</td>
+                    <td>@(code.CodeZust?.ToString() ?? "-")</td>
+                    <td>@(code.Gescannt ? "Yes" : "No")</td>
+                    <td><span class="count-badge">@receiversCount</span></td>
+                    <td>
+                        <a href="/code/@code.CodeGuid">view</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No Codes found.</p>
+}

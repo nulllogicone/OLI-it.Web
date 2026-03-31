@@ -1,77 +1,44 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.Stamm.IndexModel
 @{
-    ViewData["Title"] = "Stamm Details";
+    ViewData["Title"] = "Stamm";
 }
 
-<div class="page-header">
-    <h1>Stamm Details</h1>
-</div>
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
+    </div>
 
-<div class="content-section">
     @if (Model.Stamm != null)
     {
-        <dl class="detail-list">
-            <dt>Username</dt>
-            <dd>@Model.Stamm.Stamm1</dd>
-
-            <dt>Email</dt>
-            <dd>@Model.Stamm.EMail</dd>
-
-            @if (Model.Stamm.GebDate.HasValue)
-            {
-                <dt>Birth Date</dt>
-                <dd>@Model.Stamm.GebDate.Value.ToShortDateString()</dd>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Stamm.Tel))
-            {
-                <dt>Phone</dt>
-                <dd>@Model.Stamm.Tel</dd>
-            }
-
-            <dt>Registration Date</dt>
-            <dd>@Model.Stamm.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
-
-            @if (Model.Stamm.KooK.HasValue)
-            {
-                <dt>Balance</dt>
-                <dd>@Model.Stamm.KooK.Value.ToString("C")</dd>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Stamm.Beschreibung))
-            {
-                <dt>Description</dt>
-                <dd>@Model.Stamm.Beschreibung</dd>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Stamm.Link))
-            {
-                <dt>Link</dt>
-                <dd><a href="@Model.Stamm.Link" target="_blank">@Model.Stamm.Link</a></dd>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Stamm.Datei))
-            {
-                <dt>Image Path (Datei)</dt>
-                <dd>@Model.Stamm.Datei</dd>
-            }
-        </dl>
-
-        @if (!string.IsNullOrEmpty(Model.Stamm.Datei))
+        var tabs = new List<(string Id, string Label, bool IsActive)>
         {
-            <div class="entity-file-section">
-                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Stamm.Datei, altText = $"Stamm {Model.Stamm.Stamm1} Image", width = 150, height = 150 })
-            </div>
-        }
+            ("postits", $"PostIts ({Model.StammPostIts?.Count ?? 0})", true),
+            ("anglers", $"Anglers ({Model.StammAnglers?.Count ?? 0})", false),
+            ("toplabs", $"TopLabs ({Model.StammTopLabs?.Count ?? 0})", false)
+        };
 
-        <div class="action-links">
-            <a href="/stamm/@Model.Stamm.StammGuid/postit" class="btn btn-primary">View PostIt (Messages)</a>
-            <a href="/stamm/@Model.Stamm.StammGuid/angler" class="btn btn-secondary">View Angler (Filters)</a>
+        @await Html.PartialAsync("_TabsNavigation", tabs)
+
+        <div id="postits" class="tab-content">
+            <h3>PostIts (Messages)</h3>
+            ViewData["StammGuid"] = Model.Stamm.StammGuid.ToString();
+            @await Html.PartialAsync("_ChildPostItsTable", Model.StammPostIts ?? new List<OLI_it.Web.Models.Wurzeln>())
+        </div>
+
+        <div id="anglers" class="tab-content">
+            <h3>Anglers (Filter Profiles)</h3>
+            @await Html.PartialAsync("_ChildAnglersTable", Model.StammAnglers ?? new List<OLI_it.Web.Models.Angler>())
+        </div>
+
+        <div id="toplabs" class="tab-content">
+            <h3>TopLabs (Answers Written)</h3>
+            ViewData["Context"] = "stamm";
+            @await Html.PartialAsync("_ChildTopLabsTable", Model.StammTopLabs ?? new List<OLI_it.Web.Models.TopLab>())
         </div>
     }
-    else
-    {
-        <p>Stamm not found.</p>
-    }
 </div>
+

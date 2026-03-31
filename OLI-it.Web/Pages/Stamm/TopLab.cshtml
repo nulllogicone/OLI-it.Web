@@ -1,49 +1,27 @@
 @page "~/stamm/{id:guid}/toplab"
 @model OLI_it.Web.Pages.Stamm.TopLabModel
 @{
-    ViewData["Title"] = "TopLab (Answers)";
+    ViewData["Title"] = "TopLabs";
 }
 
-<div class="page-header">
-    <h1>TopLab (Answers)</h1>
-    <p>Answers written by <strong>@Model.Stamm?.Stamm1</strong></p>
-</div>
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
+    </div>
 
-<div class="content-section">
-    @if (Model.TopLabs.Any())
-    {
-        <table class="simple-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>PostIt (Question)</th>
-                    <th>Date</th>
-                    <th>Reward (Lohn)</th>
-                    <th>Type</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var toplab in Model.TopLabs)
-                {
-                    <tr>
-                        <td>@(toplab.Titel ?? "(no title)")</td>
-                        <td>
-                            <a href="/postit/@toplab.PostItGuid">@(toplab.PostIt.Titel ?? "Untitled PostIt")</a>
-                        </td>
-                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
-                        <td>@toplab.Lohn.ToString("C")</td>
-                        <td>@toplab.Typ</td>
-                        <td>
-                            <a href="/toplab/@toplab.TopLabGuid">view</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="no-data">No TopLab (answers) found for this Stamm.</p>
-    }
+    <div class="content-section">
+        <h3>TopLabs (Answers Written)</h3>
+        @if (Model.TopLabs.Any())
+        {
+            ViewData["Context"] = "stamm";
+            @await Html.PartialAsync("_ChildTopLabsTable", Model.TopLabs)
+        }
+        else
+        {
+            <p class="no-data">No TopLab (answers) found for this Stamm.</p>
+        }
+    </div>
 </div>

@@ -11,7 +11,7 @@
             }
             <h3>TopLab: @(Model.Titel ?? "Untitled Answer")</h3>
         </div>
-        <a href="/browse?stamm=@ViewData["StammGuid"]&postit=@Model.PostItGuid" class="close-btn" title="Close">&times;</a>
+        <a href="/postit/@Model.PostItGuid" class="close-btn" title="Close to PostIt">&times;</a>
     </div>
     <div class="entity-card-body">
         <div class="entity-info">

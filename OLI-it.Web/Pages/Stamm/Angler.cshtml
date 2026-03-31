@@ -1,45 +1,26 @@
 @page "~/stamm/{id:guid}/angler"
 @model OLI_it.Web.Pages.Stamm.AnglerModel
 @{
-    ViewData["Title"] = "Angler (Filter Profiles)";
+    ViewData["Title"] = "Anglers";
 }
 
-<div class="page-header">
-    <h1>Angler (Filter Profiles)</h1>
-    <p>Filter profiles for <strong>@Model.Stamm?.Stamm1</strong></p>
-</div>
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
+    </div>
 
-<div class="content-section">
-    @if (Model.Anglers.Any())
-    {
-        <table class="simple-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Date Created</th>
-                    <th>Scanned</th>
-                    <th>Description</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var angler in Model.Anglers)
-                {
-                    <tr>
-                        <td>@angler.Angler1</td>
-                        <td>@angler.Datum.ToString("yyyy-MM-dd")</td>
-                        <td>@(angler.Gescannt ? "Yes" : "No")</td>
-                        <td>@(angler.Beschreibung ?? "-")</td>
-                        <td>
-                            <a href="/angler/@angler.AnglerGuid">view</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="no-data">No Angler (filter profiles) found for this Stamm.</p>
-    }
+    <div class="content-section">
+        <h3>Anglers (Filter Profiles)</h3>
+        @if (Model.Anglers.Any())
+        {
+            @await Html.PartialAsync("_ChildAnglersTable", Model.Anglers)
+        }
+        else
+        {
+            <p class="no-data">No Angler (filter profiles) found for this Stamm.</p>
+        }
+    </div>
 </div>

@@ -1,0 +1,35 @@
+@model List<OLI_it.Web.Models.Angler>
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Scanned</th>
+                <th>Catches</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var angler in Model)
+            {
+                var catchesCount = angler.News?.Count ?? 0;
+                <tr>
+                    <td>@angler.Angler1</td>
+                    <td>@angler.Datum.ToString("yyyy-MM-dd")</td>
+                    <td>@(angler.Gescannt ? "Yes" : "No")</td>
+                    <td><span class="count-badge">@catchesCount</span></td>
+                    <td>
+                        <a href="/angler/@angler.AnglerGuid">view</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No Anglers found.</p>
+}

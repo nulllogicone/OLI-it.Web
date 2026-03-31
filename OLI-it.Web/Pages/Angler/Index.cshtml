@@ -1,50 +1,35 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.Angler.IndexModel
 @{
-    ViewData["Title"] = "Angler Details";
+    ViewData["Title"] = "Angler";
 }
 
-<div class="page-header">
-    <h1>Angler (Filter Profile) Details</h1>
-</div>
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
 
-<div class="content-section">
+        @if (Model.Angler != null)
+        {
+            @await Html.PartialAsync("_AnglerCard", Model.Angler)
+        }
+    </div>
+
     @if (Model.Angler != null)
     {
-        <dl class="detail-list">
-            <dt>Name</dt>
-            <dd>@Model.Angler.Angler1</dd>
+        var tabs = new List<(string Id, string Label, bool IsActive)>
+        {
+            ("catched", $"Catched PostIts ({Model.CatchedPostIts?.Count ?? 0})", true)
+        };
 
-            <dt>Owner (Stamm)</dt>
-            <dd>
-                <a href="/stamm/@Model.Angler.StammGuid">@Model.Angler.Stamm.Stamm1</a>
-            </dd>
+        @await Html.PartialAsync("_TabsNavigation", tabs)
 
-            <dt>Date Created</dt>
-            <dd>@Model.Angler.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
-
-            <dt>Scanned</dt>
-            <dd>@(Model.Angler.Gescannt ? "Yes" : "No")</dd>
-
-            @if (!string.IsNullOrEmpty(Model.Angler.Beschreibung))
-            {
-                <dt>Description</dt>
-                <dd>@Model.Angler.Beschreibung</dd>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Angler.Versionsnummer))
-            {
-                <dt>Version</dt>
-                <dd>@Model.Angler.Versionsnummer</dd>
-            }
-        </dl>
-
-        <div class="action-links">
-            <a href="/stamm/@Model.Angler.StammGuid/angler" class="btn btn-secondary">Back to Stamm's Anglers</a>
+        <div id="catched" class="tab-content">
+            <h3>Catched PostIts</h3>
+            @await Html.PartialAsync("_ChildCatchedPostItsTable", Model.CatchedPostIts ?? new List<OLI_it.Web.Models.News>())
         </div>
     }
-    else
-    {
-        <p>Angler not found.</p>
-    }
 </div>
+

@@ -1,71 +1,49 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.PostIt.IndexModel
 @{
-    ViewData["Title"] = "PostIt Details";
+    ViewData["Title"] = "PostIt";
 }
 
-<div class="page-header">
-    <h1>PostIt Details</h1>
-</div>
-
-<div class="content-section">
-    @if (Model.PostIt != null)
-    {
-        <dl class="detail-list">
-            @if (!string.IsNullOrEmpty(Model.PostIt.Titel))
-            {
-                <dt>Title</dt>
-                <dd>@Model.PostIt.Titel</dd>
-            }
-
-            <dt>Content</dt>
-            <dd>@Model.PostIt.PostIt1</dd>
-
-            <dt>Date</dt>
-            <dd>@Model.PostIt.Datum.ToString("yyyy-MM-dd HH:mm")</dd>
-
-            <dt>Balance (KooK)</dt>
-            <dd>@Model.PostIt.KooK.ToString("C")</dd>
-
-            <dt>Type</dt>
-            <dd>@Model.PostIt.Typ</dd>
-
-            @if (Model.PostIt.PostItZust.HasValue)
-            {
-                <dt>Status</dt>
-                <dd>@Model.PostIt.PostItZust</dd>
-            }
-
-            <dt>Hits</dt>
-            <dd>@Model.PostIt.Hits</dd>
-
-            @if (!string.IsNullOrEmpty(Model.PostIt.Url))
-            {
-                <dt>URL</dt>
-                <dd><a href="@Model.PostIt.Url" target="_blank">@Model.PostIt.Url</a></dd>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.PostIt.Datei))
-            {
-                <dt>File</dt>
-                <dd>@Model.PostIt.Datei</dd>
-            }
-        </dl>
-
-        @if (!string.IsNullOrEmpty(Model.PostIt.Datei))
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
         {
-            <div class="entity-file-section">
-                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.PostIt.Datei, altText = $"PostIt {Model.PostIt.Titel ?? "Untitled"} Image", width = 150, height = 150 })
-            </div>
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
         }
 
-        <div class="action-links">
-            <a href="/postit/@Model.PostIt.PostItGuid/code" class="btn btn-primary">View Code (Descriptions)</a>
-            <a href="/postit/@Model.PostIt.PostItGuid/toplab" class="btn btn-secondary">View TopLab (Answers)</a>
+        @if (Model.PostIt != null)
+        {
+            ViewData["StammGuid"] = Model.Stamm?.StammGuid.ToString() ?? "";
+            @await Html.PartialAsync("_PostItCard", Model.PostIt)
+        }
+    </div>
+
+    @if (Model.PostIt != null)
+    {
+        var tabs = new List<(string Id, string Label, bool IsActive)>
+        {
+            ("codes", $"Codes ({Model.PostItCodes?.Count ?? 0})", true),
+            ("toplabs", $"TopLabs ({Model.PostItTopLabs?.Count ?? 0})", false),
+            ("spiegel", $"Matching ({Model.PostItSpiegel?.Count ?? 0})", false)
+        };
+
+        @await Html.PartialAsync("_TabsNavigation", tabs)
+
+        <div id="codes" class="tab-content">
+            <h3>Codes (Descriptions)</h3>
+            @await Html.PartialAsync("_ChildCodesTable", Model.PostItCodes ?? new List<OLI_it.Web.Models.Code>())
+        </div>
+
+        <div id="toplabs" class="tab-content">
+            <h3>TopLabs (Answers)</h3>
+            ViewData["Context"] = "postit";
+            @await Html.PartialAsync("_ChildTopLabsTable", Model.PostItTopLabs ?? new List<OLI_it.Web.Models.TopLab>())
+        </div>
+
+        <div id="spiegel" class="tab-content">
+            <h3>Spiegel (Matching)</h3>
+            @await Html.PartialAsync("_ChildSpiegelTable", Model.PostItSpiegel ?? new List<OLI_it.Web.Models.Spiegel>())
         </div>
     }
-    else
-    {
-        <p>PostIt not found.</p>
-    }
 </div>
+

@@ -1,0 +1,60 @@
+@model List<OLI_it.Web.Models.TopLab>
+@{
+    var context = ViewData["Context"]?.ToString() ?? "stamm"; // "stamm" or "postit"
+}
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>Thumbnail</th>
+                <th>Title</th>
+                @if (context == "stamm")
+                {
+                    <th>PostIt</th>
+                }
+                else
+                {
+                    <th>Author</th>
+                }
+                <th>Date</th>
+                <th>Reward</th>
+                <th>Image Path</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var toplab in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(toplab.Datei))
+                        {
+                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
+                        }
+                    </td>
+                    <td>@(toplab.Titel ?? "(no title)")</td>
+                    @if (context == "stamm")
+                    {
+                        <td>@(toplab.PostIt?.Titel ?? "Untitled")</td>
+                    }
+                    else
+                    {
+                        <td>@(toplab.Stamm?.Stamm1 ?? "Unknown")</td>
+                    }
+                    <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                    <td>@toplab.Lohn.ToString("C")</td>
+                    <td>@(toplab.Datei ?? "(none)")</td>
+                    <td>
+                        <a href="/toplab/@toplab.TopLabGuid">view</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No TopLabs found.</p>
+}

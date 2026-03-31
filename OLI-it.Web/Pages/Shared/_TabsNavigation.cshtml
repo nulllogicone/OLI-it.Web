@@ -1,0 +1,103 @@
+@model List<(string Id, string Label, bool IsActive)>
+
+@if (Model?.Any() == true)
+{
+    <div class="tabs-navigation">
+        <ul class="tabs-list">
+            @foreach (var tab in Model)
+            {
+                <li class="tab-item @(tab.IsActive ? "active" : "")">
+                    <a href="#@tab.Id" class="tab-link" data-tab="@tab.Id">@tab.Label</a>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+<style>
+    .tabs-navigation {
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 20px;
+    }
+
+    .tabs-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 10px;
+    }
+
+    .tab-item {
+        margin: 0;
+    }
+
+    .tab-link {
+        display: block;
+        padding: 12px 24px;
+        text-decoration: none;
+        color: #555;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .tab-link:hover {
+        color: #0066cc;
+        background-color: #f5f5f5;
+    }
+
+    .tab-item.active .tab-link {
+        color: #0066cc;
+        border-bottom-color: #0066cc;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle tab clicks
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-tab');
+                
+                // Update active tab
+                document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+                this.closest('.tab-item').classList.add('active');
+                
+                // Update active content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+                
+                // Update URL hash without scrolling
+                history.replaceState(null, null, '#' + targetId);
+            });
+        });
+        
+        // Handle initial hash or activate first tab
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const targetLink = document.querySelector(`.tab-link[data-tab="${hash}"]`);
+            if (targetLink) {
+                targetLink.click();
+            }
+        } else {
+            // Activate first tab if none selected
+            const firstTab = document.querySelector('.tab-link');
+            if (firstTab) {
+                firstTab.click();
+            }
+        }
+    });
+</script>

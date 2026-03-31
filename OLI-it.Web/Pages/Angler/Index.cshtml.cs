@@ -15,7 +15,9 @@ namespace OLI_it.Web.Pages.Angler
             _context = context;
         }
 
+        public Models.Stamm? Stamm { get; set; }
         public Models.Angler? Angler { get; set; }
+        public List<Models.News>? CatchedPostIts { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
@@ -32,7 +34,19 @@ namespace OLI_it.Web.Pages.Angler
             {
                 return NotFound();
             }
-            
+
+            // Load parent Stamm
+            Stamm = Angler.Stamm;
+
+            // Load catched PostIts (News)
+            CatchedPostIts = await _context.News
+                .Include(n => n.Code)
+                    .ThenInclude(c => c.PostIt)
+                .Where(n => n.AnglerGuid == id.Value)
+                .OrderByDescending(n => n.Datum)
+                .Take(50)
+                .ToListAsync();
+
             return Page();
         }
     }

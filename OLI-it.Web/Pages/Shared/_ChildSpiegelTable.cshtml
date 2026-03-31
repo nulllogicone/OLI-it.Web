@@ -1,0 +1,34 @@
+@model List<OLI_it.Web.Models.Spiegel>
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>Angler</th>
+                <th>Status</th>
+                <th>Matched Time</th>
+                <th>Read Time</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var spiegel in Model)
+            {
+                <tr>
+                    <td>@(spiegel.Angler?.Angler1 ?? "Unknown")</td>
+                    <td>@(spiegel.Status ?? "-")</td>
+                    <td>@(spiegel.Zeit?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>@(spiegel.Gelesen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    <td>
+                        <a href="/angler/@spiegel.AnglerGuid">view</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No Spiegel (matching) found.</p>
+}

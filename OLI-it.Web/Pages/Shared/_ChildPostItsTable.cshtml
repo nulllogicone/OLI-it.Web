@@ -1,0 +1,47 @@
+@model List<OLI_it.Web.Models.Wurzeln>
+@{
+    var stammGuid = ViewData["StammGuid"]?.ToString() ?? "";
+}
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>Thumbnail</th>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Balance</th>
+                <th>Answers</th>
+                <th>Image Path</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var wurzel in Model)
+            {
+                var answersCount = wurzel.PostIt.TopLabs?.Count ?? 0;
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(wurzel.PostIt.Datei))
+                        {
+                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = wurzel.PostIt.Datei, altText = $"PostIt {wurzel.PostIt.Titel ?? "Untitled"} Image", width = 80, height = 80 })
+                        }
+                    </td>
+                    <td>@(wurzel.PostIt.Titel ?? "(no title)")</td>
+                    <td>@wurzel.PostIt.Datum.ToString("yyyy-MM-dd")</td>
+                    <td>@wurzel.Bezahlt.ToString("C")</td>
+                    <td><span class="count-badge">@answersCount</span></td>
+                    <td>@(wurzel.PostIt.Datei ?? "(none)")</td>
+                    <td>
+                        <a href="/postit/@wurzel.PostItGuid">view</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No PostIts found.</p>
+}

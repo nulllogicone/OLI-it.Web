@@ -1,49 +1,33 @@
 @page "~/postit/{id:guid}/toplab"
 @model OLI_it.Web.Pages.PostIt.TopLabModel
 @{
-    ViewData["Title"] = "TopLab (Answers)";
+    ViewData["Title"] = "TopLabs";
 }
 
-<div class="page-header">
-    <h1>TopLab (Answers)</h1>
-    <p>Answers for PostIt: <strong>@(Model.PostIt?.Titel ?? "Untitled")</strong></p>
-</div>
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
 
-<div class="content-section">
-    @if (Model.TopLabs.Any())
-    {
-        <table class="simple-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Author (Stamm)</th>
-                    <th>Date</th>
-                    <th>Reward (Lohn)</th>
-                    <th>Type</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var toplab in Model.TopLabs)
-                {
-                    <tr>
-                        <td>@(toplab.Titel ?? "(no title)")</td>
-                        <td>
-                            <a href="/stamm/@toplab.StammGuid">@toplab.Stamm.Stamm1</a>
-                        </td>
-                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
-                        <td>@toplab.Lohn.ToString("C")</td>
-                        <td>@toplab.Typ</td>
-                        <td>
-                            <a href="/toplab/@toplab.TopLabGuid">view</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p class="no-data">No TopLab (answers) found for this PostIt.</p>
-    }
+        @if (Model.PostIt != null)
+        {
+            ViewData["StammGuid"] = Model.Stamm?.StammGuid.ToString() ?? "";
+            @await Html.PartialAsync("_PostItCard", Model.PostIt)
+        }
+    </div>
+
+    <div class="content-section">
+        <h3>TopLabs (Answers)</h3>
+        @if (Model.TopLabs.Any())
+        {
+            ViewData["Context"] = "postit";
+            @await Html.PartialAsync("_ChildTopLabsTable", Model.TopLabs)
+        }
+        else
+        {
+            <p class="no-data">No TopLab (answers) found for this PostIt.</p>
+        }
+    </div>
 </div>
