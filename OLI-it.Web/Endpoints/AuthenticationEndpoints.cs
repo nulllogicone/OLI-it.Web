@@ -11,11 +11,9 @@ public static class AuthenticationEndpoints
     public static void MapAuthenticationEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/api/login", LoginAsync)
-            .RequireRateLimiting("login")
-            .DisableAntiforgery();
+            .RequireRateLimiting("login");
 
-        app.MapPost("/api/logout", LogoutAsync)
-            .DisableAntiforgery();
+        app.MapPost("/api/logout", LogoutAsync);
     }
 
     private static async Task<IResult> LoginAsync(

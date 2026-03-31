@@ -36,7 +36,7 @@ Status: draft
 | BL-105 | Analytics/reporting for authors | Views, delivery count | not started |
 | BL-106 | API exposure | REST API for external clients | not started |
 | BL-107 | Implement rate limiting for login endpoint | Fixed window: 5 attempts/minute per IP using built-in RateLimiter | ✅ completed |
-| BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints | not started |
+| BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints | ✅ completed |
 | BL-109 | Hash passwords instead of plaintext storage | Use BCrypt or ASP.NET Core Identity password hasher | not started |
 | BL-110 | Implement account lockout after failed login attempts | Lock account for X minutes after Y failed attempts | not started |
 
@@ -45,3 +45,4 @@ Status: draft
 - 2026-03-26: Initial backlog from use case and entity analysis.
 - 2026-03-26: Added authentication security enhancements (BL-107 to BL-110).
 - 2026-03-26: Completed BL-107 - Rate limiting implemented with fixed window (5 attempts/min).
+- 2026-03-26: Completed BL-108 - Anti-forgery token protection enabled for login/logout endpoints.
