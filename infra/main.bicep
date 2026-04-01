@@ -10,6 +10,10 @@ param linuxFxVersion string = 'DOTNETCORE|8.0'
 param alwaysOn bool = true
 param tags object = {}
 
+var keyVaultSubscriptionId = !empty(existingKeyVaultResourceId) ? split(existingKeyVaultResourceId, '/')[2] : ''
+var keyVaultResourceGroupName = !empty(existingKeyVaultResourceId) ? split(existingKeyVaultResourceId, '/')[4] : ''
+var keyVaultName = !empty(existingKeyVaultResourceId) ? split(existingKeyVaultResourceId, '/')[8] : ''
+
 module webApp './modules/webApp.bicep' = {
   name: 'webApp-${webAppName}'
   params: {
@@ -20,8 +24,16 @@ module webApp './modules/webApp.bicep' = {
     linuxFxVersion: linuxFxVersion
     alwaysOn: alwaysOn
     tags: tags
-    keyVaultResourceId: existingKeyVaultResourceId
-    keyVaultTenantId: subscription().tenantId
+  }
+}
+
+module keyVaultAccess './modules/keyvaultaccesspolicy.bicep' = if (!empty(existingKeyVaultResourceId)) {
+  name: 'kv-access-${webAppName}'
+  scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
+  params: {
+    keyVaultName: keyVaultName
+    tenantId: subscription().tenantId
+    objectId: webApp.outputs.webAppIdentityPrincipalId
   }
 }
 

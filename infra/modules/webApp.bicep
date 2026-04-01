@@ -7,8 +7,6 @@ param osType string = 'linux'
 param linuxFxVersion string
 param alwaysOn bool = true
 param tags object = {}
-param keyVaultResourceId string = ''
-param keyVaultTenantId string = ''
 
 var isLinux = toLower(osType) == 'linux'
 var siteConfig = union({
@@ -33,25 +31,6 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     httpsOnly: true
     clientAffinityEnabled: false
     siteConfig: siteConfig
-  }
-}
-
-// Configure Key Vault access if KeyVault is provided
-resource keyVaultAccessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = if (!empty(keyVaultResourceId)) {
-  name: '${split(keyVaultResourceId, '/')[8]}/add'
-  properties: {
-    accessPolicies: [
-      {
-        tenantId: keyVaultTenantId
-        objectId: webApp.identity.principalId
-        permissions: {
-          secrets: [
-            'get'
-            'list'
-          ]
-        }
-      }
-    ]
   }
 }
 
