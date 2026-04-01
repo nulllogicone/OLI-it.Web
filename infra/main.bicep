@@ -4,6 +4,7 @@ param location string = resourceGroup().location
 param webAppName string
 param existingAppServicePlanResourceId string
 param existingLogAnalyticsWorkspaceResourceId string
+param existingKeyVaultResourceId string = ''
 param osType string = 'windows'
 param linuxFxVersion string = 'DOTNETCORE|8.0'
 param alwaysOn bool = true
@@ -19,6 +20,8 @@ module webApp './modules/webApp.bicep' = {
     linuxFxVersion: linuxFxVersion
     alwaysOn: alwaysOn
     tags: tags
+    keyVaultResourceId: existingKeyVaultResourceId
+    keyVaultTenantId: subscription().tenantId
   }
 }
 
