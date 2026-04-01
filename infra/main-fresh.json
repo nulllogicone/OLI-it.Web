@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13387422323068517790"
+      "templateHash": "13420279859975137646"
     }
   },
   "parameters": {
@@ -23,6 +23,10 @@
       "type": "string"
     },
     "existingKeyVaultResourceId": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "keyVaultSecretUri": {
       "type": "string",
       "defaultValue": ""
     },
@@ -158,10 +162,7 @@
             "value": "[parameters('alwaysOn')]"
           },
           "appSettings": {
-            "value": {
-              "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value]",
-              "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.instrumentationKey.value]"
-            }
+            "value": "[union(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value, 'APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.instrumentationKey.value), if(not(empty(parameters('keyVaultSecretUri'))), createObject('ConnectionStrings__OliItDb', parameters('keyVaultSecretUri')), createObject()))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -276,9 +277,6 @@
           "keyVaultName": {
             "value": "[variables('keyVaultName')]"
           },
-          "tenantId": {
-            "value": "[subscription().tenantId]"
-          },
           "objectId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('webApp-{0}', parameters('webAppName'))), '2025-04-01').outputs.webAppIdentityPrincipalId.value]"
           }
@@ -290,38 +288,30 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "2367828256833361942"
+              "templateHash": "4090639938455830176"
             }
           },
           "parameters": {
             "keyVaultName": {
               "type": "string"
             },
-            "tenantId": {
-              "type": "string"
-            },
             "objectId": {
               "type": "string"
             }
           },
+          "variables": {
+            "keyVaultSecretsUserRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]"
+          },
           "resources": [
             {
-              "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+              "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('objectId'), variables('keyVaultSecretsUserRoleDefinitionId'))]",
               "properties": {
-                "accessPolicies": [
-                  {
-                    "tenantId": "[parameters('tenantId')]",
-                    "objectId": "[parameters('objectId')]",
-                    "permissions": {
-                      "secrets": [
-                        "get",
-                        "list"
-                      ]
-                    }
-                  }
-                ]
+                "roleDefinitionId": "[variables('keyVaultSecretsUserRoleDefinitionId')]",
+                "principalId": "[parameters('objectId')]",
+                "principalType": "ServicePrincipal"
               }
             }
           ]

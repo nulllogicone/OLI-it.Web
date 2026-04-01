@@ -1,28 +1,20 @@
 targetScope = 'resourceGroup'
 
 param keyVaultName string
-param tenantId string
 param objectId string
+
+var keyVaultSecretsUserRoleDefinitionId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
 }
 
-resource keyVaultAccessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = {
-  parent: keyVault
-  name: 'add'
+resource keyVaultSecretsUserAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, objectId, keyVaultSecretsUserRoleDefinitionId)
+  scope: keyVault
   properties: {
-    accessPolicies: [
-      {
-        tenantId: tenantId
-        objectId: objectId
-        permissions: {
-          secrets: [
-            'get'
-            'list'
-          ]
-        }
-      }
-    ]
+    roleDefinitionId: keyVaultSecretsUserRoleDefinitionId
+    principalId: objectId
+    principalType: 'ServicePrincipal'
   }
 }

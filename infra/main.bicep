@@ -52,7 +52,6 @@ module keyVaultAccess './modules/keyVaultAccessPolicy.bicep' = if (!empty(existi
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
     keyVaultName: keyVaultName
-    tenantId: subscription().tenantId
     objectId: webApp.outputs.webAppIdentityPrincipalId
   }
 }
