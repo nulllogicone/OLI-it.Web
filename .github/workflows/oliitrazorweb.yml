@@ -37,18 +37,36 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     steps:
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Validate Azure OIDC variables
+      shell: pwsh
+      run: |
+        $missing = @()
+        if ([string]::IsNullOrWhiteSpace("${{ env.AZURE_CLIENT_ID }}")) { $missing += "AZURE_CLIENT_ID" }
+        if ([string]::IsNullOrWhiteSpace("${{ env.AZURE_TENANT_ID }}")) { $missing += "AZURE_TENANT_ID" }
+        if ([string]::IsNullOrWhiteSpace("${{ env.AZURE_SUBSCRIPTION_ID }}")) { $missing += "AZURE_SUBSCRIPTION_ID" }
+
+        if ($missing.Count -gt 0) {
+          Write-Host "Missing required GitHub Actions variables: $($missing -join ', ')"
+          exit 1
+        }
+
+        Write-Host "Azure OIDC variables are present."
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ vars.oliitrazorweb_CLIENT_ID_4FA6 }}
-        tenant-id: ${{ vars.oliitrazorweb_TENANT_ID_DD77 }}
-        subscription-id: ${{ vars.oliitrazorweb_SUBSCRIPTION_ID_DD77 }}
+        client-id: ${{ env.AZURE_CLIENT_ID }}
+        tenant-id: ${{ env.AZURE_TENANT_ID }}
+        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
