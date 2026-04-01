@@ -5,6 +5,7 @@ param webAppName string
 param existingAppServicePlanResourceId string
 param existingLogAnalyticsWorkspaceResourceId string
 param existingKeyVaultResourceId string = ''
+param keyVaultSecretUri string = ''
 param osType string = 'windows'
 param linuxFxVersion string = 'DOTNETCORE|8.0'
 param alwaysOn bool = true
@@ -33,10 +34,15 @@ module webApp './modules/webApp.bicep' = {
     osType: osType
     linuxFxVersion: linuxFxVersion
     alwaysOn: alwaysOn
-    appSettings: {
-      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
-      APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.outputs.instrumentationKey
-    }
+    appSettings: union(
+      {
+        APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
+        APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.outputs.instrumentationKey
+      },
+      !empty(keyVaultSecretUri) ? {
+        'ConnectionStrings__OliItDb': keyVaultSecretUri
+      } : {}
+    )
     tags: tags
   }
 }

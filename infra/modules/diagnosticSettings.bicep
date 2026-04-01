@@ -1,9 +1,7 @@
 targetScope = 'resourceGroup'
 
 param targetWebAppName string
-
 param diagnosticSettingName string
-
 param logAnalyticsWorkspaceResourceId string
 
 resource targetResource 'Microsoft.Web/sites@2023-12-01' existing = {
