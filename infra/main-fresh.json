@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "11107093829166859415"
+      "templateHash": "13387422323068517790"
     }
   },
   "parameters": {
@@ -52,6 +52,86 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
+      "name": "[format('appi-{0}', parameters('webAppName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "applicationInsightsName": {
+            "value": "[format('{0}-appi', parameters('webAppName'))]"
+          },
+          "logAnalyticsWorkspaceResourceId": {
+            "value": "[parameters('existingLogAnalyticsWorkspaceResourceId')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "15966342143892780438"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "applicationInsightsName": {
+              "type": "string"
+            },
+            "logAnalyticsWorkspaceResourceId": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {}
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/components",
+              "apiVersion": "2020-02-02",
+              "name": "[parameters('applicationInsightsName')]",
+              "location": "[parameters('location')]",
+              "kind": "web",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "Application_Type": "web",
+                "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+                "IngestionMode": "LogAnalytics"
+              }
+            }
+          ],
+          "outputs": {
+            "applicationInsightsResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+            },
+            "connectionString": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2020-02-02').ConnectionString]"
+            },
+            "instrumentationKey": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2020-02-02').InstrumentationKey]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
       "name": "[format('webApp-{0}', parameters('webAppName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -77,6 +157,12 @@
           "alwaysOn": {
             "value": "[parameters('alwaysOn')]"
           },
+          "appSettings": {
+            "value": {
+              "APPLICATIONINSIGHTS_CONNECTION_STRING": "[reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value]",
+              "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.instrumentationKey.value]"
+            }
+          },
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -88,7 +174,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "3348314100390802815"
+              "templateHash": "18252933825631543481"
             }
           },
           "parameters": {
@@ -112,14 +198,28 @@
               "type": "bool",
               "defaultValue": true
             },
+            "appSettings": {
+              "type": "object",
+              "defaultValue": {}
+            },
             "tags": {
               "type": "object",
               "defaultValue": {}
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "appSettingsArray",
+                "count": "[length(items(parameters('appSettings')))]",
+                "input": {
+                  "name": "[items(parameters('appSettings'))[copyIndex('appSettingsArray')].key]",
+                  "value": "[string(items(parameters('appSettings'))[copyIndex('appSettingsArray')].value)]"
+                }
+              }
+            ],
             "isLinux": "[equals(toLower(parameters('osType')), 'linux')]",
-            "siteConfig": "[union(createObject('alwaysOn', parameters('alwaysOn'), 'http20Enabled', true(), 'ftpsState', 'Disabled', 'minTlsVersion', '1.2'), if(variables('isLinux'), createObject('linuxFxVersion', parameters('linuxFxVersion')), createObject()))]"
+            "siteConfig": "[union(createObject('alwaysOn', parameters('alwaysOn'), 'http20Enabled', true(), 'ftpsState', 'Disabled', 'minTlsVersion', '1.2', 'appSettings', variables('appSettingsArray')), if(variables('isLinux'), createObject('linuxFxVersion', parameters('linuxFxVersion')), createObject()))]"
           },
           "resources": [
             {
@@ -155,7 +255,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName')))]"
+      ]
     },
     {
       "condition": "[not(empty(parameters('existingKeyVaultResourceId')))]",
@@ -304,6 +407,14 @@
     "webAppDefaultHostName": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Resources/deployments', format('webApp-{0}', parameters('webAppName'))), '2025-04-01').outputs.defaultHostName.value]"
+    },
+    "applicationInsightsResourceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.applicationInsightsResourceId.value]"
+    },
+    "applicationInsightsConnectionString": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value]"
     }
   }
 }

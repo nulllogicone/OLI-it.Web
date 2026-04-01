@@ -6,14 +6,20 @@ param appServicePlanResourceId string
 param osType string = 'linux'
 param linuxFxVersion string
 param alwaysOn bool = true
+param appSettings object = {}
 param tags object = {}
 
 var isLinux = toLower(osType) == 'linux'
+var appSettingsArray = [for setting in items(appSettings): {
+  name: setting.key
+  value: string(setting.value)
+}]
 var siteConfig = union({
   alwaysOn: alwaysOn
   http20Enabled: true
   ftpsState: 'Disabled'
   minTlsVersion: '1.2'
+  appSettings: appSettingsArray
 }, isLinux ? {
   linuxFxVersion: linuxFxVersion
 } : {})

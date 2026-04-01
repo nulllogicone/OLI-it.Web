@@ -14,6 +14,16 @@ var keyVaultSubscriptionId = !empty(existingKeyVaultResourceId) ? split(existing
 var keyVaultResourceGroupName = !empty(existingKeyVaultResourceId) ? split(existingKeyVaultResourceId, '/')[4] : ''
 var keyVaultName = !empty(existingKeyVaultResourceId) ? split(existingKeyVaultResourceId, '/')[8] : ''
 
+module applicationInsights './modules/applicationInsights.bicep' = {
+  name: 'appi-${webAppName}'
+  params: {
+    location: location
+    applicationInsightsName: '${webAppName}-appi'
+    logAnalyticsWorkspaceResourceId: existingLogAnalyticsWorkspaceResourceId
+    tags: tags
+  }
+}
+
 module webApp './modules/webApp.bicep' = {
   name: 'webApp-${webAppName}'
   params: {
@@ -23,6 +33,10 @@ module webApp './modules/webApp.bicep' = {
     osType: osType
     linuxFxVersion: linuxFxVersion
     alwaysOn: alwaysOn
+    appSettings: {
+      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
+      APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.outputs.instrumentationKey
+    }
     tags: tags
   }
 }
@@ -48,3 +62,5 @@ module webAppDiagnostics './modules/diagnosticSettings.bicep' = {
 
 output webAppResourceId string = webApp.outputs.webAppResourceId
 output webAppDefaultHostName string = webApp.outputs.defaultHostName
+output applicationInsightsResourceId string = applicationInsights.outputs.applicationInsightsResourceId
+output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
