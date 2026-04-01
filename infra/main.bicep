@@ -27,7 +27,7 @@ module webApp './modules/webApp.bicep' = {
   }
 }
 
-module keyVaultAccess './modules/keyvaultaccesspolicy.bicep' = if (!empty(existingKeyVaultResourceId)) {
+module keyVaultAccess './modules/keyVaultAccessPolicy.bicep' = if (!empty(existingKeyVaultResourceId)) {
   name: 'kv-access-${webAppName}'
   scope: resourceGroup(keyVaultSubscriptionId, keyVaultResourceGroupName)
   params: {
