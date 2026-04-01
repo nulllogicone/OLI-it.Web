@@ -6,6 +6,7 @@ param appServicePlanResourceId string
 param osType string = 'linux'
 param linuxFxVersion string
 param alwaysOn bool = true
+param subnetResourceId string = ''
 param appSettings object = {}
 param tags object = {}
 
@@ -19,6 +20,7 @@ var siteConfig = union({
   http20Enabled: true
   ftpsState: 'Disabled'
   minTlsVersion: '1.2'
+  vnetRouteAllEnabled: !empty(subnetResourceId)
   appSettings: appSettingsArray
 }, isLinux ? {
   linuxFxVersion: linuxFxVersion
@@ -36,6 +38,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     serverFarmId: appServicePlanResourceId
     httpsOnly: true
     clientAffinityEnabled: false
+    virtualNetworkSubnetId: !empty(subnetResourceId) ? subnetResourceId : null
     siteConfig: siteConfig
   }
 }

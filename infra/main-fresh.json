@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13420279859975137646"
+      "templateHash": "18401440116834889854"
     }
   },
   "parameters": {
@@ -23,6 +23,10 @@
       "type": "string"
     },
     "existingKeyVaultResourceId": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "webAppSubnetResourceId": {
       "type": "string",
       "defaultValue": ""
     },
@@ -161,6 +165,9 @@
           "alwaysOn": {
             "value": "[parameters('alwaysOn')]"
           },
+          "subnetResourceId": {
+            "value": "[parameters('webAppSubnetResourceId')]"
+          },
           "appSettings": {
             "value": "[union(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value, 'APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.instrumentationKey.value), if(not(empty(parameters('keyVaultSecretUri'))), createObject('ConnectionStrings__OliItDb', parameters('keyVaultSecretUri')), createObject()))]"
           },
@@ -175,7 +182,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "18252933825631543481"
+              "templateHash": "10929921089285864627"
             }
           },
           "parameters": {
@@ -199,6 +206,10 @@
               "type": "bool",
               "defaultValue": true
             },
+            "subnetResourceId": {
+              "type": "string",
+              "defaultValue": ""
+            },
             "appSettings": {
               "type": "object",
               "defaultValue": {}
@@ -220,7 +231,7 @@
               }
             ],
             "isLinux": "[equals(toLower(parameters('osType')), 'linux')]",
-            "siteConfig": "[union(createObject('alwaysOn', parameters('alwaysOn'), 'http20Enabled', true(), 'ftpsState', 'Disabled', 'minTlsVersion', '1.2', 'appSettings', variables('appSettingsArray')), if(variables('isLinux'), createObject('linuxFxVersion', parameters('linuxFxVersion')), createObject()))]"
+            "siteConfig": "[union(createObject('alwaysOn', parameters('alwaysOn'), 'http20Enabled', true(), 'ftpsState', 'Disabled', 'minTlsVersion', '1.2', 'vnetRouteAllEnabled', not(empty(parameters('subnetResourceId'))), 'appSettings', variables('appSettingsArray')), if(variables('isLinux'), createObject('linuxFxVersion', parameters('linuxFxVersion')), createObject()))]"
           },
           "resources": [
             {
@@ -237,6 +248,7 @@
                 "serverFarmId": "[parameters('appServicePlanResourceId')]",
                 "httpsOnly": true,
                 "clientAffinityEnabled": false,
+                "virtualNetworkSubnetId": "[if(not(empty(parameters('subnetResourceId'))), parameters('subnetResourceId'), null())]",
                 "siteConfig": "[variables('siteConfig')]"
               }
             }
