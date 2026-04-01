@@ -1,8 +1,11 @@
-name: Build and deploy .NET Core application to Web App oliitrazorweb
+name: DeployWeb App oliitrazorweb
 on:
   push:
     branches:
     - main
+    paths:
+    - 'OLI-it.Web/**'
+  workflow_dispatch:
 permissions:
   id-token: write
   contents: read
