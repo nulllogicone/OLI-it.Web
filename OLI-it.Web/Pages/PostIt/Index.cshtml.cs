@@ -20,6 +20,7 @@ namespace OLI_it.Web.Pages.PostIt
         public List<Models.Code>? PostItCodes { get; set; }
         public List<Models.TopLab>? PostItTopLabs { get; set; }
         public List<Models.Spiegel>? PostItSpiegel { get; set; }
+        public List<Wurzeln>? PostItStamms { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id, Guid? stamm)
         {
@@ -83,6 +84,13 @@ namespace OLI_it.Web.Pages.PostIt
                 .Where(s => codeGuids.Contains(s.CodeGuid))
                 .OrderByDescending(s => s.Zeit)
                 .Take(50)
+                .ToListAsync();
+
+            // Load all Stamms for this PostIt (via Wurzeln)
+            PostItStamms = await _context.Wurzelns
+                .Include(w => w.Stamm)
+                .Where(w => w.PostItGuid == id.Value)
+                .OrderBy(w => w.StammZust) // Author (1) first, then followers (2), translators (3)
                 .ToListAsync();
 
             ViewData["Sidebar"] = "_SidebarPostIt";

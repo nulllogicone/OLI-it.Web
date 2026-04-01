@@ -22,16 +22,28 @@
     {
         var tabs = new List<(string Id, string Label, bool IsActive)>
         {
+            ("stamms", $"Stamms ({Model.PostItStamms?.Count ?? 0})", false),
             ("codes", $"Codes ({Model.PostItCodes?.Count ?? 0})", true),
             ("toplabs", $"TopLabs ({Model.PostItTopLabs?.Count ?? 0})", false),
             ("spiegel", $"Matching ({Model.PostItSpiegel?.Count ?? 0})", false)
+
         };
 
         @await Html.PartialAsync("_TabsNavigation", tabs)
+        <div id="stamms" class="tab-content">
+            <h3>Stamms (author)</h3>
+            <p class="info-text">Author, followers, and translators associated with this PostIt.</p>
+            @await Html.PartialAsync("_ChildStammTable", Model.PostItStamms ?? new List<OLI_it.Web.Models.Wurzeln>())
+        </div>
 
         <div id="codes" class="tab-content">
             <h3>Codes (Descriptions)</h3>
             @await Html.PartialAsync("_ChildCodesTable", Model.PostItCodes ?? new List<OLI_it.Web.Models.Code>())
+        </div>
+
+        <div id="spiegel" class="tab-content">
+            <h3>Angler (Matching)</h3>
+            @await Html.PartialAsync("_ChildSpiegelTable", Model.PostItSpiegel ?? new List<OLI_it.Web.Models.Spiegel>())
         </div>
 
         <div id="toplabs" class="tab-content">
@@ -40,10 +52,6 @@
             @await Html.PartialAsync("_ChildTopLabsTable", Model.PostItTopLabs ?? new List<OLI_it.Web.Models.TopLab>())
         </div>
 
-        <div id="spiegel" class="tab-content">
-            <h3>Spiegel (Matching)</h3>
-            @await Html.PartialAsync("_ChildSpiegelTable", Model.PostItSpiegel ?? new List<OLI_it.Web.Models.Spiegel>())
-        </div>
     }
 </div>
 

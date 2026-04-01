@@ -1,0 +1,107 @@
+@model List<OLI_it.Web.Models.Wurzeln>
+
+@if (Model?.Any() == true)
+{
+    <table class="simple-table">
+        <thead>
+            <tr>
+                <th>Thumbnail</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Balance</th>
+                <th>Deadline</th>
+                <th>Emailed</th>
+                <th>Closed</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var wurzel in Model)
+            {
+                var role = wurzel.StammZust switch
+                {
+                    1 => "Author",
+                    2 => "Follower",
+                    3 => "Translator",
+                    _ => $"Role {wurzel.StammZust}"
+                };
+                
+                <tr class="@(wurzel.StammZust == 1 ? "author-row" : "")">
+                    <td>
+                        @if (!string.IsNullOrEmpty(wurzel.Stamm.Datei))
+                        {
+                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = wurzel.Stamm.Datei, altText = $"Stamm {wurzel.Stamm.Stamm1} Image", width = 60, height = 60 })
+                        }
+                    </td>
+                    <td>
+                        <strong>@wurzel.Stamm.Stamm1</strong>
+                        @if (wurzel.StammZust == 1)
+                        {
+                            <span class="badge badge-primary">Author</span>
+                        }
+                    </td>
+                    <td>@wurzel.Stamm.EMail</td>
+                    <td>
+                        <span class="role-badge role-@wurzel.StammZust">@role</span>
+                    </td>
+                    <td>@wurzel.Bezahlt.ToString("C")</td>
+                    <td>@(wurzel.Frist?.ToString("yyyy-MM-dd") ?? "-")</td>
+                    <td>@(wurzel.Gemailt ? "Yes" : "No")</td>
+                    <td>@(wurzel.Closed ? "Yes" : "No")</td>
+                    <td>
+                        <a href="/stamm/@wurzel.StammGuid">view</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-data">No Stamms (users) found for this PostIt.</p>
+}
+
+<style>
+    .author-row {
+        background-color: #f8f9fa;
+        font-weight: 500;
+    }
+    
+    .role-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+    
+    .role-1 {
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    .role-2 {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .role-3 {
+        background-color: #198754;
+        color: white;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        margin-left: 8px;
+        border-radius: 4px;
+        font-size: 0.75em;
+        font-weight: 600;
+    }
+    
+    .badge-primary {
+        background-color: #0d6efd;
+        color: white;
+    }
+</style>
