@@ -7,6 +7,7 @@ param existingLogAnalyticsWorkspaceResourceId string
 param existingKeyVaultResourceId string = ''
 param webAppSubnetResourceId string = ''
 param keyVaultSecretUri string = ''
+param imagesRootUrl string = ''
 param osType string = 'windows'
 param linuxFxVersion string = 'DOTNETCORE|8.0'
 param alwaysOn bool = true
@@ -43,6 +44,9 @@ module webApp './modules/webApp.bicep' = {
       },
       !empty(keyVaultSecretUri) ? {
         'ConnectionStrings__OliItDb': keyVaultSecretUri
+      } : {},
+      !empty(imagesRootUrl) ? {
+        ImagesRootUrl: imagesRootUrl
       } : {}
     )
     tags: tags

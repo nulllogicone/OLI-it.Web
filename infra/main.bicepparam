@@ -8,6 +8,7 @@ param existingLogAnalyticsWorkspaceResourceId = '/subscriptions/33dd8226-abb3-4f
 param existingKeyVaultResourceId = '/subscriptions/33dd8226-abb3-4f36-b1f0-059e18b9570a/resourceGroups/Default-Web-WestEurope/providers/Microsoft.KeyVault/vaults/oli-it-kv-test'
 param webAppSubnetResourceId = '/subscriptions/33dd8226-abb3-4f36-b1f0-059e18b9570a/resourceGroups/Default-Network-WestEurope/providers/Microsoft.Network/virtualNetworks/OLI-it-VNet/subnets/frontend'
 param keyVaultSecretUri = '@Microsoft.KeyVault(SecretUri=https://oli-it-kv-test.vault.azure.net/secrets/null-test-connection/)'
+param imagesRootUrl = 'https://www.oli-it.com/images/'
 
 // Optional overrides
 param osType = 'windows'

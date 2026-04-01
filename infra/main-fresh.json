@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18401440116834889854"
+      "templateHash": "8956556253041769912"
     }
   },
   "parameters": {
@@ -31,6 +31,10 @@
       "defaultValue": ""
     },
     "keyVaultSecretUri": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "imagesRootUrl": {
       "type": "string",
       "defaultValue": ""
     },
@@ -169,7 +173,7 @@
             "value": "[parameters('webAppSubnetResourceId')]"
           },
           "appSettings": {
-            "value": "[union(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value, 'APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.instrumentationKey.value), if(not(empty(parameters('keyVaultSecretUri'))), createObject('ConnectionStrings__OliItDb', parameters('keyVaultSecretUri')), createObject()))]"
+            "value": "[union(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.connectionString.value, 'APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('Microsoft.Resources/deployments', format('appi-{0}', parameters('webAppName'))), '2025-04-01').outputs.instrumentationKey.value), if(not(empty(parameters('keyVaultSecretUri'))), createObject('ConnectionStrings__OliItDb', parameters('keyVaultSecretUri')), createObject()), if(not(empty(parameters('imagesRootUrl'))), createObject('ImagesRootUrl', parameters('imagesRootUrl')), createObject()))]"
           },
           "tags": {
             "value": "[parameters('tags')]"
