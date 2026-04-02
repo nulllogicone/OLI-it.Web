@@ -11,8 +11,9 @@
 @{
     var slotName = Environment.GetEnvironmentVariable("WEBSITE_SLOT_NAME");
     var isTestSlot = string.Equals(slotName, "test", StringComparison.OrdinalIgnoreCase);
+    var isDevSlot = string.IsNullOrEmpty(slotName) && ViewContext.HttpContext.Request.Host.Host == "localhost";
 }
-<body class="@(isTestSlot ? "slot-test" : string.Empty)">
+<body class="@(isTestSlot ? "slot-test" : isDevSlot ? "slot-dev" : string.Empty)">
     @await Html.PartialAsync("_Header")
 
     <div class="app-container">

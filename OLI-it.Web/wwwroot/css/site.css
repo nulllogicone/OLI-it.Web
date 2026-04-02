@@ -17,18 +17,24 @@ body {
   background-color: #f5f5f5;
 }
 
-body.slot-test::before {
+body.slot-test::before,
+body.slot-dev::before {
   content: "";
   position: fixed;
   inset: 0;
-  border: 8px solid #0b5821;
   box-sizing: border-box;
   pointer-events: none;
   z-index: 9999;
+  border: 8px solid #22a447;
+}
+
+body.slot-dev::before {
+  border-color: #d4a017;
 }
 
 @media (max-width: 768px) {
-  body.slot-test::before {
+  body.slot-test::before,
+  body.slot-dev::before {
     border-width: 5px;
   }
 }
