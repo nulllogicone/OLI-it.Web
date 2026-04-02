@@ -89,23 +89,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-test
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    environment: production
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Azure Login
       uses: azure/login@v2
       with:
         client-id: ${{ env.AZURE_CLIENT_ID }}
         tenant-id: ${{ env.AZURE_TENANT_ID }}
         subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-    - name: Swap test slot to production
-      uses: azure/cli@v2
+    - name: Deploy to production
+      uses: azure/webapps-deploy@v2
       with:
-        inlineScript: |
-          az webapp deployment slot swap \
-            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
-            --name "${{ env.AZURE_WEBAPP_NAME }}" \
-            --slot test \
-            --target-slot production
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
