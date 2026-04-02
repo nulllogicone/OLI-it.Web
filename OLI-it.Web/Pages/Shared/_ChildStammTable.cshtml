@@ -23,7 +23,9 @@
                 {
                     1 => "Author",
                     2 => "Follower",
-                    3 => "Translator",
+                    3 => "Delegator",
+                    4 => "Translator",
+                    5 => "Responder",
                     _ => $"Role {wurzel.StammZust}"
                 };
                 
@@ -76,21 +78,36 @@ else
         font-weight: 600;
     }
     
+    @* Author *@
     .role-1 {
-        background-color: #0d6efd;
+        background-color: #7e6806;
         color: white;
     }
     
+    @* Follower *@
     .role-2 {
         background-color: #6c757d;
         color: white;
     }
     
+    @* Delegator *@
     .role-3 {
-        background-color: #198754;
+        background-color: #7aeeb8;
         color: white;
     }
     
+    @* Translator *@
+    .role-4 {
+        background-color: #ffc107;
+        color: white;
+    }
+    
+    @* Responder *@
+    .role-5 {
+        background-color: #dc3545;
+        color: white;
+    }
+
     .badge {
         display: inline-block;
         padding: 4px 8px;
