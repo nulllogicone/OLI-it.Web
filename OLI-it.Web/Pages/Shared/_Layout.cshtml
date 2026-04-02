@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+@{
+    var slotName = Environment.GetEnvironmentVariable("WEBSITE_SLOT_NAME");
+    var isTestSlot = string.Equals(slotName, "test", StringComparison.OrdinalIgnoreCase);
+}
+<body class="@(isTestSlot ? "slot-test" : string.Empty)">
     @await Html.PartialAsync("_Header")
 
     <div class="app-container">
