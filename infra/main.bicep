@@ -45,7 +45,6 @@ module webApp './modules/webApp.bicep' = {
     appSettings: union(
       {
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
-        APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.outputs.instrumentationKey
       },
       (!empty(prodKeyVaultName) && !empty(prodDbConnectionKeyName)) ? {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${prodDbConnectionKeyName})'
@@ -57,7 +56,6 @@ module webApp './modules/webApp.bicep' = {
     testSlotAppSettings: union(
       {
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
-        APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.outputs.instrumentationKey
       },
       (!empty(testKeyVaultName) && !empty(testDbConnectionKeyName)) ? {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${testDbConnectionKeyName})'
