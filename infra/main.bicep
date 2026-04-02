@@ -66,6 +66,9 @@ module webApp './modules/webApp.bicep' = {
         ImagesRootUrl: imagesRootUrl
       } : {}
     )
+    slotSettingAppSettingNames: [
+      'ConnectionStrings__OliItDb'
+    ]
     tags: tags
   }
 }

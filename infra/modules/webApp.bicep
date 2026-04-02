@@ -9,6 +9,7 @@ param alwaysOn bool = true
 param subnetResourceId string = ''
 param appSettings object = {}
 param testSlotAppSettings object = {}
+param slotSettingAppSettingNames array = []
 param tags object = {}
 
 var isLinux = toLower(osType) == 'linux'
@@ -74,6 +75,14 @@ resource testSlot 'Microsoft.Web/sites/slots@2023-12-01' = {
     clientAffinityEnabled: false
     virtualNetworkSubnetId: !empty(subnetResourceId) ? subnetResourceId : null
     siteConfig: testSlotSiteConfig
+  }
+}
+
+resource slotConfigNames 'Microsoft.Web/sites/config@2023-12-01' = {
+  parent: webApp
+  name: 'slotConfigNames'
+  properties: {
+    appSettingNames: slotSettingAppSettingNames
   }
 }
 
