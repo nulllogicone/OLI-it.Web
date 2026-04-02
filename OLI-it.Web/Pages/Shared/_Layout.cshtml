@@ -40,5 +40,8 @@
     <script src="~/js/authentication.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <div style="position:fixed;bottom:0;left:0;right:0;padding:4px 12px;font-size:11px;background:#222;color:#eee;opacity:.8;z-index:10000;text-align:right">
+        WEBSITE_SLOT_NAME=<strong>@(string.IsNullOrEmpty(slotName) ? "(empty)" : slotName)</strong>
+    </div>
 </body>
 </html>
