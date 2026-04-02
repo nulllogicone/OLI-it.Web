@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+@inject Microsoft.Extensions.Configuration.IConfiguration _config
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 @{
-    var slotName = Environment.GetEnvironmentVariable("WEBSITE_SLOT_NAME");
+    var slotName = _config["slot"];
     var isTestSlot = string.Equals(slotName, "test", StringComparison.OrdinalIgnoreCase);
     var isDevSlot = string.IsNullOrEmpty(slotName) && ViewContext.HttpContext.Request.Host.Host == "localhost";
 }
@@ -41,7 +42,7 @@
 
     @await RenderSectionAsync("Scripts", required: false)
     <div style="position:fixed;bottom:0;left:0;right:0;padding:4px 12px;font-size:11px;background:#222;color:#eee;opacity:.8;z-index:10000;text-align:right">
-        WEBSITE_SLOT_NAME=<strong>@(string.IsNullOrEmpty(slotName) ? "(empty)" : slotName)</strong>
+        slot=<strong>@(string.IsNullOrEmpty(slotName) ? "(empty)" : slotName)</strong>
     </div>
 </body>
 </html>

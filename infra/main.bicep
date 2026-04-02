@@ -64,10 +64,14 @@ module webApp './modules/webApp.bicep' = {
       } : {},
       !empty(imagesRootUrl) ? {
         ImagesRootUrl: imagesRootUrl
-      } : {}
+      } : {},
+      {
+        slot: 'test'
+      }
     )
     slotSettingAppSettingNames: [
       'ConnectionStrings__OliItDb'
+      'slot'
     ]
     tags: tags
   }
