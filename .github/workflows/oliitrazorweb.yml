@@ -2,12 +2,12 @@ name: Deploy Web App oliitrazorweb
 on:
   push:
     branches:
-    - main
+    - '**'
     paths:
     - 'OLI-it.Web/**'
   pull_request:
     branches:
-    - main
+    - '**'
     paths:
     - 'OLI-it.Web/**'
   workflow_dispatch:
@@ -48,6 +48,7 @@ jobs:
     runs-on: windows-latest
     needs: build
     if: github.event_name != 'pull_request'
+    environment: test
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
