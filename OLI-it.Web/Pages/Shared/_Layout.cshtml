@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 @inject Microsoft.Extensions.Configuration.IConfiguration _config
+@inject Microsoft.Extensions.Hosting.IHostEnvironment _hostEnv
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +13,7 @@
 @{
     var slotName = _config["slot"];
     var isTestSlot = string.Equals(slotName, "test", StringComparison.OrdinalIgnoreCase);
-    var isDevSlot = string.Equals(slotName, "dev", StringComparison.OrdinalIgnoreCase);
+    var isDevSlot = _hostEnv.IsDevelopment();
 }
 <body class="@(isTestSlot ? "slot-test" : isDevSlot ? "slot-dev" : string.Empty)">
     @await Html.PartialAsync("_Header")

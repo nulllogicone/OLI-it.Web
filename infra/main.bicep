@@ -53,7 +53,10 @@ module webApp './modules/webApp.bicep' = {
       } : {},
       !empty(imagesRootUrl) ? {
         ImagesRootUrl: imagesRootUrl
-      } : {}
+      } : {},
+      {
+        slot: 'production'
+      }
     )
     testSlotAppSettings: union(
       {
