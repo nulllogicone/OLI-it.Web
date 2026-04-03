@@ -12,7 +12,7 @@
 @{
     var slotName = _config["slot"];
     var isTestSlot = string.Equals(slotName, "test", StringComparison.OrdinalIgnoreCase);
-    var isDevSlot = string.IsNullOrEmpty(slotName) && ViewContext.HttpContext.Request.Host.Host == "localhost";
+    var isDevSlot = string.Equals(slotName, "dev", StringComparison.OrdinalIgnoreCase);
 }
 <body class="@(isTestSlot ? "slot-test" : isDevSlot ? "slot-dev" : string.Empty)">
     @await Html.PartialAsync("_Header")
