@@ -45,6 +45,8 @@ module webApp './modules/webApp.bicep' = {
     appSettings: union(
       {
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
+        ApplicationInsightsAgent_EXTENSION_VERSION: toLower(osType) == 'linux' ? '~3' : '~2'
+        XDT_MicrosoftApplicationInsights_Mode: 'recommended'
       },
       (!empty(prodKeyVaultName) && !empty(prodDbConnectionKeyName)) ? {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${prodDbConnectionKeyName})'
@@ -56,6 +58,8 @@ module webApp './modules/webApp.bicep' = {
     testSlotAppSettings: union(
       {
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
+        ApplicationInsightsAgent_EXTENSION_VERSION: toLower(osType) == 'linux' ? '~3' : '~2'
+        XDT_MicrosoftApplicationInsights_Mode: 'recommended'
       },
       (!empty(testKeyVaultName) && !empty(testDbConnectionKeyName)) ? {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${testDbConnectionKeyName})'
