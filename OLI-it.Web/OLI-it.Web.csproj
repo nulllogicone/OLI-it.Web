@@ -17,4 +17,15 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
   </ItemGroup>
 
+  <!-- Generate stakeholder dashboard before build -->
+  <Target Name="GenerateStakeholderDashboard" BeforeTargets="Build">
+    <PropertyGroup>
+      <DocsDir>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\docs))</DocsDir>
+      <DashboardScript>$(DocsDir)\generate-dashboard.ps1</DashboardScript>
+      <DashboardOutput>$(MSBuildThisFileDirectory)wwwroot\dashboard.html</DashboardOutput>
+    </PropertyGroup>
+    <Message Text="Generating stakeholder dashboard..." Importance="High" />
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(DashboardScript)&quot; -OutputPath &quot;$(DashboardOutput)&quot;" />
+  </Target>
+
 </Project>

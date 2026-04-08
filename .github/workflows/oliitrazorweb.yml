@@ -45,8 +45,7 @@ jobs:
     - name: Generate stakeholder dashboard for deployment
       shell: pwsh
       run: |
-        New-Item -ItemType Directory -Path ".\OLI-it.Web\wwwroot\dashboard" -Force | Out-Null
-        pwsh -File ".\docs\generate-dashboard.ps1" -OutputPath ".\OLI-it.Web\wwwroot\dashboard\index.html"
+        pwsh -File ".\docs\generate-dashboard.ps1" -OutputPath ".\OLI-it.Web\wwwroot\dashboard.html"
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Publish Artifacts
