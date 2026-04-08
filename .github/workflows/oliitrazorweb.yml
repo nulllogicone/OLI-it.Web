@@ -5,11 +5,17 @@ on:
     - '**'
     paths:
     - 'OLI-it.Web/**'
+    - 'docs/**'
+    - '.github/prompts/**'
+    - '.github/workflows/oliitrazorweb.yml'
   pull_request:
     branches:
     - '**'
     paths:
     - 'OLI-it.Web/**'
+    - 'docs/**'
+    - '.github/prompts/**'
+    - '.github/workflows/oliitrazorweb.yml'
   workflow_dispatch:
 permissions:
   id-token: write
@@ -36,6 +42,11 @@ jobs:
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+    - name: Generate stakeholder dashboard for deployment
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Path ".\OLI-it.Web\wwwroot\dashboard" -Force | Out-Null
+        pwsh -File ".\docs\generate-dashboard.ps1" -OutputPath ".\OLI-it.Web\wwwroot\dashboard\index.html"
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Publish Artifacts
