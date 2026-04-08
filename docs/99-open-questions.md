@@ -32,6 +32,7 @@ Status: active
 - OQ-016: Which pages need to be mobile-responsive for MVP?
 - OQ-017: Is dark/light theme toggle in scope?
 - OQ-018: Is the RSS feed format defined? Should it be compatible with the existing XML output?
+- OQ-021: [BL-111] StammStatisticsOverview — which activity data feeds the charts? (e.g. journal entries, answer counts, credit deltas, inbox delivery volume) Should the page be public or authenticated-only? Is there a preferred chart library (Chart.js, ApexCharts, etc.)?
 
 ## Delivery
 
@@ -41,3 +42,4 @@ Status: active
 ## Change Log
 
 - 2026-03-26: Initial questions from paper analysis and site review.
+- 2026-04-08: Added OQ-021 for BL-111 (StammStatisticsOverview chart data + access model).

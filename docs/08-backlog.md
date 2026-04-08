@@ -1,6 +1,6 @@
 # Backlog
 
-Last updated: 2026-03-26
+Last updated: 2026-04-08
 Status: draft
 
 ## Phase 1 — MVP Parity (priority order)
@@ -39,6 +39,9 @@ Status: draft
 | BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints | ✅ completed |
 | BL-109 | Hash passwords instead of plaintext storage | Use BCrypt or ASP.NET Core Identity password hasher | not started |
 | BL-110 | Implement account lockout after failed login attempts | Lock account for X minutes after Y failed attempts | not started |
+| BL-111 | StammCard → StammStatisticsOverview link | Add a link in the meta-stamm-info box (top-right of StammCard) to a new `StammStatisticsOverview` page that renders charts from recent Stamm activity (journal volume, answer rates, credit flow, etc.) | not started |
+| BL-112 | PostItViewer — bare URI content page | A minimal page that fetches and renders a URI's content in its native format (plain text, HTML, Markdown, etc.) with zero chrome: no menu, header, nav, or border. Intended for embedding Gists, blog snippets, and standalone statements as PostIt content. | not started |
+| BL-113 | Stakeholder dashboard overview (progress + issues) | A concise dashboard for business stakeholders, product owners, and scrum master to track delivery progress, current issues/blockers, and overall project health at a glance. Proposed implementation: leverage a Copilot agent workflow (similar to spec-kit style) to scrape and interpret project markdown artifacts (issues, feature requests, requirements, acceptance criteria, backlog IDs like BL-112) and synthesize a dependency-aware overview. | not started |
 
 ## Change Log
 
@@ -46,3 +49,7 @@ Status: draft
 - 2026-03-26: Added authentication security enhancements (BL-107 to BL-110).
 - 2026-03-26: Completed BL-107 - Rate limiting implemented with fixed window (5 attempts/min).
 - 2026-03-26: Completed BL-108 - Anti-forgery token protection enabled for login/logout endpoints.
+- 2026-04-08: Added BL-111 - StammStatisticsOverview page linked from StammCard meta-info box (spontaneous idea).
+- 2026-04-08: Added BL-112 - PostItViewer bare URI content page (spontaneous idea).
+- 2026-04-08: Added BL-113 - Stakeholder dashboard overview for progress and issues visibility.
+- 2026-04-08: Refined BL-113 with implementation detail: Copilot/spec-kit style markdown scraping and dependency-aware synthesis.

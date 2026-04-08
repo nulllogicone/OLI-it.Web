@@ -46,7 +46,7 @@ namespace OLI_it.Web.Pages.PostIt
                 .OrderByDescending(c => c.Gescannt)
                 .ToListAsync();
 
-            ViewData["Sidebar"] = "_SidebarPostIt";
+            ViewData["Sidebar"] = "_SidebarUnified";
 
             return Page();
         }

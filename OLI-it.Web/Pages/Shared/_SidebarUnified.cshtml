@@ -1,0 +1,138 @@
+@model dynamic
+
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    var stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? "";
+    var postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? "";
+    var anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? "";
+    var toplabGuid = Model?.TopLab?.TopLabGuid?.ToString() ?? "";
+}
+
+<nav class="sidebar-menu">
+    <ul class="menu-list">
+        @* Stamm-level menu - always shown when there's a Stamm *@
+        @if (!string.IsNullOrEmpty(stammGuid))
+        {
+            <li class="menu-section-header">Stamm</li>
+            <li class="menu-item">
+                <a href="/stamm/@stammGuid" class="@(currentPage.Contains("Stamm/Index") && string.IsNullOrEmpty(postitGuid) && string.IsNullOrEmpty(anglerGuid) && string.IsNullOrEmpty(toplabGuid) ? "active" : "")">
+                    stamm details
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/stamm/@stammGuid/postit" class="@(currentPage.Contains("Stamm/PostIt") ? "active" : "")">
+                    postit
+                </a>
+                <span class="menu-description">messages</span>
+            </li>
+            <li class="menu-item">
+                <a href="/stamm/@stammGuid/angler" class="@(currentPage.Contains("Stamm/Angler") ? "active" : "")">
+                    angler
+                </a>
+                <span class="menu-description">filter profiles</span>
+            </li>
+            <li class="menu-item">
+                <a href="/stamm/@stammGuid/toplab" class="@(currentPage.Contains("Stamm/TopLab") ? "active" : "")">
+                    toplab
+                </a>
+                <span class="menu-description">answers written</span>
+            </li>
+            <li class="menu-item">
+                <a href="/stamm/@stammGuid/statistics" class="@(currentPage.Contains("Stamm/Statistics") ? "active" : "")">
+                    statistics
+                </a>
+                <span class="menu-description">activity &amp; credit charts</span>
+            </li>
+        }
+
+        @* PostIt-level menu - shown when there's a PostIt *@
+        @if (!string.IsNullOrEmpty(postitGuid))
+        {
+            <li class="menu-divider"></li>
+            <li class="menu-section-header">PostIt</li>
+            <li class="menu-item">
+                <a href="/postit/@postitGuid" class="@(currentPage.Contains("PostIt/Index") ? "active" : "")">
+                    postit details
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/postit/@postitGuid/code" class="@(currentPage.Contains("PostIt/Code") ? "active" : "")">
+                    code
+                </a>
+                <span class="menu-description">descriptions</span>
+            </li>
+            <li class="menu-item">
+                <a href="/postit/@postitGuid/toplab" class="@(currentPage.Contains("PostIt/TopLab") ? "active" : "")">
+                    toplab
+                </a>
+                <span class="menu-description">answers</span>
+            </li>
+        }
+
+        @* Angler-level menu - shown when there's an Angler *@
+        @if (!string.IsNullOrEmpty(anglerGuid))
+        {
+            <li class="menu-divider"></li>
+            <li class="menu-section-header">Angler</li>
+            <li class="menu-item">
+                <a href="/angler/@anglerGuid" class="@(currentPage.Contains("Angler/Index") ? "active" : "")">
+                    angler details
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="/angler/@anglerGuid/catched" class="@(currentPage.Contains("Angler/Catched") ? "active" : "")">
+                    catched
+                </a>
+                <span class="menu-description">matching postits</span>
+            </li>
+        }
+
+        @* TopLab-level menu - shown when there's a TopLab *@
+        @if (!string.IsNullOrEmpty(toplabGuid))
+        {
+            <li class="menu-divider"></li>
+            <li class="menu-section-header">TopLab</li>
+            <li class="menu-item">
+                <a href="/toplab/@toplabGuid" class="@(currentPage.Contains("TopLab/Index") ? "active" : "")">
+                    toplab details
+                </a>
+            </li>
+        }
+
+        @* General menu items - always shown *@
+        @if (!string.IsNullOrEmpty(stammGuid) || !string.IsNullOrEmpty(postitGuid) || !string.IsNullOrEmpty(anglerGuid) || !string.IsNullOrEmpty(toplabGuid))
+        {
+            <li class="menu-divider"></li>
+        }
+        
+        <li class="menu-item">
+            <a href="/">
+                home
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/journal">
+                timeline
+            </a>
+            <span class="menu-description">latest messages</span>
+        </li>
+        <li class="menu-item">
+            <a href="/charts">
+                chart
+            </a>
+            <span class="menu-description">statistical overview</span>
+        </li>
+        <li class="menu-item">
+            <a href="/gallery">
+                gallery
+            </a>
+            <span class="menu-description">image gallery</span>
+        </li>
+        <li class="menu-item">
+            <a href="/search">
+                search
+            </a>
+            <span class="menu-description">for users, messages or answers</span>
+        </li>
+    </ul>
+</nav>

@@ -43,6 +43,8 @@ namespace OLI_it.Web.Pages.TopLab
             // Load parent Stamm (author)
             Stamm = TopLab.Stamm;
 
+            ViewData["Sidebar"] = "_SidebarUnified";
+
             return Page();
         }
     }

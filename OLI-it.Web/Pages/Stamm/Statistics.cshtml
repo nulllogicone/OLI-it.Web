@@ -1,0 +1,117 @@
+@page "~/stamm/{id:guid}/statistics"
+@model OLI_it.Web.Pages.Stamm.StatisticsModel
+@{
+    ViewData["Title"] = $"Statistics — {Model.Stamm?.Stamm1}";
+    var labelsJson = System.Text.Json.JsonSerializer.Serialize(Model.MonthLabels);
+    var postItJson = System.Text.Json.JsonSerializer.Serialize(Model.PostItCounts);
+    var toplabJson = System.Text.Json.JsonSerializer.Serialize(Model.TopLabCounts);
+    var creditJson = System.Text.Json.JsonSerializer.Serialize(Model.CreditDeltas);
+}
+
+<div class="browse-container">
+    <div class="entity-stack">
+        @if (Model.Stamm != null)
+        {
+            @await Html.PartialAsync("_StammCard", Model.Stamm)
+        }
+    </div>
+
+    <div class="content-section stats-overview">
+        <h3>Activity Overview</h3>
+
+        <div class="stats-tiles">
+            <div class="stats-tile">
+                <div class="stats-tile-label">PostIts</div>
+                <div class="stats-tile-value">@Model.TotalPostIts</div>
+            </div>
+            <div class="stats-tile">
+                <div class="stats-tile-label">TopLabs</div>
+                <div class="stats-tile-value">@Model.TotalTopLabs</div>
+            </div>
+            <div class="stats-tile">
+                <div class="stats-tile-label">Anglers</div>
+                <div class="stats-tile-value">@Model.TotalAnglers</div>
+            </div>
+            <div class="stats-tile stats-tile-green">
+                <div class="stats-tile-label">Credit In</div>
+                <div class="stats-tile-value">@Model.TotalCreditIn.ToString("N2")</div>
+            </div>
+            <div class="stats-tile stats-tile-red">
+                <div class="stats-tile-label">Credit Out</div>
+                <div class="stats-tile-value">@Model.TotalCreditOut.ToString("N2")</div>
+            </div>
+            <div class="stats-tile stats-tile-accent">
+                <div class="stats-tile-label">Balance</div>
+                <div class="stats-tile-value">@Model.CurrentBalance.ToString("N2")</div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <h4>PostIts &amp; TopLabs — Last 12 Months</h4>
+            <canvas id="activityChart" height="100"></canvas>
+        </div>
+
+        <div class="chart-section">
+            <h4>Credit Flow — Last 12 Months</h4>
+            <canvas id="creditChart" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        const labels = @Html.Raw(labelsJson);
+        const postItData = @Html.Raw(postItJson);
+        const toplabData = @Html.Raw(toplabJson);
+        const creditData = @Html.Raw(creditJson);
+
+        new Chart(document.getElementById('activityChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'PostIts',
+                        data: postItData,
+                        backgroundColor: 'rgba(180, 140, 0, 0.7)',
+                        borderColor: 'rgba(180, 140, 0, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'TopLabs',
+                        data: toplabData,
+                        backgroundColor: 'rgba(34, 139, 34, 0.7)',
+                        borderColor: 'rgba(34, 139, 34, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        new Chart(document.getElementById('creditChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Credit Delta',
+                    data: creditData,
+                    borderColor: 'rgba(139, 0, 0, 0.9)',
+                    backgroundColor: 'rgba(139, 0, 0, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: false } }
+            }
+        });
+    </script>
+}

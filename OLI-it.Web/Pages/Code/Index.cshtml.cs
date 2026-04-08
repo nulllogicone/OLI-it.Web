@@ -15,6 +15,8 @@ namespace OLI_it.Web.Pages.Code
             _context = context;
         }
 
+        public Models.Stamm? Stamm { get; set; }
+        public Models.PostIt? PostIt { get; set; }
         public Models.Code? Code { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
@@ -32,7 +34,22 @@ namespace OLI_it.Web.Pages.Code
             {
                 return NotFound();
             }
-            
+
+            // Load parent PostIt
+            PostIt = Code.PostIt;
+
+            // Load parent Stamm (author of the PostIt)
+            if (PostIt != null)
+            {
+                var authorWurzel = await _context.Wurzelns
+                    .Include(w => w.Stamm)
+                    .FirstOrDefaultAsync(w => w.PostItGuid == PostIt.PostItGuid && w.StammZust == 1);
+
+                Stamm = authorWurzel?.Stamm;
+            }
+
+            ViewData["Sidebar"] = "_SidebarUnified";
+
             return Page();
         }
     }

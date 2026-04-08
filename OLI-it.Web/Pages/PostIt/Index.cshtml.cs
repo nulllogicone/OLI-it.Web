@@ -18,6 +18,8 @@ namespace OLI_it.Web.Pages.PostIt
 
         public Models.Stamm? Stamm { get; set; }
         public Models.PostIt? PostIt { get; set; }
+        public Models.Angler? Angler { get; set; }
+        public Models.TopLab? TopLab { get; set; }
         public List<Models.Code>? PostItCodes { get; set; }
         public List<Models.TopLab>? PostItTopLabs { get; set; }
         public List<Models.Spiegel>? PostItSpiegel { get; set; }
@@ -113,7 +115,7 @@ namespace OLI_it.Web.Pages.PostIt
                 ViewData["UserCanEdit"] = false;
             }
 
-            ViewData["Sidebar"] = "_SidebarPostIt";
+            ViewData["Sidebar"] = "_SidebarUnified";
 
             return Page();
         }

@@ -12,13 +12,19 @@
             }
             <h2>@Model.Stamm1</h2>
         </div>
-        <div class="card-meta-box">
-            <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
+        <a href="/stamm/@Model.StammGuid/statistics" class="card-meta-box card-meta-box-link" title="Statistics Overview">
+            <span class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</span>
             @if (Model.KooK.HasValue)
             {
-                <div class="card-meta-value">@Model.KooK.Value.ToString("N")</div>
+                <span class="card-meta-value">@Model.KooK.Value.ToString("N")</span>
             }
-        </div>
+            <span class="card-meta-stats-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07z"/>
+                </svg>
+                stats
+            </span>
+        </a>
         @if (User.Identity?.IsAuthenticated == true && User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.StammGuid.ToString())
         {
             <a href="/stamm/edit/@Model.StammGuid" class="edit-btn" title="Edit Stamm">

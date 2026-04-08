@@ -16,6 +16,9 @@ namespace OLI_it.Web.Pages.Stamm
         }
 
         public Models.Stamm? Stamm { get; set; }
+        public Models.PostIt? PostIt { get; set; }
+        public Models.Angler? Angler { get; set; }
+        public Models.TopLab? TopLab { get; set; }
         public List<Wurzeln>? StammPostIts { get; set; }
         public List<Models.Angler>? StammAnglers { get; set; }
         public List<Models.TopLab>? StammTopLabs { get; set; }
@@ -67,7 +70,7 @@ namespace OLI_it.Web.Pages.Stamm
                 .Take(20)
                 .ToListAsync();
 
-            ViewData["Sidebar"] = "_SidebarStamm";
+            ViewData["Sidebar"] = "_SidebarUnified";
 
             return Page();
         }
