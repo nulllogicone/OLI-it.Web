@@ -63,7 +63,7 @@ module webApp './modules/webApp.bicep' = {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${prodDbConnectionKeyName})'
       } : {},
       (!empty(prodKeyVaultName) && !empty(storageConnectionKeyName)) ? {
-        OliItStorageConnectionString: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${storageConnectionKeyName})'
+        ConnectionStrings__OliItStorageConnectionString: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${storageConnectionKeyName})'
       } : {},
       !empty(imagesRootUrl) ? {
         ImagesRootUrl: imagesRootUrl
@@ -82,7 +82,7 @@ module webApp './modules/webApp.bicep' = {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${testDbConnectionKeyName})'
       } : {},
       (!empty(testKeyVaultName) && !empty(storageConnectionKeyName)) ? {
-        OliItStorageConnectionString: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${storageConnectionKeyName})'
+        ConnectionStrings__OliItStorageConnectionString: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${storageConnectionKeyName})'
       } : {},
       !empty(imagesRootUrl) ? {
         ImagesRootUrl: imagesRootUrl
@@ -93,7 +93,7 @@ module webApp './modules/webApp.bicep' = {
     ) : {}
     slotSettingAppSettingNames: [
       'ConnectionStrings__OliItDb'
-      'OliItStorageConnectionString'
+      'ConnectionStrings__OliItStorageConnectionString'
       'slot'
     ]
     tags: tags
