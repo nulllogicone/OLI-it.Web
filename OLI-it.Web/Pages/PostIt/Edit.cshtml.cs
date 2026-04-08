@@ -35,6 +35,9 @@ namespace OLI_it.Web.Pages.PostIt
         public string? SelectedImageUrl { get; set; }
 
         [BindProperty]
+        public string? DirectImageUrl { get; set; }
+
+        [BindProperty]
         public string? Titel { get; set; }
 
         [BindProperty]
@@ -62,7 +65,7 @@ namespace OLI_it.Web.Pages.PostIt
                 return NotFound();
             }
 
-            // Check if the logged-in user is the author of this PostIt
+            // Check if the logged-in user is connected to this PostIt
             var currentUserGuid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!Guid.TryParse(currentUserGuid, out var userGuid))
             {
@@ -70,21 +73,26 @@ namespace OLI_it.Web.Pages.PostIt
                 return Forbid();
             }
 
-            // Find the author of this PostIt (StammZust = 1)
-            var authorWurzel = await _context.Wurzelns
-                .FirstOrDefaultAsync(w => w.PostItGuid == id.Value && w.StammZust == 1);
+            // Check if the user is connected to this PostIt via Wurzeln table (any role)
+            var userWurzel = await _context.Wurzelns
+                .FirstOrDefaultAsync(w => w.PostItGuid == id.Value && w.StammGuid == userGuid);
 
-            if (authorWurzel == null || authorWurzel.StammGuid != userGuid)
+            if (userWurzel == null)
             {
-                _logger.LogWarning("Unauthorized edit attempt: User {UserId} tried to edit PostIt {PostItId}", currentUserGuid, id);
+                _logger.LogWarning("Unauthorized edit attempt: User {UserId} tried to edit PostIt {PostItId} but is not connected via Wurzeln", currentUserGuid, id);
                 return Forbid();
             }
+
+            // Find the author to get their StammGuid for image gallery
+            var authorWurzel = await _context.Wurzelns
+                .FirstOrDefaultAsync(w => w.PostItGuid == id.Value && w.StammZust == 1);
 
             PostIt = postit;
             Titel = postit.Titel;
             PostIt1 = postit.PostIt1;
             Url = postit.Url;
             Typ = postit.Typ;
+            DirectImageUrl = postit.Datei;
             AuthorStammGuid = authorWurzel.StammGuid;
 
             return Page();
@@ -132,16 +140,23 @@ namespace OLI_it.Web.Pages.PostIt
             // Handle image selection or upload
             string? newImagePath = null;
 
-            // Priority 1: New file upload
-            if (DateiUpload != null && DateiUpload.Length > 0)
+            // Priority 1: Direct URL input
+            if (!string.IsNullOrEmpty(DirectImageUrl))
             {
-                var uploadResult = await _blobService.UploadImageAsync(authorWurzel.StammGuid, DateiUpload);
+                newImagePath = DirectImageUrl.Trim();
+                _logger.LogInformation("Direct image URL set for PostIt {PostItId}: {ImageUrl}", id, newImagePath);
+            }
+            // Priority 2: New file upload
+            else if (DateiUpload != null && DateiUpload.Length > 0)
+            {
+                // Use the current user's StammGuid for image upload (not necessarily the author)
+                var uploadResult = await _blobService.UploadImageAsync(userGuid, DateiUpload);
 
                 if (!uploadResult.Success)
                 {
                     ModelState.AddModelError(string.Empty, uploadResult.ErrorMessage ?? "An error occurred while uploading the file.");
                     PostIt = postItToUpdate;
-                    AuthorStammGuid = authorWurzel.StammGuid;
+                    AuthorStammGuid = authorWurzel?.StammGuid;
                     return Page();
                 }
 
@@ -151,7 +166,7 @@ namespace OLI_it.Web.Pages.PostIt
                     _logger.LogInformation("New image uploaded for PostIt {PostItId}: {BlobName}", id, uploadResult.BlobName);
                 }
             }
-            // Priority 2: Selected existing image
+            // Priority 3: Selected existing image from gallery
             else if (!string.IsNullOrEmpty(SelectedImageUrl))
             {
                 newImagePath = SelectedImageUrl;

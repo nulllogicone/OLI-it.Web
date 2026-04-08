@@ -45,13 +45,29 @@
 
         <div class="form-group">
             <label class="form-label">Image</label>
-            @if (Model.AuthorStammGuid.HasValue)
+
+            <div class="image-options">
+                <div class="image-option">
+                    <h4>Direct URL</h4>
+                    <input asp-for="DirectImageUrl" class="form-control" type="text" placeholder="Paste full image URL (e.g., /guid/image.jpg or https://...)" />
+                    <small class="form-text text-muted">Paste a direct URL to an image</small>
+                </div>
+
+                @if (Model.AuthorStammGuid.HasValue)
+                {
+                    <div class="image-option">
+                        <h4>Or Pick from Gallery</h4>
+                        @await Component.InvokeAsync("ImageGallery", new { stammGuid = Model.AuthorStammGuid.Value, currentImage = Model.PostIt.Datei })
+                    </div>
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.PostIt.Datei))
             {
-                @await Component.InvokeAsync("ImageGallery", new { stammGuid = Model.AuthorStammGuid.Value, currentImage = Model.PostIt.Datei })
-            }
-            else
-            {
-                <p class="text-muted">Image gallery not available (no author found)</p>
+                <div class="current-image-display">
+                    <p><strong>Current Image:</strong> @Model.PostIt.Datei</p>
+                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.PostIt.Datei, altText = "Current PostIt Image", width = 100, height = 100 })
+                </div>
             }
         </div>
 
@@ -163,4 +179,35 @@
     .text-muted {
         color: #6c757d;
     }
+
+    .image-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .image-option {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+
+    .image-option h4 {
+        margin: 0 0 0.75rem 0;
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .current-image-display {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    .current-image-display p {
+        margin-bottom: 0.5rem;
+    }
+
 </style>

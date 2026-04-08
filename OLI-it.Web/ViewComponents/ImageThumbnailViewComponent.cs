@@ -18,11 +18,22 @@ public class ImageThumbnailViewComponent : ViewComponent
             return Content(string.Empty);
         }
 
-        var imagesRootUrl = _configuration["ImagesRootUrl"] ?? string.Empty;
+        string fullImageUrl;
 
-        // Handle paths that start with / or without /
-        var normalizedPath = dateiPath.StartsWith("/") ? dateiPath : "/" + dateiPath;
-        var fullImageUrl = imagesRootUrl.TrimEnd('/') + normalizedPath;
+        // Check if it's already a full URL (starts with http:// or https://)
+        if (dateiPath.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
+            dateiPath.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            // Use the URL as-is
+            fullImageUrl = dateiPath;
+        }
+        else
+        {
+            // It's a relative path, prefix with ImagesRootUrl
+            var imagesRootUrl = _configuration["ImagesRootUrl"] ?? string.Empty;
+            var normalizedPath = dateiPath.StartsWith("/") ? dateiPath : "/" + dateiPath;
+            fullImageUrl = imagesRootUrl.TrimEnd('/') + normalizedPath;
+        }
 
         var model = new ImageThumbnailViewModel
         {
