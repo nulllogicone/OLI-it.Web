@@ -15,6 +15,14 @@
 
 
 <div class="wortraum-container">
+    <!-- Breadcrumb Navigation Bar -->
+    <div class="breadcrumb-bar" id="breadcrumb-bar" style="display: none;">
+        <div class="breadcrumb-content">
+            <span class="breadcrumb-icon">📍</span>
+            <span class="breadcrumb-path" id="breadcrumb-path"></span>
+        </div>
+    </div>
+
     <div class="wortraum-tree">
         @if (Model.RootNetz != null)
         {
@@ -22,7 +30,7 @@
             <div class="tree-node netz-node root-netz">
                 <div class="tree-node-header" data-level="0" data-auto-expand="true">
                     <span class="tree-icon expand-icon">▼</span>
-                    <span class="tree-connector">T</span>
+@*                     <span class="tree-connector">┬</span> *@
                     <span class="tree-label netz-label">@netz.Name</span>
                     @if (!string.IsNullOrEmpty(netz.Beschreibung))
                     {
@@ -112,6 +120,9 @@
                 // Stop event from bubbling
                 e.stopPropagation();
 
+                // Update breadcrumb path for the selected node
+                updateBreadcrumb(header);
+
                 const expandIcon = header.querySelector('.expand-icon');
                 console.log('Found expand icon:', expandIcon);
 
@@ -164,6 +175,100 @@
             document.querySelectorAll('[data-auto-expand="true"]').forEach(header => {
                 header.classList.add('expanded');
             });
+
+            // Function to update breadcrumb path
+            function updateBreadcrumb(selectedHeader) {
+                const breadcrumbBar = document.getElementById('breadcrumb-bar');
+                const breadcrumbPath = document.getElementById('breadcrumb-path');
+
+                if (!breadcrumbBar || !breadcrumbPath) return;
+
+                // Build path from root to selected node
+                const path = [];
+                let currentNode = selectedHeader.closest('.tree-node');
+
+                while (currentNode) {
+                    const header = currentNode.querySelector(':scope > .tree-node-header');
+                    if (header) {
+                        const label = header.querySelector('.tree-label');
+                        const nodeType = getNodeType(label);
+
+                        if (label) {
+                            path.unshift({
+                                text: label.textContent.trim(),
+                                type: nodeType
+                            });
+                        }
+                    }
+
+                    // Move up to parent tree-node
+                    currentNode = currentNode.parentElement?.closest('.tree-node');
+                }
+
+                // Group pairs: Netz→Knoten and Baum→Zweig
+                const groupedPath = [];
+                for (let i = 0; i < path.length; i++) {
+                    const current = path[i];
+                    const next = path[i + 1];
+
+                    // Check if current is Netz and next is Knoten
+                    if (current.type === 'netz' && next && next.type === 'knoten') {
+                        groupedPath.push({
+                            items: [current, next],
+                            type: 'netz-knoten'
+                        });
+                        i++; // Skip next item as it's already grouped
+                    }
+                    // Check if current is Baum and next is Zweig
+                    else if (current.type === 'baum' && next && next.type === 'zweig') {
+                        groupedPath.push({
+                            items: [current, next],
+                            type: 'baum-zweig'
+                        });
+                        i++; // Skip next item as it's already grouped
+                    }
+                    // Otherwise, add as single item
+                    else {
+                        groupedPath.push({
+                            items: [current],
+                            type: current.type
+                        });
+                    }
+                }
+
+                // Display breadcrumb with grouped items
+                if (groupedPath.length > 0) {
+                    breadcrumbBar.style.display = 'block';
+                    breadcrumbPath.innerHTML = groupedPath.map((group, index) => {
+                        const separator = index < groupedPath.length - 1 ? '<span class="breadcrumb-separator">▸</span>' : '';
+
+                        if (group.items.length > 1) {
+                            // Grouped item (Netz→Knoten or Baum→Zweig)
+                            const parentClass = group.items[0].type;
+                            const childClass = group.items[1].type;
+                            return `<span class="breadcrumb-box ${group.type}">
+                                <span class="breadcrumb-parent ${parentClass}">${escapeHtml(group.items[0].text)}</span>
+                                <span class="breadcrumb-arrow">↓</span>
+                                <span class="breadcrumb-child ${childClass}">${escapeHtml(group.items[1].text)}</span>
+                            </span>${separator}`;
+                        } else {
+                            // Single item
+                            return `<span class="breadcrumb-item ${group.items[0].type}">${escapeHtml(group.items[0].text)}</span>${separator}`;
+                        }
+                    }).join('');
+                } else {
+                    breadcrumbBar.style.display = 'none';
+                }
+            }
+
+            // Helper to determine node type from label class
+            function getNodeType(label) {
+                if (label.classList.contains('netz-label')) return 'netz';
+                if (label.classList.contains('knoten-label')) return 'knoten';
+                if (label.classList.contains('baum-label')) return 'baum';
+                if (label.classList.contains('zweig-label')) return 'zweig';
+                return '';
+            }
 
             // AJAX function to load node children on-demand
             async function loadNodeChildren(childrenContainer) {
@@ -235,7 +340,6 @@
                     <div class="tree-node-header" data-level="${indentLevel}" data-auto-expand="true">
                         ${indent}
                         <span class="tree-icon ${expandClass}">${expandIcon}</span>
-                        <span class="tree-connector">T</span>
                         <span class="tree-label netz-label">${escapeHtml(netz.name)}</span>
                         ${netz.beschreibung ? `<span class="tree-description">(${escapeHtml(netz.beschreibung)})</span>` : ''}
                     </div>`;
@@ -310,7 +414,6 @@
                     <div class="tree-node-header" data-level="${indentLevel}" data-auto-expand="true">
                         ${indent}
                         <span class="tree-icon ${expandClass}">${expandIcon}</span>
-                        <span class="tree-connector">T</span>
                         <span class="tree-label baum-label">${escapeHtml(baum.name)}</span>
                         ${baum.beschreibung ? `<span class="tree-description">(${escapeHtml(baum.beschreibung)})</span>` : ''}
                     </div>`;
@@ -462,6 +565,143 @@
         margin: 20px 0;
     }
 
+    /* Breadcrumb Bar Styles */
+    .breadcrumb-bar {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);
+        border: 1px solid #667eea;
+        border-radius: 6px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .breadcrumb-content {
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+    }
+
+    .breadcrumb-icon {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    .breadcrumb-path {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .breadcrumb-item {
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    .breadcrumb-item.netz {
+        color: #0066cc;
+        background-color: rgba(0, 102, 204, 0.1);
+    }
+
+    .breadcrumb-item.knoten {
+        color: #0066cc;
+        background-color: rgba(0, 102, 204, 0.08);
+    }
+
+    .breadcrumb-item.baum {
+        color: #009900;
+        background-color: rgba(0, 153, 0, 0.1);
+    }
+
+    .breadcrumb-item.zweig {
+        color: #009900;
+        background-color: rgba(0, 153, 0, 0.08);
+    }
+
+    /* Grouped Breadcrumb Box Styles */
+    .breadcrumb-box {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid;
+        gap: 2px;
+        transition: all 0.2s;
+    }
+
+    .breadcrumb-box.netz-knoten {
+        background: linear-gradient(180deg, rgba(0, 102, 204, 0.15) 0%, rgba(0, 102, 204, 0.08) 100%);
+        border-color: rgba(0, 102, 204, 0.3);
+    }
+
+    .breadcrumb-box.baum-zweig {
+        background: linear-gradient(180deg, rgba(0, 153, 0, 0.15) 0%, rgba(0, 153, 0, 0.08) 100%);
+        border-color: rgba(0, 153, 0, 0.3);
+    }
+
+    .breadcrumb-box:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .breadcrumb-parent {
+        font-weight: 600;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .breadcrumb-parent.netz {
+        color: #0066cc;
+    }
+
+    .breadcrumb-parent.baum {
+        color: #009900;
+    }
+
+    .breadcrumb-arrow {
+        color: #999;
+        font-weight: bold;
+        font-size: 10px;
+        line-height: 0.8;
+    }
+
+    .breadcrumb-child {
+        font-weight: 500;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .breadcrumb-child.knoten {
+        color: #0066cc;
+    }
+
+    .breadcrumb-child.zweig {
+        color: #009900;
+    }
+
+    .breadcrumb-separator {
+        color: #667eea;
+        margin: 0 4px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
     .wortraum-tree {
         font-family: 'Courier New', monospace;
         font-size: 14px;
@@ -480,7 +720,6 @@
     }
 
     .nested-netz {
-        border-left: 3px solid #0066cc;
         padding-left: 8px;
         margin: 4px 0;
         background: #f0f8ff;
@@ -499,7 +738,6 @@
     }
 
     .nested-baum {
-        border-left: 3px solid #009900;
         padding-left: 8px;
         margin: 4px 0;
         background: #f0fff0;
