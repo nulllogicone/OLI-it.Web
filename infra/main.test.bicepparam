@@ -1,6 +1,5 @@
 using './main.bicep'
 
-// Fill in all values marked with TODO before deployment.
 param location = 'westeurope'
 param webAppName = 'oliitrazorweb'
 param existingAppServicePlanResourceId = '/subscriptions/33dd8226-abb3-4f36-b1f0-059e18b9570a/resourceGroups/default-web-westeurope/providers/Microsoft.Web/serverFarms/Default0'
@@ -10,13 +9,14 @@ param existingProdKeyVaultResourceId = '/subscriptions/33dd8226-abb3-4f36-b1f0-0
 param webAppSubnetResourceId = '/subscriptions/33dd8226-abb3-4f36-b1f0-059e18b9570a/resourceGroups/Default-Network-WestEurope/providers/Microsoft.Network/virtualNetworks/OLI-it-VNet/subnets/frontend'
 param testDbConnectionKeyName = 'null-test-connection'
 param prodDbConnectionKeyName = 'null-connection'
-param imagesRootUrl = 'https://oliit.blob.core.windows.net/oliupload'
+param storageConnectionKeyName = 'OliItStorageConnectionString'
+param deploymentMode = 'testOnly'
+param imagesRootUrl = 'https://oliittest.blob.core.windows.net/oliupload'
 
-// Optional overrides
 param osType = 'windows'
 param linuxFxVersion = 'DOTNETCORE|8.0'
 param alwaysOn = true
 param tags = {
-  environment: 'dev'
+  environment: 'test'
   application: 'OLI-it.Web'
 }

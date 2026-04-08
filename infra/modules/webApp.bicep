@@ -6,6 +6,8 @@ param appServicePlanResourceId string
 param osType string = 'linux'
 param linuxFxVersion string
 param alwaysOn bool = true
+param deployProdSettings bool = true
+param deployTestSettings bool = true
 param subnetResourceId string = ''
 param appSettings object = {}
 param testSlotAppSettings object = {}
@@ -13,21 +15,12 @@ param slotSettingAppSettingNames array = []
 param tags object = {}
 
 var isLinux = toLower(osType) == 'linux'
-var appSettingsArray = [for setting in items(appSettings): {
-  name: setting.key
-  value: string(setting.value)
-}]
-var testSlotAppSettingsArray = [for setting in items(empty(testSlotAppSettings) ? appSettings : testSlotAppSettings): {
-  name: setting.key
-  value: string(setting.value)
-}]
 var siteConfig = union({
   alwaysOn: alwaysOn
   http20Enabled: true
   ftpsState: 'Disabled'
   minTlsVersion: '1.2'
   vnetRouteAllEnabled: !empty(subnetResourceId)
-  appSettings: appSettingsArray
 }, isLinux ? {
   linuxFxVersion: linuxFxVersion
 } : {})
@@ -37,7 +30,6 @@ var testSlotSiteConfig = union({
   ftpsState: 'Disabled'
   minTlsVersion: '1.2'
   vnetRouteAllEnabled: !empty(subnetResourceId)
-  appSettings: testSlotAppSettingsArray
 }, isLinux ? {
   linuxFxVersion: linuxFxVersion
 } : {})
@@ -84,6 +76,18 @@ resource slotConfigNames 'Microsoft.Web/sites/config@2023-12-01' = {
   properties: {
     appSettingNames: slotSettingAppSettingNames
   }
+}
+
+resource webAppAppSettings 'Microsoft.Web/sites/config@2023-12-01' = if (deployProdSettings) {
+  parent: webApp
+  name: 'appsettings'
+  properties: appSettings
+}
+
+resource testSlotSettings 'Microsoft.Web/sites/slots/config@2023-12-01' = if (deployTestSettings) {
+  parent: testSlot
+  name: 'appsettings'
+  properties: empty(testSlotAppSettings) ? appSettings : testSlotAppSettings
 }
 
 output webAppResourceId string = webApp.id

@@ -2,6 +2,30 @@
 
 ## Configuration
 
+### Infrastructure Deployment Parameters
+
+Infrastructure is deployed from `infra/main.bicep` using environment-specific parameter files:
+
+- `infra/main.test.bicepparam` for test slot-oriented values
+- `infra/main.prod.bicepparam` for production values
+
+The GitHub Actions workflow `.github/workflows/infra-main-bicep.yml` selects the parameter file based on the workflow input:
+
+- `environment: test` -> test deployment job using `infra/main.test.bicepparam`
+- `environment: production` -> production deployment job using `infra/main.prod.bicepparam` (GitHub Environment `production` approval gate)
+
+The legacy single-file parameter set `infra/main.bicepparam` has been removed.
+
+Deployment mode is now explicit in parameters:
+
+- `infra/main.test.bicepparam` sets `deploymentMode = 'testOnly'`
+- `infra/main.prod.bicepparam` sets `deploymentMode = 'prodOnly'`
+
+Fresh deployment behavior (empty resource group):
+
+- A test deployment can run first and will provision the App Service and test slot infrastructure.
+- Production-specific app settings and production Key Vault access policy are only applied in the production deployment.
+
 ### Environment Variables / App Settings
 
 The application uses the following configuration settings in `appsettings.json`:

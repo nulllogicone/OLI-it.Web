@@ -10,6 +10,17 @@ Last updated: 2026-01-24
 - Park unresolved items in `99-open-questions.md`.
 - **German→English mapping:** See [german-english-quick-reference.md](german-english-quick-reference.md) for database entity names.
 
+## Infrastructure Deployment Notes
+
+- Infra template: `infra/main.bicep`
+- Test parameters: `infra/main.test.bicepparam`
+- Production parameters: `infra/main.prod.bicepparam`
+- The legacy `infra/main.bicepparam` file is no longer used.
+- CI workflow `.github/workflows/infra-main-bicep.yml` has split jobs:
+	- test deployment job (`environment: test` or `push` to `main`)
+	- production deployment job (`environment: production`) with GitHub Environment approval gate.
+- First deployment to an empty resource group can be run as test first; production-specific settings are applied only by production deployment.
+
 ## Files
 
 | File | Purpose | Status |

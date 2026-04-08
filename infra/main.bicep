@@ -9,6 +9,13 @@ param existingProdKeyVaultResourceId string = ''
 param webAppSubnetResourceId string = ''
 param testDbConnectionKeyName string = ''
 param prodDbConnectionKeyName string = ''
+param storageConnectionKeyName string = ''
+@allowed([
+  'both'
+  'testOnly'
+  'prodOnly'
+])
+param deploymentMode string = 'both'
 param imagesRootUrl string = ''
 param osType string = 'windows'
 param linuxFxVersion string = 'DOTNETCORE|8.0'
@@ -21,6 +28,8 @@ var testKeyVaultName = !empty(existingTestKeyVaultResourceId) ? split(existingTe
 var prodKeyVaultSubscriptionId = !empty(existingProdKeyVaultResourceId) ? split(existingProdKeyVaultResourceId, '/')[2] : ''
 var prodKeyVaultResourceGroupName = !empty(existingProdKeyVaultResourceId) ? split(existingProdKeyVaultResourceId, '/')[4] : ''
 var prodKeyVaultName = !empty(existingProdKeyVaultResourceId) ? split(existingProdKeyVaultResourceId, '/')[8] : ''
+var deployTest = deploymentMode != 'prodOnly'
+var deployProd = deploymentMode != 'testOnly'
 
 module applicationInsights './modules/applicationInsights.bicep' = {
   name: 'appi-${webAppName}'
@@ -41,8 +50,10 @@ module webApp './modules/webApp.bicep' = {
     osType: osType
     linuxFxVersion: linuxFxVersion
     alwaysOn: alwaysOn
+    deployProdSettings: deployProd
+    deployTestSettings: deployTest
     subnetResourceId: webAppSubnetResourceId
-    appSettings: union(
+    appSettings: deployProd ? union(
       {
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
         ApplicationInsightsAgent_EXTENSION_VERSION: toLower(osType) == 'linux' ? '~3' : '~2'
@@ -51,14 +62,17 @@ module webApp './modules/webApp.bicep' = {
       (!empty(prodKeyVaultName) && !empty(prodDbConnectionKeyName)) ? {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${prodDbConnectionKeyName})'
       } : {},
+      (!empty(prodKeyVaultName) && !empty(storageConnectionKeyName)) ? {
+        OliItStorageConnectionString: '@Microsoft.KeyVault(VaultName=${prodKeyVaultName};SecretName=${storageConnectionKeyName})'
+      } : {},
       !empty(imagesRootUrl) ? {
         ImagesRootUrl: imagesRootUrl
       } : {},
       {
         slot: 'production'
       }
-    )
-    testSlotAppSettings: union(
+    ) : {}
+    testSlotAppSettings: deployTest ? union(
       {
         APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
         ApplicationInsightsAgent_EXTENSION_VERSION: toLower(osType) == 'linux' ? '~3' : '~2'
@@ -67,22 +81,26 @@ module webApp './modules/webApp.bicep' = {
       (!empty(testKeyVaultName) && !empty(testDbConnectionKeyName)) ? {
         ConnectionStrings__OliItDb: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${testDbConnectionKeyName})'
       } : {},
+      (!empty(testKeyVaultName) && !empty(storageConnectionKeyName)) ? {
+        OliItStorageConnectionString: '@Microsoft.KeyVault(VaultName=${testKeyVaultName};SecretName=${storageConnectionKeyName})'
+      } : {},
       !empty(imagesRootUrl) ? {
         ImagesRootUrl: imagesRootUrl
       } : {},
       {
         slot: 'test'
       }
-    )
+    ) : {}
     slotSettingAppSettingNames: [
       'ConnectionStrings__OliItDb'
+      'OliItStorageConnectionString'
       'slot'
     ]
     tags: tags
   }
 }
 
-module keyVaultAccessProd './modules/keyVaultAccessPolicy.bicep' = if (!empty(existingProdKeyVaultResourceId)) {
+module keyVaultAccessProd './modules/keyVaultAccessPolicy.bicep' = if (deployProd && !empty(existingProdKeyVaultResourceId)) {
   name: 'kv-access-prod-${webAppName}'
   scope: resourceGroup(prodKeyVaultSubscriptionId, prodKeyVaultResourceGroupName)
   params: {
@@ -91,7 +109,7 @@ module keyVaultAccessProd './modules/keyVaultAccessPolicy.bicep' = if (!empty(ex
   }
 }
 
-module keyVaultAccessTest './modules/keyVaultAccessPolicy.bicep' = if (!empty(existingTestKeyVaultResourceId)) {
+module keyVaultAccessTest './modules/keyVaultAccessPolicy.bicep' = if (deployTest && !empty(existingTestKeyVaultResourceId)) {
   name: 'kv-access-test-${webAppName}'
   scope: resourceGroup(testKeyVaultSubscriptionId, testKeyVaultResourceGroupName)
   params: {
