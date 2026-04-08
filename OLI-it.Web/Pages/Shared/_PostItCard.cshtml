@@ -9,38 +9,18 @@
                     @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"PostIt {Model.Titel ?? "Untitled"} Image", width = 60, height = 60 })
                 </div>
             }
-            <h3>PostIt: @(Model.Titel ?? "Untitled")</h3>
+            <h3>@(Model.Titel ?? "Untitled")</h3>
+        </div>
+        <div class="card-meta-box">
+            <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
+            <div class="card-meta-value">@Model.KooK.ToString("N")</div>
+            <div class="card-meta-value">@Model.Hits <small>hits</small></div>
         </div>
         <a href="/stamm/@ViewData["StammGuid"]" class="close-btn" title="Close to Stamm">&times;</a>
     </div>
     <div class="entity-card-body">
-        <div class="entity-info">
-            <div class="info-group">
-                <span class="label">Date:</span>
-                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
-            </div>
-            <div class="info-group">
-                <span class="label">Balance (KooK):</span>
-                <span class="value">@Model.KooK.ToString("C")</span>
-            </div>
-            <div class="info-group">
-                <span class="label">Type:</span>
-                <span class="value">@Model.Typ</span>
-            </div>
-            <div class="info-group">
-                <span class="label">Hits:</span>
-                <span class="value">@Model.Hits</span>
-            </div>
-            @if (Model.PostItZust.HasValue)
-            {
-                <div class="info-group">
-                    <span class="label">Status:</span>
-                    <span class="value">@Model.PostItZust</span>
-                </div>
-            }
-        </div>
         <div class="entity-description">
-            <strong>Content:</strong> @Model.PostIt1
+            @Model.PostIt1
         </div>
         @if (!string.IsNullOrEmpty(Model.Url))
         {

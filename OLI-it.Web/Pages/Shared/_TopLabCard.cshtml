@@ -9,27 +9,17 @@
                     @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"TopLab {Model.Titel ?? "Untitled"} Image", width = 60, height = 60 })
                 </div>
             }
-            <h3>TopLab: @(Model.Titel ?? "Untitled Answer")</h3>
+            <h3>@(Model.Titel ?? "Untitled Answer")</h3>
+        </div>
+        <div class="card-meta-box">
+            <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
+            <div class="card-meta-value">@Model.Lohn.ToString("N")</div>
         </div>
         <a href="/postit/@Model.PostItGuid" class="close-btn" title="Close to PostIt">&times;</a>
     </div>
     <div class="entity-card-body">
-        <div class="entity-info">
-            <div class="info-group">
-                <span class="label">Date:</span>
-                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
-            </div>
-            <div class="info-group">
-                <span class="label">Reward (Lohn):</span>
-                <span class="value">@Model.Lohn.ToString("C")</span>
-            </div>
-            <div class="info-group">
-                <span class="label">Type:</span>
-                <span class="value">@Model.Typ</span>
-            </div>
-        </div>
         <div class="entity-description">
-            <strong>Answer:</strong> @Model.TopLab1
+            @Model.TopLab1
         </div>
         @if (!string.IsNullOrEmpty(Model.Url))
         {

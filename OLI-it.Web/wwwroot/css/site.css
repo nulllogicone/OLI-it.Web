@@ -704,7 +704,6 @@ body.slot-dev::before {
 }
 
 .entity-description {
-  margin-top: 15px;
   padding: 12px;
   background-color: #f9f9f9;
   border-radius: 4px;
@@ -812,6 +811,73 @@ body.slot-dev::before {
 
 .postit-card {
   border-left: 4px solid #FFD700;
+}
+
+/* Generic card meta box (top-right header widget) */
+.card-meta-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  border-radius: 6px;
+  padding: 6px 12px;
+  min-width: 110px;
+  text-align: right;
+  margin-right: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.card-meta-datum {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  color: #555;
+}
+
+.card-meta-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  white-space: nowrap;
+}
+
+.card-meta-value small {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-left: 3px;
+}
+
+/* Entity-specific meta box accent colors */
+.stamm-card .card-meta-box {
+  background-color: rgba(139, 0, 0, 0.07);
+  border-color: rgba(139, 0, 0, 0.25);
+}
+
+.stamm-card .card-meta-datum {
+  color: #8B0000;
+}
+
+.postit-card .card-meta-box {
+  background-color: rgba(180, 140, 0, 0.08);
+  border-color: rgba(180, 140, 0, 0.35);
+}
+
+.postit-card .card-meta-datum {
+  color: #7a6000;
+}
+
+.toplab-card .card-meta-box {
+  background-color: rgba(34, 139, 34, 0.09);
+  border-color: rgba(34, 139, 34, 0.3);
+}
+
+.toplab-card .card-meta-datum {
+  color: #1d6b1d;
 }
 
 .angler-card {

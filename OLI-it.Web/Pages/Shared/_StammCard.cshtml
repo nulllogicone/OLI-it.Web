@@ -9,47 +9,22 @@
                     @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"Stamm {Model.Stamm1} Image", width = 60, height = 60 })
                 </div>
             }
-            <h2>Stamm: @Model.Stamm1</h2>
+            <h2>@Model.Stamm1</h2>
+            @if (!string.IsNullOrEmpty(Model.Beschreibung))
+            {
+                <div class="entity-description">
+                    @Model.Beschreibung
+                </div>
+            }
+        </div>
+        <div class="card-meta-box">
+            <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
+            @if (Model.KooK.HasValue)
+            {
+                <div class="card-meta-value">@Model.KooK.Value.ToString("N")</div>
+            }
         </div>
         <a href="/" class="close-btn" title="Close to Home">&times;</a>
     </div>
-    <div class="entity-card-body">
-        <div class="entity-info">
-            <div class="info-group">
-                <span class="label">Email:</span>
-                <span class="value">@Model.EMail</span>
-            </div>
-            @if (Model.GebDate.HasValue)
-            {
-                <div class="info-group">
-                    <span class="label">Birth Date:</span>
-                    <span class="value">@Model.GebDate.Value.ToShortDateString()</span>
-                </div>
-            }
-            @if (!string.IsNullOrEmpty(Model.Tel))
-            {
-                <div class="info-group">
-                    <span class="label">Phone:</span>
-                    <span class="value">@Model.Tel</span>
-                </div>
-            }
-            <div class="info-group">
-                <span class="label">Registration:</span>
-                <span class="value">@Model.Datum.ToString("yyyy-MM-dd")</span>
-            </div>
-            @if (Model.KooK.HasValue)
-            {
-                <div class="info-group">
-                    <span class="label">Balance:</span>
-                    <span class="value">@Model.KooK.Value.ToString("C")</span>
-                </div>
-            }
-        </div>
-        @if (!string.IsNullOrEmpty(Model.Beschreibung))
-        {
-            <div class="entity-description">
-                <strong>Description:</strong> @Model.Beschreibung
-            </div>
-        }
-    </div>
+
 </div>
