@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OLI-it.Web &mdash; Stakeholder Dashboard</title>
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+  crossorigin="anonymous">
+<style>
+body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
+.dash-header { background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%); color:#fff; padding:1.75rem 0 1.5rem; margin-bottom:1.75rem; }
+.dash-header h1 { font-size:1.7rem; font-weight:700; margin:0; letter-spacing:-.01em; }
+.dash-header .sub { opacity:.75; font-size:.85rem; margin-top:.3rem; }
+.metric-card { background:#fff; border-radius:10px; padding:1.1rem 1rem; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,.08); height:100%; }
+.metric-value { font-size:2.4rem; font-weight:700; line-height:1; }
+.metric-label { font-size:.7rem; color:#888; text-transform:uppercase; letter-spacing:.06em; margin-top:.3rem; }
+.mv-gray  { color:#546e7a; }
+.mv-green { color:#2e7d32; }
+.mv-amber { color:#e65100; }
+.mv-blue  { color:#1565c0; }
+.section-card { background:#fff; border-radius:10px; padding:1.4rem 1.5rem; box-shadow:0 1px 4px rgba(0,0,0,.08); margin-bottom:1.5rem; }
+.section-card h2 { font-size:1rem; font-weight:700; color:#1a237e; border-bottom:2px solid #e3f2fd; padding-bottom:.4rem; margin-bottom:1rem; text-transform:uppercase; letter-spacing:.04em; }
+.progress { height:8px; border-radius:4px; }
+.prog-label { font-size:.8rem; color:#555; margin-bottom:.2rem; display:flex; justify-content:space-between; }
+.kboard { display:flex; gap:.85rem; overflow-x:auto; padding-bottom:.5rem; }
+.kcol { flex:0 0 250px; border-radius:8px; overflow:hidden; border:1px solid #e0e0e0; background:#fafafa; }
+.kcol-header { padding:.55rem .85rem; font-weight:700; font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; display:flex; justify-content:space-between; align-items:center; }
+.kcol-count { background:rgba(255,255,255,.35); border-radius:12px; padding:.05em .55em; font-size:.9em; }
+.kcol-body { padding:.55rem; display:flex; flex-direction:column; gap:.4rem; max-height:500px; overflow-y:auto; }
+.kcol-todo     .kcol-header { background:#78909c; color:#fff; }
+.kcol-progress .kcol-header { background:#1565c0; color:#fff; }
+.kcol-done     .kcol-header { background:#2e7d32; color:#fff; }
+.kcol-blocked  .kcol-header { background:#c62828; color:#fff; }
+.kcard { background:#fff; border-radius:6px; padding:.55rem .7rem; box-shadow:0 1px 3px rgba(0,0,0,.07); border-left:3px solid #bdbdbd; }
+.kcol-progress .kcard { border-color:#1976d2; }
+.kcol-done     .kcard { border-color:#388e3c; }
+.kcol-blocked  .kcard { border-color:#d32f2f; }
+.kcard-id    { font-size:.65rem; font-weight:700; color:#9e9e9e; text-transform:uppercase; display:block; margin-bottom:2px; }
+.kcard-title { font-size:.8rem; line-height:1.35; color:#212121; }
+.kcard-sub   { font-size:.7rem; color:#bdbdbd; margin-top:3px; }
+.kcard-empty { text-align:center; color:#ccc; padding:1.5rem .5rem; font-size:.82rem; }
+.oq-group-header { font-size:.75rem; font-weight:700; color:#78909c; text-transform:uppercase; letter-spacing:.06em; margin:1rem 0 .3rem; border-bottom:1px solid #f0f0f0; padding-bottom:.2rem; }
+.oq-group-header:first-child { margin-top:0; }
+.oq-list { padding-left:1.1rem; margin:0 0 .4rem; }
+.oq-list li { font-size:.82rem; margin-bottom:.3rem; color:#333; }
+.oq-id { font-weight:700; color:#e65100; font-size:.75rem; }
+.adr-accepted   { background:#d4edda; color:#155724; font-size:.75rem; }
+.adr-proposed   { background:#fff3cd; color:#856404; font-size:.75rem; }
+.adr-rejected   { background:#f8d7da; color:#721c24; font-size:.75rem; }
+.adr-superseded { background:#d6d8db; color:#383d41; font-size:.75rem; }
+.adr-unknown    { background:#e2e3e5; color:#383d41; font-size:.75rem; }
+.cl-list { list-style:none; padding:0; margin:0; }
+.cl-list li { font-size:.8rem; border-left:3px solid #e3f2fd; padding:.2rem .6rem; margin-bottom:.25rem; color:#444; }
+.cl-list li:first-child { border-color:#1565c0; font-weight:600; }
+.dash-footer { text-align:center; color:#aaa; font-size:.72rem; padding:1.5rem 0 2rem; }
+@media (max-width:768px) { .kboard { flex-direction:column; } .kcol { flex:none; } }
+</style>
+</head>
+<body>
+
+<div class="dash-header">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+      <div>
+        <h1>OLI-it.Web &mdash; Stakeholder Dashboard</h1>
+        <div class="sub">0L1 Open Messaging Platform &bull; Generated: 2026-04-08 22:06 &bull; Backlog: 2026-04-08</div>
+      </div>
+      <div class="d-flex gap-2 align-items-center mt-1">
+        <span class="badge bg-warning text-dark fs-6 px-3 py-2">Phase 1 &mdash; MVP Parity</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container pb-4">
+
+  <!-- Metrics -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">17</div><div class="metric-label">Phase 1 Items</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-green">0</div><div class="metric-label">Phase 1 Done</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-blue">0</div><div class="metric-label">Phase 1 In&nbsp;Progress</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">14</div><div class="metric-label">Phase 2 Items</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-green">3</div><div class="metric-label">Phase 2 Done</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-amber">21</div><div class="metric-label">Open Questions</div></div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="section-card">
+    <h2>Delivery Progress</h2>
+    <div class="mb-3">
+      <div class="prog-label"><span>Phase 1 &mdash; MVP Parity</span><strong>0 / 17 &nbsp;(0%)</strong></div>
+      <div class="progress"><div class="progress-bar bg-primary" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>
+    </div>
+    <div>
+      <div class="prog-label"><span>Phase 2 &mdash; Enhancements</span><strong>3 / 14 &nbsp;(21%)</strong></div>
+      <div class="progress"><div class="progress-bar bg-success" role="progressbar" style="width:21%" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100"></div></div>
+    </div>
+  </div>
+
+  <!-- Phase 1 Kanban -->
+  <div class="section-card">
+    <h2>Phase 1 &mdash; MVP Parity &nbsp;<small class="text-muted fw-normal text-lowercase">(17 items)</small></h2>
+    <div class='kboard'><div class='kcol kcol-todo'><div class='kcol-header'>Backlog<span class='kcol-count'>17</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>BL-001</span><div class='kcard-title'>Project setup: .NET 10, EF Core, SQL Server, Identity</div><div class='kcard-sub'>UC: —</div></div><div class='kcard'><span class='kcard-id'>BL-002</span><div class='kcard-title'>EF Core models + DbContext + initial migration</div><div class='kcard-sub'>UC: —</div></div><div class='kcard'><span class='kcard-id'>BL-003</span><div class='kcard-title'>User registration + login/logout</div><div class='kcard-sub'>UC: UC-001, UC-002</div></div><div class='kcard'><span class='kcard-id'>BL-004</span><div class='kcard-title'>Wordspace admin: nets, nodes, trees, branches CRUD</div><div class='kcard-sub'>UC: UC-012</div></div><div class='kcard'><span class='kcard-id'>BL-005</span><div class='kcard-title'>Wordspace Navigator component (create message / filter profile)</div><div class='kcard-sub'>UC: UC-003, UC-004</div></div><div class='kcard'><span class='kcard-id'>BL-006</span><div class='kcard-title'>Create / edit message with description</div><div class='kcard-sub'>UC: UC-003</div></div><div class='kcard'><span class='kcard-id'>BL-007</span><div class='kcard-title'>Create / edit filter profiles</div><div class='kcard-sub'>UC: UC-004</div></div><div class='kcard'><span class='kcard-id'>BL-008</span><div class='kcard-title'>Matchmaking algorithm implementation</div><div class='kcard-sub'>UC: UC-005</div></div><div class='kcard'><span class='kcard-id'>BL-009</span><div class='kcard-title'>Inbox — matched messages per user</div><div class='kcard-sub'>UC: UC-005</div></div><div class='kcard'><span class='kcard-id'>BL-010</span><div class='kcard-title'>Message detail page + answer submission</div><div class='kcard-sub'>UC: UC-006</div></div><div class='kcard'><span class='kcard-id'>BL-011</span><div class='kcard-title'>Rate answers + credit transactions</div><div class='kcard-sub'>UC: UC-007, UC-011</div></div><div class='kcard'><span class='kcard-id'>BL-012</span><div class='kcard-title'>Journal page (public chronological)</div><div class='kcard-sub'>UC: UC-008</div></div><div class='kcard'><span class='kcard-id'>BL-013</span><div class='kcard-title'>Charts page (rankings)</div><div class='kcard-sub'>UC: UC-009</div></div><div class='kcard'><span class='kcard-id'>BL-014</span><div class='kcard-title'>Search (users, messages, answers)</div><div class='kcard-sub'>UC: UC-010</div></div><div class='kcard'><span class='kcard-id'>BL-015</span><div class='kcard-title'>User profile + transaction history</div><div class='kcard-sub'>UC: UC-011</div></div><div class='kcard'><span class='kcard-id'>BL-016</span><div class='kcard-title'>Multi-language support (EN/DE/ES)</div><div class='kcard-sub'>UC: —</div></div><div class='kcard'><span class='kcard-id'>BL-017</span><div class='kcard-title'>RSS feed</div><div class='kcard-sub'>UC: —</div></div></div></div><div class='kcol kcol-progress'><div class='kcol-header'>In Progress<span class='kcol-count'>0</span></div><div class='kcol-body'><div class='kcard-empty'>Nothing here yet</div></div></div><div class='kcol kcol-done'><div class='kcol-header'>Done<span class='kcol-count'>0</span></div><div class='kcol-body'><div class='kcard-empty'>Nothing here yet</div></div></div></div>
+  </div>
+
+  <!-- Phase 2 Kanban -->
+  <div class="section-card">
+    <h2>Phase 2 &mdash; Enhancements &nbsp;<small class="text-muted fw-normal text-lowercase">(14 items)</small></h2>
+    <div class='kboard'><div class='kcol kcol-todo'><div class='kcol-header'>Backlog<span class='kcol-count'>11</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>BL-101</span><div class='kcard-title'>Mobile-responsive layout</div><div class='kcard-sub'>Bootstrap responsive pass</div></div><div class='kcard'><span class='kcard-id'>BL-102</span><div class='kcard-title'>Notifications for matched messages</div><div class='kcard-sub'>Email or in-app</div></div><div class='kcard'><span class='kcard-id'>BL-103</span><div class='kcard-title'>Admin moderation dashboard</div><div class='kcard-sub'>Flag/review messages</div></div><div class='kcard'><span class='kcard-id'>BL-104</span><div class='kcard-title'>Advanced wordspace editing (drag-drop ordering)</div></div><div class='kcard'><span class='kcard-id'>BL-105</span><div class='kcard-title'>Analytics/reporting for authors</div><div class='kcard-sub'>Views, delivery count</div></div><div class='kcard'><span class='kcard-id'>BL-106</span><div class='kcard-title'>API exposure</div><div class='kcard-sub'>REST API for external clients</div></div><div class='kcard'><span class='kcard-id'>BL-109</span><div class='kcard-title'>Hash passwords instead of plaintext storage</div><div class='kcard-sub'>Use BCrypt or ASP.NET Core Identity password hasher</div></div><div class='kcard'><span class='kcard-id'>BL-110</span><div class='kcard-title'>Implement account lockout after failed login attempts</div><div class='kcard-sub'>Lock account for X minutes after Y failed attempts</div></div><div class='kcard'><span class='kcard-id'>BL-111</span><div class='kcard-title'>StammCard → StammStatisticsOverview link</div><div class='kcard-sub'>Add a link in the meta-stamm-info box (top-right of StammCard) to a new `StammStatisticsOverview` page that renders charts from recent Stamm activity (journal volume, answer rates, credit flow, etc.)</div></div><div class='kcard'><span class='kcard-id'>BL-112</span><div class='kcard-title'>PostItViewer — bare URI content page</div><div class='kcard-sub'>A minimal page that fetches and renders a URI's content in its native format (plain text, HTML, Markdown, etc.) with zero chrome: no menu, header, nav, or border. Intended for embedding Gists, blog snippets, and standalone statements as PostIt content.</div></div><div class='kcard'><span class='kcard-id'>BL-114</span><div class='kcard-title'>DocFx docs site + GitHub Pages publishing</div><div class='kcard-sub'>Set up DocFx to build project docs and publish them to GitHub Pages as a public documentation portal (dashboard can be integrated later).</div></div></div></div><div class='kcol kcol-progress'><div class='kcol-header'>In Progress<span class='kcol-count'>0</span></div><div class='kcol-body'><div class='kcard-empty'>Nothing here yet</div></div></div><div class='kcol kcol-done'><div class='kcol-header'>Done<span class='kcol-count'>3</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>BL-107</span><div class='kcard-title'>Implement rate limiting for login endpoint</div><div class='kcard-sub'>Fixed window: 5 attempts/minute per IP using built-in RateLimiter</div></div><div class='kcard'><span class='kcard-id'>BL-108</span><div class='kcard-title'>Add anti-forgery token handling to login API</div><div class='kcard-sub'>Re-enable CSRF protection for login/logout endpoints</div></div><div class='kcard'><span class='kcard-id'>BL-113</span><div class='kcard-title'>Stakeholder dashboard overview (progress + issues)</div><div class='kcard-sub'>A concise dashboard for business stakeholders, product owners, and scrum master to track delivery progress, current issues/blockers, and overall project health at a glance. Proposed implementation: leverage a Copilot agent workflow (similar to spec-kit style) to scrape and interpret project markdown artifacts (issues, feature requests, requirements, acceptance criteria, backlog IDs like BL-112) and synthesize a dependency-aware overview.</div></div></div></div></div>
+  </div>
+
+  <!-- Open Questions + ADRs -->
+  <div class="row g-3 mb-0">
+    <div class="col-lg-6">
+      <div class="section-card h-100">
+        <h2>Open Questions (21)</h2>
+        <h5 class='oq-group-header'>Domain &amp; Protocol</h5><ul class='oq-list'><li><span class='oq-id'>OQ-001</span> Does matchmaking run eagerly (on message creation) or lazily (on recipient request)?</li><li><span class='oq-id'>OQ-002</span> Can a user answer their own message?</li><li><span class='oq-id'>OQ-003</span> Is there a limit to how many filter profiles a user can have?</li><li><span class='oq-id'>OQ-004</span> Does the credit balance go negative? If so, what are the consequences?</li><li><span class='oq-id'>OQ-005</span> Are wordspace labels localized (EN/DE/ES per node name)?</li><li><span class='oq-id'>OQ-006</span> Should Criteria be in a single polymorphic table or split into DescriptionCriteria / FilterCriteria?</li></ul><h5 class='oq-group-header'>Data Migration</h5><ul class='oq-list'><li><span class='oq-id'>OQ-007</span> What is the current SQL Server schema (table names, PKs, FKs)?</li><li><span class='oq-id'>OQ-008</span> Are legacy user passwords migratable, or do users need to reset?</li><li><span class='oq-id'>OQ-009</span> Is historical transaction data to be migrated, or does balance carry over as a seed value?</li><li><span class='oq-id'>OQ-010</span> Are there deprecated tables in the legacy DB that should be ignored?</li></ul><h5 class='oq-group-header'>Technical</h5><ul class='oq-list'><li><span class='oq-id'>OQ-011</span> Target .NET version confirmed as .NET 10?</li><li><span class='oq-id'>OQ-012</span> Authentication: ASP.NET Core Identity, or custom session/cookie?</li><li><span class='oq-id'>OQ-013</span> EF Core approach: code-first migrations only, or scaffold from existing schema first?</li><li><span class='oq-id'>OQ-014</span> Is there an existing REST API in the legacy system to reference?</li></ul><h5 class='oq-group-header'>UI/UX</h5><ul class='oq-list'><li><span class='oq-id'>OQ-015</span> Is the Wordspace Navigator built as a Razor partial, a Blazor component, or JavaScript-driven?</li><li><span class='oq-id'>OQ-016</span> Which pages need to be mobile-responsive for MVP?</li><li><span class='oq-id'>OQ-017</span> Is dark/light theme toggle in scope?</li><li><span class='oq-id'>OQ-018</span> Is the RSS feed format defined? Should it be compatible with the existing XML output?</li><li><span class='oq-id'>OQ-021</span> [BL-111] StammStatisticsOverview — which activity data feeds the charts? (e.g. journal entries, answer counts, credit deltas, inbox delivery volume) Should the page be public or authenticated-only? Is there a preferred chart library (Chart.js, ApexCharts, etc.)?</li></ul><h5 class='oq-group-header'>Delivery</h5><ul class='oq-list'><li><span class='oq-id'>OQ-019</span> Who validates parity against the legacy system before go-live?</li><li><span class='oq-id'>OQ-020</span> Is the target a direct cutover or side-by-side staging?</li></ul>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="section-card h-100">
+        <h2>Architecture Decisions</h2>
+        <table class="table table-sm mb-0">
+          <thead class="table-light"><tr><th>Decision</th><th style="width:110px">Date</th><th style="width:100px">Status</th></tr></thead>
+          <tbody><tr><td>ADR-0001: Database-First Approach with Existing Schema</td><td>2026-03-26</td><td><span class='badge adr-accepted'>Accepted</span></td></tr><tr><td>ADR-0002: Stored Procedure for Matchmaking Logic</td><td>2026-03-26</td><td><span class='badge adr-accepted'>Accepted</span></td></tr><tr><td>ADR-0003: Preserve German Table Names in Database</td><td>2026-03-26</td><td><span class='badge adr-accepted'>Accepted</span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Log -->
+  <div class="section-card mt-3">
+    <h2>Recent Changes</h2>
+    <ul class="cl-list"><li>2026-03-26: Initial backlog from use case and entity analysis.</li><li>2026-03-26: Added authentication security enhancements (BL-107 to BL-110).</li><li>2026-03-26: Completed BL-107 - Rate limiting implemented with fixed window (5 attempts/min).</li><li>2026-03-26: Completed BL-108 - Anti-forgery token protection enabled for login/logout endpoints.</li><li>2026-04-08: Added BL-111 - StammStatisticsOverview page linked from StammCard meta-info box (spontaneous idea).</li><li>2026-04-08: Added BL-112 - PostItViewer bare URI content page (spontaneous idea).</li><li>2026-04-08: Added BL-113 - Stakeholder dashboard overview for progress and issues visibility.</li><li>2026-04-08: Refined BL-113 with implementation detail: Copilot/spec-kit style markdown scraping and dependency-aware synthesis.</li><li>2026-04-08: Completed BL-113 - Static HTML dashboard generated by docs/generate-dashboard.ps1; prompt at .github/prompts/generate-dashboard.prompt.md.</li><li>2026-04-08: Added BL-114 - DocFx + GitHub Pages follow-up (deferred).</li></ul>
+  </div>
+
+</div>
+
+<div class="dash-footer">
+  <div class="container">
+    Generated by <code>docs/generate-dashboard.ps1</code> from project markdown files &bull; OLI-it.Web (nulllogicone) &bull; 2026-04-08 22:06
+  </div>
+</div>
+
+</body>
+</html>
