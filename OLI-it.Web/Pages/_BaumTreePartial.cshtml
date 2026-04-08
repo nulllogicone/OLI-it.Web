@@ -1,0 +1,84 @@
+@using OLI_it.Web.Pages
+@model BaumViewModel
+
+@{
+    int indentLevel = ViewData["IndentLevel"] as int? ?? 2;
+    bool isNested = indentLevel > 2;
+    string cssClass = isNested ? "tree-node baum-node nested-baum" : "tree-node baum-node";
+}
+
+<div class="@cssClass">
+    <div class="tree-node-header" data-level="@indentLevel" data-auto-expand="true">
+        @for (int i = 0; i < indentLevel; i++)
+        {
+            <span class="tree-indent"></span>
+        }
+        @if (Model.Zweige.Any())
+        {
+            <span class="tree-icon expand-icon">▼</span>
+        }
+        else
+        {
+            <span class="tree-icon no-expand">●</span>
+        }
+        <span class="tree-connector">T</span>
+        <span class="tree-label baum-label">@Model.Name</span>
+        @if (!string.IsNullOrEmpty(Model.Beschreibung))
+        {
+            <span class="tree-description">(@Model.Beschreibung)</span>
+        }
+    </div>
+    @if (Model.Zweige.Any())
+    {
+        <div class="tree-children" style="display: block;">
+            @foreach (var zweig in Model.Zweige)
+            {
+                <div class="tree-node zweig-node">
+                    <div class="tree-node-header" data-level="@(indentLevel + 1)">
+                        @for (int i = 0; i <= indentLevel; i++)
+                        {
+                            <span class="tree-indent"></span>
+                        }
+                        @if (zweig.WeiterBaum != null || zweig.WeiterBaumGuid.HasValue)
+                        {
+                            <span class="tree-icon expand-icon">▶</span>
+                        }
+                        else
+                        {
+                            <span class="tree-icon no-expand">●</span>
+                        }
+                        <span class="tree-connector">├</span>
+                        <span class="tree-label zweig-label">@zweig.Name</span>
+                        @if (zweig.WeiterNetzGuid.HasValue)
+                        {
+                            <span class="tree-navigation">→ Netz</span>
+                        }
+                        else if (zweig.WeiterBaumGuid.HasValue)
+                        {
+                            <span class="tree-navigation">→ Baum</span>
+                        }
+                    </div>
+                    @if (zweig.WeiterBaum != null)
+                    {
+                        <div class="tree-children" style="display: none;">
+                            @{ ViewData["IndentLevel"] = indentLevel + 2; }
+                            @await Html.PartialAsync("_BaumTreePartial", zweig.WeiterBaum)
+                        </div>
+                    }
+                    else if (zweig.WeiterBaumGuid.HasValue)
+                    {
+                        @* Placeholder for on-demand loading *@
+                        <div class="tree-children" 
+                             style="display: none;" 
+                             data-load-on-demand="true"
+                             data-node-type="baum"
+                             data-node-guid="@zweig.WeiterBaumGuid"
+                             data-indent-level="@(indentLevel + 2)">
+                            <div class="loading-indicator">Loading...</div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

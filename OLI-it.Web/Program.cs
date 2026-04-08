@@ -54,6 +54,12 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddDbContext<OliItDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OliItDb")));
 
+// Add memory cache
+builder.Services.AddMemoryCache();
+
+// Add Wortraum Cache Service (singleton for shared caching across all users)
+builder.Services.AddSingleton<WortraumCacheService>();
+
 // Add Azure Blob Storage Service
 builder.Services.AddSingleton<AzureBlobStorageService>();
 

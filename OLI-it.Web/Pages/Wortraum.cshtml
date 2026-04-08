@@ -1,0 +1,646 @@
+@page
+@model WortraumModel
+@{
+    ViewData["Title"] = "Wortraum - NKBZ Playground";
+}
+
+<div class="page-header">
+    <h1>Wortraum</h1>
+    <p>Root Word Space - Entry Point for PostIt Classification</p>
+    <p style="font-size: 0.9em; opacity: 0.85;">Use this hierarchical structure to describe the <strong>author</strong>, <strong>content</strong>, and <strong>desired recipient characteristics</strong></p>
+</div>
+
+
+
+
+
+<div class="wortraum-container">
+    <div class="wortraum-tree">
+        @if (Model.RootNetz != null)
+        {
+            var netz = Model.RootNetz;
+            <div class="tree-node netz-node root-netz">
+                <div class="tree-node-header" data-level="0" data-auto-expand="true">
+                    <span class="tree-icon expand-icon">▼</span>
+                    <span class="tree-connector">T</span>
+                    <span class="tree-label netz-label">@netz.Name</span>
+                    @if (!string.IsNullOrEmpty(netz.Beschreibung))
+                    {
+                        <span class="tree-description">(@netz.Beschreibung)</span>
+                    }
+                </div>
+                <div class="tree-children" style="display: block;">
+                    @foreach (var knoten in netz.Knoten)
+                    {
+                        <div class="tree-node knoten-node">
+                            <div class="tree-node-header" data-level="1">
+                                <span class="tree-indent"></span>
+                                @if (knoten.Baum != null || knoten.WeiterNetz != null || knoten.WeiterNetzGuid.HasValue || knoten.WeiterBaumGuid.HasValue)
+                                {
+                                    <span class="tree-icon expand-icon">▶</span>
+                                }
+                                else
+                                {
+                                    <span class="tree-icon no-expand">●</span>
+                                }
+                                <span class="tree-connector">├</span>
+                                <span class="tree-label knoten-label">@knoten.Name</span>
+                                @if (!string.IsNullOrEmpty(knoten.Beschreibung))
+                                {
+                                    <span class="tree-description">(@knoten.Beschreibung)</span>
+                                }
+                                @if (knoten.WeiterNetzGuid.HasValue)
+                                {
+                                    <span class="tree-navigation">→ Netz</span>
+                                }
+                            </div>
+                            @if (knoten.WeiterNetz != null)
+                            {
+                                <div class="tree-children" style="display: none;">
+                                    @await Html.PartialAsync("_NetzTreePartial", knoten.WeiterNetz)
+                                </div>
+                            }
+                            else if (knoten.Baum != null)
+                            {
+                                <div class="tree-children" style="display: none;">
+                                    @{ ViewData["IndentLevel"] = 2; }
+                                    @await Html.PartialAsync("_BaumTreePartial", knoten.Baum)
+                                </div>
+                            }
+                            else if (knoten.WeiterNetzGuid.HasValue || knoten.WeiterBaumGuid.HasValue)
+                            {
+                                @* Placeholder for on-demand loading *@
+                                <div class="tree-children" 
+                                     style="display: none;" 
+                                     data-load-on-demand="true"
+                                     data-node-type="@(knoten.WeiterNetzGuid.HasValue ? "netz" : "baum")"
+                                     data-node-guid="@(knoten.WeiterNetzGuid ?? knoten.WeiterBaumGuid)"
+                                     data-indent-level="2">
+                                    <div class="loading-indicator">Loading...</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>⚠️ Root Netz not found!</p>
+                <p>Please ensure the Netz with GUID <code>76035F19-F4AE-4D58-A388-4BBC72C51CEF</code> exists in the database.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Wortraum page loaded, initializing...');
+
+            // Use EVENT DELEGATION instead of individual handlers
+            // This handles both initial and dynamically added elements
+            document.addEventListener('click', function(e) {
+                // Find if the click was on or inside a tree-node-header
+                const header = e.target.closest('.tree-node-header');
+
+                if (!header) return; // Click was not on a tree header
+
+                console.log('Header clicked (delegated):', header.querySelector('.tree-label')?.textContent);
+
+                // Stop event from bubbling
+                e.stopPropagation();
+
+                const expandIcon = header.querySelector('.expand-icon');
+                console.log('Found expand icon:', expandIcon);
+
+                if (!expandIcon) {
+                    console.log('No expand icon - returning early');
+                    return;
+                }
+
+                const parent = header.closest('.tree-node');
+                const children = parent.querySelector(':scope > .tree-children');
+
+                console.log('Children container:', children);
+
+                if (children) {
+                    const isExpanded = children.style.display !== 'none';
+
+                    console.log('Toggling:', {
+                        label: header.querySelector('.tree-label')?.textContent,
+                        isExpanded,
+                        childrenDisplay: children.style.display,
+                        needsLoading: children.dataset.loadOnDemand,
+                        isLoaded: children.dataset.loaded
+                    });
+
+                    if (!isExpanded) {
+                        // Check if this needs on-demand loading
+                        if (children.dataset.loadOnDemand === 'true' && children.dataset.loaded !== 'true') {
+                            console.log('Triggering AJAX load');
+                            loadNodeChildren(children);
+                        }
+                    }
+
+                    children.style.display = isExpanded ? 'none' : 'block';
+                    expandIcon.textContent = isExpanded ? '▶' : '▼';
+
+                    // Add/remove expanded class
+                    if (isExpanded) {
+                        header.classList.remove('expanded');
+                    } else {
+                        header.classList.add('expanded');
+                    }
+                } else {
+                    console.log('No children container found!');
+                }
+            });
+
+            console.log('Event delegation attached to document');
+
+            // Mark auto-expanded nodes as expanded
+            document.querySelectorAll('[data-auto-expand="true"]').forEach(header => {
+                header.classList.add('expanded');
+            });
+
+            // AJAX function to load node children on-demand
+            async function loadNodeChildren(childrenContainer) {
+                const nodeType = childrenContainer.dataset.nodeType;
+                const nodeGuid = childrenContainer.dataset.nodeGuid;
+                const indentLevel = parseInt(childrenContainer.dataset.indentLevel);
+
+                console.log('Loading node:', { nodeType, nodeGuid, indentLevel });
+
+                try {
+                    const response = await fetch(`/Wortraum?handler=LoadNode&type=${nodeType}&guid=${nodeGuid}&indentLevel=${indentLevel}`);
+
+                    if (!response.ok) {
+                        throw new Error('Failed to load node');
+                    }
+
+                    const result = await response.json();
+                    console.log('Loaded node data:', result);
+
+                    // Clear loading indicator
+                    childrenContainer.innerHTML = '';
+
+                    // Render the loaded content
+                    if (result.type === 'netz') {
+                        renderNetzNode(result.data, childrenContainer, indentLevel);
+                    } else if (result.type === 'baum') {
+                        renderBaumNode(result.data, childrenContainer, indentLevel);
+                    }
+
+                    // Mark as loaded
+                    childrenContainer.dataset.loaded = 'true';
+
+                    // Mark auto-expanded nodes in the newly loaded content
+                    childrenContainer.querySelectorAll('[data-auto-expand="true"]').forEach(header => {
+                        header.classList.add('expanded');
+                        console.log('Marked as auto-expanded:', header.querySelector('.tree-label')?.textContent);
+                    });
+
+                    console.log('Node rendered (event delegation handles clicks automatically)');
+
+                } catch (error) {
+                    childrenContainer.innerHTML = '<div class="error-indicator">Error loading content. Please try again.</div>';
+                    console.error('Error loading node:', error);
+                }
+            }
+
+            // Render a Netz node
+            function renderNetzNode(netz, container, indentLevel) {
+                const netzHtml = createNetzHtml(netz, indentLevel);
+                container.insertAdjacentHTML('beforeend', netzHtml);
+            }
+
+            // Render a Baum node
+            function renderBaumNode(baum, container, indentLevel) {
+                const baumHtml = createBaumHtml(baum, indentLevel);
+                container.insertAdjacentHTML('beforeend', baumHtml);
+            }
+
+            // Create HTML for Netz
+            function createNetzHtml(netz, indentLevel) {
+                const indent = '    <span class="tree-indent"></span>'.repeat(indentLevel);
+                const hasKnoten = netz.knoten && netz.knoten.length > 0;
+                const expandIcon = hasKnoten ? '▼' : '●';
+                const expandClass = hasKnoten ? 'expand-icon' : 'no-expand';
+                const displayStyle = hasKnoten ? 'block' : 'none';
+
+                let html = `
+                <div class="tree-node netz-node nested-netz">
+                    <div class="tree-node-header" data-level="${indentLevel}" data-auto-expand="true">
+                        ${indent}
+                        <span class="tree-icon ${expandClass}">${expandIcon}</span>
+                        <span class="tree-connector">T</span>
+                        <span class="tree-label netz-label">${escapeHtml(netz.name)}</span>
+                        ${netz.beschreibung ? `<span class="tree-description">(${escapeHtml(netz.beschreibung)})</span>` : ''}
+                    </div>`;
+
+                if (hasKnoten) {
+                    html += `<div class="tree-children" style="display: ${displayStyle};">`;
+                    netz.knoten.forEach(knoten => {
+                        html += createKnotenHtml(knoten, indentLevel + 1);
+                    });
+                    html += '</div>';
+                }
+
+                html += '</div>';
+                return html;
+            }
+
+            // Create HTML for Knoten
+            function createKnotenHtml(knoten, indentLevel) {
+                const indent = '    <span class="tree-indent"></span>'.repeat(indentLevel);
+                const hasChildren = knoten.weiterNetzGuid || knoten.weiterBaumGuid;
+                const expandIcon = hasChildren ? '▶' : '●';
+                const expandClass = hasChildren ? 'expand-icon' : 'no-expand';
+
+                console.log('Creating Knoten:', { 
+                    name: knoten.name, 
+                    hasChildren, 
+                    weiterNetzGuid: knoten.weiterNetzGuid, 
+                    weiterBaumGuid: knoten.weiterBaumGuid 
+                });
+
+                let html = `
+                <div class="tree-node knoten-node">
+                    <div class="tree-node-header" data-level="${indentLevel}">
+                        ${indent}
+                        <span class="tree-icon ${expandClass}">${expandIcon}</span>
+                        <span class="tree-connector">├</span>
+                        <span class="tree-label knoten-label">${escapeHtml(knoten.name)}</span>
+                        ${knoten.beschreibung ? `<span class="tree-description">(${escapeHtml(knoten.beschreibung)})</span>` : ''}
+                        ${knoten.weiterNetzGuid ? '<span class="tree-navigation">→ Netz</span>' : ''}
+                    </div>`;
+
+                if (hasChildren) {
+                    const nodeType = knoten.weiterNetzGuid ? 'netz' : 'baum';
+                    const nodeGuid = knoten.weiterNetzGuid || knoten.weiterBaumGuid;
+                    html += `
+                    <div class="tree-children" 
+                         style="display: none;" 
+                         data-load-on-demand="true"
+                         data-node-type="${nodeType}"
+                         data-node-guid="${nodeGuid}"
+                         data-indent-level="${indentLevel + 1}">
+                        <div class="loading-indicator">Loading...</div>
+                    </div>`;
+                }
+
+                html += '</div>';
+                return html;
+            }
+
+            // Create HTML for Baum
+            function createBaumHtml(baum, indentLevel) {
+                const indent = '    <span class="tree-indent"></span>'.repeat(indentLevel);
+                const hasZweige = baum.zweige && baum.zweige.length > 0;
+                const expandIcon = hasZweige ? '▼' : '●';
+                const expandClass = hasZweige ? 'expand-icon' : 'no-expand';
+                const displayStyle = hasZweige ? 'block' : 'none';
+                const isNested = indentLevel > 2;
+                const cssClass = isNested ? 'tree-node baum-node nested-baum' : 'tree-node baum-node';
+
+                let html = `
+                <div class="${cssClass}">
+                    <div class="tree-node-header" data-level="${indentLevel}" data-auto-expand="true">
+                        ${indent}
+                        <span class="tree-icon ${expandClass}">${expandIcon}</span>
+                        <span class="tree-connector">T</span>
+                        <span class="tree-label baum-label">${escapeHtml(baum.name)}</span>
+                        ${baum.beschreibung ? `<span class="tree-description">(${escapeHtml(baum.beschreibung)})</span>` : ''}
+                    </div>`;
+
+                if (hasZweige) {
+                    html += `<div class="tree-children" style="display: ${displayStyle};">`;
+                    baum.zweige.forEach(zweig => {
+                        html += createZweigHtml(zweig, indentLevel + 1);
+                    });
+                    html += '</div>';
+                }
+
+                html += '</div>';
+                return html;
+            }
+
+            // Create HTML for Zweig
+            function createZweigHtml(zweig, indentLevel) {
+                const indent = '    <span class="tree-indent"></span>'.repeat(indentLevel);
+                const hasChildren = zweig.weiterBaumGuid;
+                const expandIcon = hasChildren ? '▶' : '●';
+                const expandClass = hasChildren ? 'expand-icon' : 'no-expand';
+
+                let html = `
+                <div class="tree-node zweig-node">
+                    <div class="tree-node-header" data-level="${indentLevel}">
+                        ${indent}
+                        <span class="tree-icon ${expandClass}">${expandIcon}</span>
+                        <span class="tree-connector">├</span>
+                        <span class="tree-label zweig-label">${escapeHtml(zweig.name)}</span>
+                        ${zweig.weiterNetzGuid ? '<span class="tree-navigation">→ Netz</span>' : ''}
+                        ${zweig.weiterBaumGuid ? '<span class="tree-navigation">→ Baum</span>' : ''}
+                    </div>`;
+
+                if (hasChildren) {
+                    html += `
+                    <div class="tree-children" 
+                         style="display: none;" 
+                         data-load-on-demand="true"
+                         data-node-type="baum"
+                         data-node-guid="${zweig.weiterBaumGuid}"
+                         data-indent-level="${indentLevel + 1}">
+                        <div class="loading-indicator">Loading...</div>
+                    </div>`;
+                }
+
+                html += '</div>';
+                return html;
+            }
+
+            // Helper function to escape HTML
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+        });
+    </script>
+}
+
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 2em;
+    }
+
+    .page-header p {
+        margin: 5px 0;
+        opacity: 0.9;
+    }
+
+    .wortraum-info {
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin: 20px 0;
+    }
+
+    .info-box {
+        border-left: 4px solid #667eea;
+        padding-left: 15px;
+    }
+
+    .info-box h3 {
+        margin: 0 0 10px 0;
+        color: #667eea;
+    }
+
+    .info-box p {
+        margin: 8px 0;
+        line-height: 1.6;
+    }
+
+    .info-box code {
+        background: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: #d63384;
+    }
+
+    .wortraum-controls {
+        background: white;
+        padding: 15px 20px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .control-btn {
+        padding: 8px 16px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+
+    .control-btn:hover {
+        background: #5568d3;
+    }
+
+    .control-btn:active {
+        background: #4451b8;
+    }
+
+    .wortraum-container {
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin: 20px 0;
+    }
+
+    .wortraum-tree {
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .tree-node {
+        margin: 0;
+    }
+
+    .root-netz {
+        border: 2px solid #667eea;
+        border-radius: 4px;
+        padding: 10px;
+        background: #f8f9ff;
+    }
+
+    .nested-netz {
+        border-left: 3px solid #0066cc;
+        padding-left: 8px;
+        margin: 4px 0;
+        background: #f0f8ff;
+    }
+
+    .nested-netz .tree-node-header {
+        background: transparent;
+    }
+
+    .nested-netz .tree-node-header:hover {
+        background-color: #e0f0ff;
+    }
+
+    .baum-node {
+        margin: 2px 0;
+    }
+
+    .nested-baum {
+        border-left: 3px solid #009900;
+        padding-left: 8px;
+        margin: 4px 0;
+        background: #f0fff0;
+    }
+
+    .nested-baum .tree-node-header:hover {
+        background-color: #e0ffe0;
+    }
+
+    .tree-node-header {
+        display: flex;
+        align-items: center;
+        padding: 2px 0;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.15s;
+    }
+
+    .tree-node-header:hover {
+        background-color: #f0f0f0;
+    }
+
+    .tree-node-header.expanded {
+        background-color: #f8f8f8;
+    }
+
+    .root-netz > .tree-node-header {
+        font-size: 1.1em;
+        padding: 4px 0;
+    }
+
+    .root-netz > .tree-node-header:hover {
+        background-color: #e8ebff;
+    }
+
+    .tree-icon {
+        display: inline-block;
+        width: 16px;
+        text-align: center;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .expand-icon {
+        color: #666;
+        transition: transform 0.2s;
+        font-weight: bold;
+    }
+
+    .no-expand {
+        color: #999;
+        cursor: default;
+    }
+
+    .tree-connector {
+        display: inline-block;
+        width: 20px;
+        color: #999;
+        flex-shrink: 0;
+    }
+
+    .tree-indent {
+        display: inline-block;
+        width: 36px;
+        flex-shrink: 0;
+    }
+
+    .tree-label {
+        font-weight: 500;
+        margin-right: 8px;
+    }
+
+    /* Color coding for different levels */
+    .netz-label {
+        color: #0066cc;
+        font-weight: bold;
+    }
+
+    .knoten-label {
+        color: #0066cc;
+    }
+
+    .baum-label {
+        color: #009900;
+        font-weight: bold;
+    }
+
+    .zweig-label {
+        color: #009900;
+    }
+
+    .tree-description {
+        color: #666;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    .tree-navigation {
+        color: #cc6600;
+        font-size: 12px;
+        margin-left: 8px;
+    }
+
+    .tree-children {
+        margin-left: 0;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+
+    .empty-state p {
+        margin: 10px 0;
+    }
+
+    .empty-state code {
+        background: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: #d63384;
+    }
+
+    .loading-indicator {
+        padding: 10px 20px;
+        color: #667eea;
+        font-style: italic;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .error-indicator {
+        padding: 10px 20px;
+        color: #dc3545;
+        font-style: italic;
+    }
+</style>
