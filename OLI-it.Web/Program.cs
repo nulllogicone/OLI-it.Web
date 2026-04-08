@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using OLI_it.Web.Data;
 using OLI_it.Web.Endpoints;
+using OLI_it.Web.Services;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,9 @@ builder.Services.AddRateLimiter(options =>
 // Add DbContext with connection string from configuration
 builder.Services.AddDbContext<OliItDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OliItDb")));
+
+// Add Azure Blob Storage Service
+builder.Services.AddSingleton<AzureBlobStorageService>();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@
     var currentCulture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
     var stammName = User?.Identity?.Name ?? string.Empty;
+    var stammGuid = User?.Claims?.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     var datei = User?.Claims?.FirstOrDefault(c => c.Type == "Datei")?.Value;
 }
 
@@ -29,9 +30,11 @@
             <div class="user-info">
                 @if (!string.IsNullOrEmpty(datei))
                 {
-                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = datei, altText = stammName, width = 40, height = 40 })
+                    <a href="/stamm/@stammGuid" title="View your profile">
+                        @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = datei, altText = stammName, width = 40, height = 40 })
+                    </a>
                 }
-                <span class="username">@stammName</span>
+                <a href="/stamm/@stammGuid" class="username-link" title="View your profile">@stammName</a>
                 <button type="button" class="logout-button" onclick="handleLogout(event)">Logout</button>
             </div>
         }
