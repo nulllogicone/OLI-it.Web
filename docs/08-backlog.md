@@ -7,9 +7,9 @@ Status: draft
 
 | ID | Title | Use Case | Entity Impact | Status |
 |----|-------|----------|---------------|--------|
-| BL-001 | Project setup: .NET 10, EF Core, SQL Server, Identity | — | All | not started |
-| BL-002 | EF Core models + DbContext + initial migration | — | All entities | not started |
-| BL-003 | User registration + login/logout | UC-001, UC-002 | ENT-User | not started |
+| BL-001 | Project setup: .NET 10, EF Core, SQL Server, Identity | — | All | ✅ completed |
+| BL-002 | EF Core models + DbContext + initial migration | — | All entities | ✅ completed |
+| BL-003 | User registration + login/logout | UC-001, UC-002 | ENT-User | in progress |
 | BL-004 | Wordspace admin: nets, nodes, trees, branches CRUD | UC-012 | ENT-Wordspace* | not started |
 | BL-005 | Wordspace Navigator component (create message / filter profile) | UC-003, UC-004 | ENT-Criterion | not started |
 | BL-006 | Create / edit message with description | UC-003 | ENT-Message, ENT-Description, ENT-Criterion | not started |
