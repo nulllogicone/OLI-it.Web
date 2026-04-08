@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OLI_it.Web.Data;
 using OLI_it.Web.Models;
+using System.Security.Claims;
 
 namespace OLI_it.Web.Pages.PostIt
 {
@@ -21,6 +22,7 @@ namespace OLI_it.Web.Pages.PostIt
         public List<Models.TopLab>? PostItTopLabs { get; set; }
         public List<Models.Spiegel>? PostItSpiegel { get; set; }
         public List<Wurzeln>? PostItStamms { get; set; }
+        public Guid? AuthorStammGuid { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id, Guid? stamm)
         {
@@ -92,6 +94,24 @@ namespace OLI_it.Web.Pages.PostIt
                 .Where(w => w.PostItGuid == id.Value)
                 .OrderBy(w => w.StammZust) // Author (1) first, then followers (2), translators (3)
                 .ToListAsync();
+
+            // Store the author StammGuid for display purposes
+            var author = await _context.Wurzelns
+                .FirstOrDefaultAsync(w => w.PostItGuid == id.Value && w.StammZust == 1);
+            AuthorStammGuid = author?.StammGuid;
+
+            // Check if the current user is connected to this PostIt (any role can edit)
+            var currentUserGuid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(currentUserGuid) && Guid.TryParse(currentUserGuid, out var userGuid))
+            {
+                var userIsConnected = await _context.Wurzelns
+                    .AnyAsync(w => w.PostItGuid == id.Value && w.StammGuid == userGuid);
+                ViewData["UserCanEdit"] = userIsConnected;
+            }
+            else
+            {
+                ViewData["UserCanEdit"] = false;
+            }
 
             ViewData["Sidebar"] = "_SidebarPostIt";
 

@@ -14,6 +14,7 @@
         @if (Model.PostIt != null)
         {
             ViewData["StammGuid"] = Model.Stamm?.StammGuid.ToString() ?? "";
+            ViewData["AuthorStammGuid"] = Model.AuthorStammGuid?.ToString() ?? "";
             @await Html.PartialAsync("_PostItCard", Model.PostIt)
         }
     </div>

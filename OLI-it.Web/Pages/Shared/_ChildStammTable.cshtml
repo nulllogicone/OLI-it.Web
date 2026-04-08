@@ -37,7 +37,7 @@
                         }
                     </td>
                     <td>
-                        <strong>@wurzel.Stamm.Stamm1</strong>
+                        <a href="/stamm/@wurzel.StammGuid"><strong>@wurzel.Stamm.Stamm1</strong></a>
                         @if (wurzel.StammZust == 1)
                         {
                             <span class="badge badge-primary">Author</span>
@@ -69,7 +69,16 @@ else
         background-color: #f8f9fa;
         font-weight: 500;
     }
-    
+
+    .simple-table td a {
+        color: #212529;
+        text-decoration: none;
+    }
+
+    .simple-table td a:hover {
+        text-decoration: underline;
+    }
+
     .role-badge {
         display: inline-block;
         padding: 4px 8px;

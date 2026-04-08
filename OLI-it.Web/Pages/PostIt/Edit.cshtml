@@ -1,0 +1,166 @@
+@page "/postit/edit/{id:guid?}"
+@model OLI_it.Web.Pages.PostIt.EditModel
+@{
+    ViewData["Title"] = $"Edit {Model.PostIt.Titel ?? "PostIt"}";
+}
+
+<div class="edit-container">
+    <div class="edit-header">
+        <h1>@(Model.PostIt.Titel ?? "Untitled")</h1>
+        <a href="/postit/@Model.PostIt.PostItGuid" class="btn btn-secondary">Cancel</a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="edit-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Titel" class="form-label">Title</label>
+            <input asp-for="Titel" class="form-control" type="text" placeholder="Enter title..." />
+            <span asp-validation-for="Titel" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PostIt1" class="form-label">Description</label>
+            <textarea asp-for="PostIt1" class="form-control" rows="8" placeholder="Enter description..." required></textarea>
+            <span asp-validation-for="PostIt1" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Url" class="form-label">URL</label>
+            <input asp-for="Url" class="form-control" type="url" placeholder="https://example.com" />
+            <span asp-validation-for="Url" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Typ" class="form-label">Type</label>
+            <select asp-for="Typ" class="form-control" required>
+                <option value="">-- Select Type --</option>
+                <option value="txt">Text</option>
+                <option value="htm">HTML</option>
+                <option value="xml">XML</option>
+                <option value="uri">URI</option>
+            </select>
+            <span asp-validation-for="Typ" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Image</label>
+            @if (Model.AuthorStammGuid.HasValue)
+            {
+                @await Component.InvokeAsync("ImageGallery", new { stammGuid = Model.AuthorStammGuid.Value, currentImage = Model.PostIt.Datei })
+            }
+            else
+            {
+                <p class="text-muted">Image gallery not available (no author found)</p>
+            }
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/postit/@Model.PostIt.PostItGuid" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<style>
+    .edit-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .edit-header h1 {
+        margin: 0;
+        font-size: 1.75rem;
+        color: #333;
+    }
+
+    .edit-form .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .edit-form .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        display: block;
+    }
+
+    .edit-form .form-control {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .edit-form .form-control:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #545b62;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+</style>
