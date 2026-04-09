@@ -17,6 +17,8 @@ namespace OLI_it.Web.Pages.PostIt
 
         public Models.Stamm? Stamm { get; set; }
         public Models.PostIt? PostIt { get; set; }
+        public Models.Angler? Angler { get; set; }
+        public Models.TopLab? TopLab { get; set; }
         public List<Models.Code> Codes { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(Guid? id)

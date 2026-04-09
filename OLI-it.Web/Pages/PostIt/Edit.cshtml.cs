@@ -92,7 +92,8 @@ namespace OLI_it.Web.Pages.PostIt
             PostIt1 = postit.PostIt1;
             Url = postit.Url;
             Typ = postit.Typ;
-            DirectImageUrl = postit.Datei;
+            // Don't pre-populate DirectImageUrl - leave it empty so gallery selection works
+            DirectImageUrl = null;
             AuthorStammGuid = authorWurzel.StammGuid;
 
             return Page();
@@ -140,14 +141,8 @@ namespace OLI_it.Web.Pages.PostIt
             // Handle image selection or upload
             string? newImagePath = null;
 
-            // Priority 1: Direct URL input
-            if (!string.IsNullOrEmpty(DirectImageUrl))
-            {
-                newImagePath = DirectImageUrl.Trim();
-                _logger.LogInformation("Direct image URL set for PostIt {PostItId}: {ImageUrl}", id, newImagePath);
-            }
-            // Priority 2: New file upload
-            else if (DateiUpload != null && DateiUpload.Length > 0)
+            // Priority 1: New file upload
+            if (DateiUpload != null && DateiUpload.Length > 0)
             {
                 // Use the current user's StammGuid for image upload (not necessarily the author)
                 var uploadResult = await _blobService.UploadImageAsync(userGuid, DateiUpload);
@@ -166,11 +161,17 @@ namespace OLI_it.Web.Pages.PostIt
                     _logger.LogInformation("New image uploaded for PostIt {PostItId}: {BlobName}", id, uploadResult.BlobName);
                 }
             }
-            // Priority 3: Selected existing image from gallery
+            // Priority 2: Selected existing image from gallery
             else if (!string.IsNullOrEmpty(SelectedImageUrl))
             {
                 newImagePath = SelectedImageUrl;
                 _logger.LogInformation("Existing image selected for PostIt {PostItId}: {ImageUrl}", id, SelectedImageUrl);
+            }
+            // Priority 3: Direct URL input
+            else if (!string.IsNullOrEmpty(DirectImageUrl))
+            {
+                newImagePath = DirectImageUrl.Trim();
+                _logger.LogInformation("Direct image URL set for PostIt {PostItId}: {ImageUrl}", id, newImagePath);
             }
 
             // Update the Datei field if a new image was set

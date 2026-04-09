@@ -85,7 +85,7 @@
             });
         });
         
-        // Handle initial hash or activate first tab
+        // Handle initial hash only - do not auto-activate
         const hash = window.location.hash.substring(1);
         if (hash) {
             const targetLink = document.querySelector(`.tab-link[data-tab="${hash}"]`);
@@ -93,10 +93,14 @@
                 targetLink.click();
             }
         } else {
-            // Activate first tab if none selected
-            const firstTab = document.querySelector('.tab-link');
+            // Show first tab content without updating URL
+            const firstTab = document.querySelector('.tab-item');
+            const firstContent = document.querySelector('.tab-content');
             if (firstTab) {
-                firstTab.click();
+                firstTab.classList.add('active');
+            }
+            if (firstContent) {
+                firstContent.classList.add('active');
             }
         }
     });

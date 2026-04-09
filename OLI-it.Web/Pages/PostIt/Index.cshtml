@@ -23,8 +23,8 @@
     {
         var tabs = new List<(string Id, string Label, bool IsActive)>
         {
-            ("stamms", $"Stamms ({Model.PostItStamms?.Count ?? 0})", false),
-            ("codes", $"Codes ({Model.PostItCodes?.Count ?? 0})", true),
+            ("stamms", $"Stamms ({Model.PostItStamms?.Count ?? 0})", true),
+            ("codes", $"Codes ({Model.PostItCodes?.Count ?? 0})", false),
             ("toplabs", $"TopLabs ({Model.PostItTopLabs?.Count ?? 0})", false),
             ("spiegel", $"Matching ({Model.PostItSpiegel?.Count ?? 0})", false)
 
@@ -49,7 +49,7 @@
 
         <div id="toplabs" class="tab-content">
             <h3>TopLabs (Answers)</h3>
-            ViewData["Context"] = "postit";
+            @{ ViewData["Context"] = "postit"; }
             @await Html.PartialAsync("_ChildTopLabsTable", Model.PostItTopLabs ?? new List<OLI_it.Web.Models.TopLab>())
         </div>
 

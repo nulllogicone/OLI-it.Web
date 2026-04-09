@@ -25,7 +25,7 @@
 
         <div id="postits" class="tab-content">
             <h3>PostIts (Messages)</h3>
-            ViewData["StammGuid"] = Model.Stamm.StammGuid.ToString();
+            @{ ViewData["StammGuid"] = Model.Stamm.StammGuid.ToString(); }
             @await Html.PartialAsync("_ChildPostItsTable", Model.StammPostIts ?? new List<OLI_it.Web.Models.Wurzeln>())
         </div>
 
@@ -36,7 +36,7 @@
 
         <div id="toplabs" class="tab-content">
             <h3>TopLabs (Answers Written)</h3>
-            ViewData["Context"] = "stamm";
+            @{ ViewData["Context"] = "stamm"; }
             @await Html.PartialAsync("_ChildTopLabsTable", Model.StammTopLabs ?? new List<OLI_it.Web.Models.TopLab>())
         </div>
     }

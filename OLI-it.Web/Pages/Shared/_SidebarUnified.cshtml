@@ -2,6 +2,11 @@
 
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    // Ensure consistent format with leading slash
+    if (!string.IsNullOrEmpty(currentPage) && !currentPage.StartsWith("/"))
+    {
+        currentPage = "/" + currentPage;
+    }
     var stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? "";
     var postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? "";
     var anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? "";
@@ -15,30 +20,30 @@
         {
             <li class="menu-section-header">Stamm</li>
             <li class="menu-item">
-                <a href="/stamm/@stammGuid" class="@(currentPage.Contains("Stamm/Index") && string.IsNullOrEmpty(postitGuid) && string.IsNullOrEmpty(anglerGuid) && string.IsNullOrEmpty(toplabGuid) ? "active" : "")">
+                <a href="/stamm/@stammGuid" class="@(currentPage.Equals("/Stamm/Index", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(postitGuid) && string.IsNullOrEmpty(anglerGuid) && string.IsNullOrEmpty(toplabGuid) ? "active" : "")">
                     stamm details
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/stamm/@stammGuid/postit" class="@(currentPage.Contains("Stamm/PostIt") ? "active" : "")">
+                <a href="/stamm/@stammGuid/postit" class="@(currentPage.Equals("/Stamm/PostIt", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     postit
                 </a>
                 <span class="menu-description">messages</span>
             </li>
             <li class="menu-item">
-                <a href="/stamm/@stammGuid/angler" class="@(currentPage.Contains("Stamm/Angler") ? "active" : "")">
+                <a href="/stamm/@stammGuid/angler" class="@(currentPage.Equals("/Stamm/Angler", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     angler
                 </a>
                 <span class="menu-description">filter profiles</span>
             </li>
             <li class="menu-item">
-                <a href="/stamm/@stammGuid/toplab" class="@(currentPage.Contains("Stamm/TopLab") ? "active" : "")">
+                <a href="/stamm/@stammGuid/toplab" class="@(currentPage.Equals("/Stamm/TopLab", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     toplab
                 </a>
                 <span class="menu-description">answers written</span>
             </li>
             <li class="menu-item">
-                <a href="/stamm/@stammGuid/statistics" class="@(currentPage.Contains("Stamm/Statistics") ? "active" : "")">
+                <a href="/stamm/@stammGuid/statistics" class="@(currentPage.Equals("/Stamm/Statistics", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     statistics
                 </a>
                 <span class="menu-description">activity &amp; credit charts</span>
@@ -51,18 +56,18 @@
             <li class="menu-divider"></li>
             <li class="menu-section-header">PostIt</li>
             <li class="menu-item">
-                <a href="/postit/@postitGuid" class="@(currentPage.Contains("PostIt/Index") ? "active" : "")">
+                <a href="/postit/@postitGuid" class="@(currentPage.Equals("/PostIt/Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     postit details
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/postit/@postitGuid/code" class="@(currentPage.Contains("PostIt/Code") ? "active" : "")">
+                <a href="/postit/@postitGuid/code" class="@(currentPage.Equals("/PostIt/Code", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     code
                 </a>
                 <span class="menu-description">descriptions</span>
             </li>
             <li class="menu-item">
-                <a href="/postit/@postitGuid/toplab" class="@(currentPage.Contains("PostIt/TopLab") ? "active" : "")">
+                <a href="/postit/@postitGuid/toplab" class="@(currentPage.Equals("/PostIt/TopLab", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     toplab
                 </a>
                 <span class="menu-description">answers</span>
@@ -75,12 +80,12 @@
             <li class="menu-divider"></li>
             <li class="menu-section-header">Angler</li>
             <li class="menu-item">
-                <a href="/angler/@anglerGuid" class="@(currentPage.Contains("Angler/Index") ? "active" : "")">
+                <a href="/angler/@anglerGuid" class="@(currentPage.Equals("/Angler/Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     angler details
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/angler/@anglerGuid/catched" class="@(currentPage.Contains("Angler/Catched") ? "active" : "")">
+                <a href="/angler/@anglerGuid/catched" class="@(currentPage.Equals("/Angler/Catched", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     catched
                 </a>
                 <span class="menu-description">matching postits</span>
@@ -93,7 +98,7 @@
             <li class="menu-divider"></li>
             <li class="menu-section-header">TopLab</li>
             <li class="menu-item">
-                <a href="/toplab/@toplabGuid" class="@(currentPage.Contains("TopLab/Index") ? "active" : "")">
+                <a href="/toplab/@toplabGuid" class="@(currentPage.Equals("/TopLab/Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                     toplab details
                 </a>
             </li>
