@@ -92,7 +92,7 @@ foreach ($line in ($oq -split "`n")) {
     if ($line -match '^## (.+)') {
         $curGrp = [pscustomobject]@{ Name = $matches[1].Trim(); Items = [System.Collections.Generic.List[string]]::new() }
         $oqGroups.Add($curGrp)
-    } elseif ($line -match '^-\s+(OQ-\d+:.+)' -and $curGrp) {
+    } elseif ($line -match '^-\s+((?:\u2705\s*)?OQ-\d+:.+)' -and $curGrp) {
         $curGrp.Items.Add($matches[1].Trim())
     }
 }
@@ -178,8 +178,9 @@ $oqHtml = ''
 foreach ($grp in $oqGroups) {
     $oqHtml += "<h5 class='oq-group-header'>$(HtmlEnc $grp.Name)</h5><ul class='oq-list'>"
     foreach ($q in $grp.Items) {
-        if ($q -match '^(OQ-\d+):(.+)$') {
-            $oqHtml += "<li><span class='oq-id'>$($matches[1])</span> $(HtmlEnc $matches[2].Trim())</li>"
+        if ($q -match '^(\u2705\s+)?(OQ-\d+):(.+)$') {
+            $check = if ($matches[1]) { '✅ ' } else { '' }
+            $oqHtml += "<li><span class='oq-id'>$check$($matches[2])</span> $(HtmlEnc $matches[3].Trim())</li>"
         } else {
             $oqHtml += "<li>$(HtmlEnc $q)</li>"
         }

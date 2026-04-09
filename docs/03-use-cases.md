@@ -46,7 +46,8 @@ Acceptance criteria:
 **so that** matched recipients can discover and receive it.
 
 Acceptance criteria:
-- Author fills title, content, value (positive/negative), optional time limit
+- Author fills title, content, Bound-/Flow-KooK value (any signed value), optional time limit
+- Negative value means incentive direction for message flow is reversed
 - Author navigates the wordspace and marks criteria (nodes/branches) with first-value and second-value
 - Description saved as a set of Criteria records
 - Message appears in the Journal after creation
@@ -89,7 +90,8 @@ Acceptance criteria:
 **so that** I can respond to the author's request or question.
 
 Acceptance criteria:
-- Only users who have a matched delivery for a message can answer
+- Any logged-in user who can view a message can answer
+- Self-answer is allowed (the message author can also answer)
 - Answer text field required
 - Answer visible to the message author
 - Multiple answers from different recipients allowed
@@ -179,3 +181,5 @@ Acceptance criteria:
 ## Change Log
 
 - 2026-03-26: Initial 12 use cases from paper + live site analysis.
+- 2026-04-08: Updated UC-006 answer rule per OQ-002 (logged-in viewer may answer; self-answer allowed).
+- 2026-04-08: Updated UC-003 value semantics per OQ-004 (Bound-/Flow-KooK signed values; negative reverses incentive direction).

@@ -50,12 +50,12 @@ Content:
 
 ### Message Detail (`/Messages/{id}`)
 
-Visible to: everyone (read); authenticated recipients (answer)  
+Visible to: everyone (read); any authenticated user who can view the message may answer  
 Content:
 - Message title, content, author, date, value, time limit
 - Wordspace description summary (collapsed by default, expandable)
 - Answer list (each with author, content, rating)
-- Answer form (logged-in, matched users only)
+- Answer form (logged-in users; self-answer allowed)
 - Rate buttons (author only, per answer)
 
 ---
@@ -177,3 +177,4 @@ Visual reference: colored dot selectors from the paper (green/blue/black × red/
 ## Change Log
 
 - 2026-03-26: Initial IA from paper and live site analysis.
+- 2026-04-08: Updated message answer access rule per OQ-002.

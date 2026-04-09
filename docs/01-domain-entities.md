@@ -46,7 +46,7 @@ The actual database uses German naming from the original implementation. See `02
 | First Value | Controls strictness: 3 = strict (once per structure), 2 = flexible (multiple), 1 = exclude |
 | Second Value | Controls what the other side must have: 3 = must match, 2 = at least one in structure, 0 = voluntary/discoverable |
 | Matchmaking | The algorithm that evaluates all sender descriptions against all filter profiles and delivers a message when all mutual requirements are met |
-| Answer / Reply | A response submitted by a recipient to a received message |
+| Answer / Reply | A response submitted by a logged-in user who can view the message |
 | Rating | Evaluation score given to an answer |
 | Credit / Transaction | Monetary/point value exchange resulting from messages, answers, and ratings |
 | Journal | Chronological view of all messages |
@@ -226,7 +226,7 @@ A single marking in either a Description or a FilterProfile. Marks a WordspaceNo
 
 ### ENT-Answer (TopLab)
 
-A reply submitted by a recipient to a matched/received message.
+A reply submitted by a logged-in user who can view the message (including self-answer by the message author).
 
 **Database table:** `TopLab`
 
@@ -310,7 +310,7 @@ Algorithm: for each (Description, FilterProfile) pair, both sides check their cr
 - First value 3 can be used **only once** per net or tree structure.
 - First value 1 means **exclusion**: if the other side marked this criterion, the pair does not match.
 - A user can have **multiple filter profiles**; delivery occurs if **any one** profile matches.
-- Credits can be **positive** (recipient paid to receive ad/answer question) or **negative** (user pays for premium content).
+- Bound- and Flow-KooK can take any value (positive or negative); negative values indicate reversed incentive direction for message flow.
 - Soft-delete preferred over hard-delete for messages, answers, and users.
 - Matchmaking should run efficiently; consider async/background processing for large sets.
 
@@ -327,3 +327,5 @@ Algorithm: for each (Description, FilterProfile) pair, both sides check their cr
 ## Change Log
 
 - 2026-03-26: Initial full entity catalog derived from ISWC 2011 paper and live site review.
+- 2026-04-08: Updated answer/toplab actor rule per OQ-002.
+- 2026-04-08: Updated credit semantics per OQ-004 (Bound-/Flow-KooK signed values, negative = reversed incentive direction).

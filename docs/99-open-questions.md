@@ -1,14 +1,14 @@
 # Open Questions
 
-Last updated: 2026-03-26
+Last updated: 2026-04-08
 Status: active
 
 ## Domain & Protocol
 
 - OQ-001: Does matchmaking run eagerly (on message creation) or lazily (on recipient request)?
-- OQ-002: Can a user answer their own message?
+- ✅ OQ-002: Answered (Yes) - any logged-in user who can view a PostIt can answer by creating a TopLab, including the message author.
 - OQ-003: Is there a limit to how many filter profiles a user can have?
-- OQ-004: Does the credit balance go negative? If so, what are the consequences?
+- ✅ OQ-004: Answered - Bound- and Flow-KooK can take any value. Negative values mean the incentive direction for message flow is reversed.
 - OQ-005: Are wordspace labels localized (EN/DE/ES per node name)?
 - OQ-006: Should Criteria be in a single polymorphic table or split into DescriptionCriteria / FilterCriteria?
 
@@ -43,3 +43,5 @@ Status: active
 
 - 2026-03-26: Initial questions from paper analysis and site review.
 - 2026-04-08: Added OQ-021 for BL-111 (StammStatisticsOverview chart data + access model).
+- 2026-04-08: Answered OQ-002 - logged-in users who can view a PostIt may answer it (create TopLab), including self-answer.
+- 2026-04-08: Answered OQ-004 - Bound-/Flow-KooK are unbounded in sign; negative values reverse message-flow incentive direction.

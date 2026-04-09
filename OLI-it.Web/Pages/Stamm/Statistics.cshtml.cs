@@ -45,11 +45,15 @@ namespace OLI_it.Web.Pages.Stamm
             if (Stamm == null)
                 return NotFound();
 
-            // Build a 12-month window starting from the first day of the month 11 months ago
+            // Build a window starting from when the Stamm was created
             var now = DateTime.UtcNow;
-            var windowStart = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
+            var windowStart = new DateTime(Stamm.Datum.Year, Stamm.Datum.Month, 1);
+            var currentMonthStart = new DateTime(now.Year, now.Month, 1);
 
-            for (int i = 0; i < 12; i++)
+            // Calculate the number of months from creation to now
+            int monthCount = ((currentMonthStart.Year - windowStart.Year) * 12) + currentMonthStart.Month - windowStart.Month + 1;
+
+            for (int i = 0; i < monthCount; i++)
                 MonthLabels.Add(windowStart.AddMonths(i).ToString("MMM yyyy"));
 
             // Fetch relevant dates in bulk, then bucket client-side to avoid 12 round-trips
@@ -69,7 +73,7 @@ namespace OLI_it.Web.Pages.Stamm
                 .Select(k => new { k.Datum, k.Betrag })
                 .ToListAsync();
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < monthCount; i++)
             {
                 var monthStart = windowStart.AddMonths(i);
                 var monthEnd = monthStart.AddMonths(1);
