@@ -27,9 +27,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $docsPath    = $PSScriptRoot
-$decPath     = Join-Path $docsPath "07-decisions"
-$backlogPath = Join-Path $docsPath "08-backlog.md"
-$oqPath      = Join-Path $docsPath "99-open-questions.md"
+$decPath     = Join-Path $docsPath "070-decisions"
+$backlogPath = Join-Path $docsPath "080-backlog.md"
+$oqPath      = Join-Path $docsPath "990-open-questions.md"
 
 Write-Host "Generating OLI-it.Web stakeholder dashboard..." -ForegroundColor Cyan
 

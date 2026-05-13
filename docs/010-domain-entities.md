@@ -14,7 +14,7 @@ Derived from:
 
 ## Database Entity Mapping
 
-The actual database uses German naming from the original implementation. See `02-data-model.md` for the complete mapping table. Key references:
+The actual database uses German naming from the original implementation. See `020-data-model.md` for the complete mapping table. Key references:
 
 - **Stamm** = User
 - **Angler** = Filter Profile  

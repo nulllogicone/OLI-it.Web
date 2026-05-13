@@ -30,7 +30,7 @@ OLI-it.Web/
 
 ## Key Architectural Decisions
 
-See [07-decisions/](07-decisions/) for ADRs.
+See [070-decisions/](070-decisions/) for ADRs.
 
 **Confirmed:**
 - Database-First approach (existing schema) → ADR-0001

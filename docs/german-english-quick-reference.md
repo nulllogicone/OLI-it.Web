@@ -1,6 +1,6 @@
 # Quick Reference: German ↔ English Entity Names
 
-This is a quick lookup table for developers working with the codebase. For complete details, see `02-data-model.md`.
+This is a quick lookup table for developers working with the codebase. For complete details, see `020-data-model.md`.
 
 ## Message Flow (Kreislauf / SAPCT)
 
@@ -89,6 +89,6 @@ var nodes = await _context.Knoten
 
 ## Related Documentation
 
-- [01-domain-entities.md](01-domain-entities.md) - Full entity descriptions
-- [02-data-model.md](02-data-model.md) - Complete schema mapping
-- [07-decisions/ADR-0003-german-table-names.md](07-decisions/ADR-0003-german-table-names.md) - Why we preserve German names
+- [010-domain-entities.md](010-domain-entities.md) - Full entity descriptions
+- [020-data-model.md](020-data-model.md) - Complete schema mapping
+- [070-decisions/ADR-0003-german-table-names.md](070-decisions/ADR-0003-german-table-names.md) - Why we preserve German names

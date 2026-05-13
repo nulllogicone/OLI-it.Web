@@ -41,7 +41,7 @@ We will use **EF Core Database-First** approach via scaffolding:
 - Must coordinate any schema changes with database administrator
 
 ### Mitigation
-- Create comprehensive German↔English mapping documentation (see `02-data-model.md`)
+- Create comprehensive German↔English mapping documentation (see `020-data-model.md`)
 - Consider creating English-named DTOs or extension methods for clarity
 - Add XML comments to generated entity classes explaining their purpose
 - Use partial classes to extend generated entities without modifying scaffolded code
@@ -60,5 +60,5 @@ Hand-write entity classes to match database schema with English names.
 
 ## References
 
-- `02-data-model.md` - Database schema and German→English mapping
+- `020-data-model.md` - Database schema and German→English mapping
 - EF Core scaffolding documentation: https://learn.microsoft.com/en-us/ef/core/managing-schemas/scaffolding/

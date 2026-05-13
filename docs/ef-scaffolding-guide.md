@@ -204,5 +204,5 @@ dotnet tool install --global dotnet-ef
 ## References
 
 - [Microsoft EF Core Scaffolding Docs](https://learn.microsoft.com/en-us/ef/core/managing-schemas/scaffolding/)
-- [ADR-0001: Database-First Approach](07-decisions/ADR-0001-database-first-approach.md)
+- [ADR-0001: Database-First Approach](070-decisions/ADR-0001-database-first-approach.md)
 - [german-english-quick-reference.md](german-english-quick-reference.md)
