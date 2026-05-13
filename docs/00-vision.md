@@ -80,6 +80,10 @@ Deliver a modernized equivalent of the existing live application on ASP.NET Core
 - Microservice splitting
 - Native mobile apps
 
+## Agent-Driven Development
+
+See [`00-motivation.md`](00-motivation.md) for the specific motivation behind the technology choice — in particular why agent (Copilot / open-claw) operability was a driving factor.
+
 ## Key Reference Material
 
 - Paper: "Soulmate" by Frederic Luchting, ISWC 2011 — defines protocol and entity model
