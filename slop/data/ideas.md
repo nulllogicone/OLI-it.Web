@@ -27,3 +27,7 @@
 **Created:** 2026-05-10
 **Tags:** mobile, pwa
 **Notes:** Add manifest + service worker to make OLI-it installable on mobile home screen
+
+## IDEA-005: Add the most simple input textbox to the dashboard to create a md file
+**Status:** new
+**Created:** 2026-05-13
