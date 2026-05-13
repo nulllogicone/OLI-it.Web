@@ -29,5 +29,6 @@
 **Notes:** Add manifest + service worker to make OLI-it installable on mobile home screen
 
 ## IDEA-005: Add the most simple input textbox to the dashboard to create a md file
-**Status:** new
+**Status:** preview
 **Created:** 2026-05-13
+**Notes:** This worked 'zero-prompt', from first shot on, the dashboard textbox created a new paragraph in the md file.
