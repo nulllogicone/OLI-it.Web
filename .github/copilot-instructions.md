@@ -1,5 +1,11 @@
 # Copilot Instructions for OLI-it.Web
 
+## Git Rules (Always Apply)
+
+- **Never commit** changes without the user reviewing them first.
+- **Never push** without explicit user confirmation.
+- Always show a `git diff` or file summary and wait for approval before any `git commit` or `git push`.
+
 ## Build & Run
 
 ```powershell
