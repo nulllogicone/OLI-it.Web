@@ -102,3 +102,26 @@ Active ADRs in `docs/07-decisions/`:
 
 ### Stakeholder Dashboard
 A pre-build step runs `docs/generate-dashboard.ps1` to produce an HTML dashboard from the docs. This is triggered automatically during `dotnet build`. The prompt that drives it is in `.github/prompts/generate-dashboard.prompt.md`.
+
+## Docs Folder — Always Consider
+
+Before answering questions about domain, architecture, decisions, or UI, **always consider the relevant files in `docs/`**. Consult them when context is needed; do not rely on memory alone.
+
+| File | Summary |
+|------|---------|
+| `docs/README.md` | Documentation index and navigation guide |
+| `docs/00-motivation.md` | Why OLI-it exists; problem statement and goals |
+| `docs/00-vision.md` | Long-term product vision |
+| `docs/01-domain-entities.md` | All domain entities with fields and relationships |
+| `docs/02-data-model.md` | Database schema overview and ER relationships |
+| `docs/03-use-cases.md` | User stories and use-case descriptions |
+| `docs/04-ui-ia.md` | UI information architecture; page hierarchy |
+| `docs/05-ui-wireframes.md` | Wireframe descriptions for key screens |
+| `docs/06-architecture.md` | Technical architecture; layers, patterns, dependencies |
+| `docs/07-decisions/ADR-0001-database-first-approach.md` | Decision: use existing DB schema, no EF migrations |
+| `docs/07-decisions/ADR-0002-stored-procedure-matchmaking.md` | Decision: matchmaking in SQL stored procs, not C# |
+| `docs/07-decisions/ADR-0003-german-table-names.md` | Decision: preserve German table/column names as-is |
+| `docs/08-backlog.md` | Prioritised feature and bug backlog |
+| `docs/99-open-questions.md` | Unresolved design and product questions |
+| `docs/ef-scaffolding-guide.md` | How to re-scaffold EF models from the database |
+| `docs/german-english-quick-reference.md` | German ↔ English entity name mapping |
