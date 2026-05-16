@@ -50,12 +50,20 @@
                         @foreach (var stamm in Model.Results.Stamms)
                         {
                             <a href="/stamm/@stamm.StammGuid" class="search-chip search-chip--stamm">
-                                <span class="chip-title">@stamm.Stamm1</span>
-                                <span class="chip-date">@stamm.Datum.ToString("dd MMM yyyy")</span>
-                                @if (!string.IsNullOrWhiteSpace(stamm.Beschreibung))
+                                @if (!string.IsNullOrEmpty(stamm.Datei))
                                 {
-                                    <span class="chip-snippet">@(stamm.Beschreibung.Length > 80 ? stamm.Beschreibung[..80] + "…" : stamm.Beschreibung)</span>
+                                    <div class="chip-thumb">
+                                        @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = stamm.Datei, altText = stamm.Stamm1, width = 36, height = 36 })
+                                    </div>
                                 }
+                                <div class="chip-text">
+                                    <span class="chip-title">@stamm.Stamm1</span>
+                                    <span class="chip-date">@stamm.Datum.ToString("dd MMM yyyy")</span>
+                                    @if (!string.IsNullOrWhiteSpace(stamm.Beschreibung))
+                                    {
+                                        <span class="chip-snippet">@(stamm.Beschreibung.Length > 80 ? stamm.Beschreibung[..80] + "…" : stamm.Beschreibung)</span>
+                                    }
+                                </div>
                             </a>
                         }
                     </div>
@@ -71,9 +79,17 @@
                         @foreach (var postit in Model.Results.PostIts)
                         {
                             <a href="/postit/@postit.PostItGuid" class="search-chip search-chip--postit">
-                                <span class="chip-title">@(postit.Titel ?? "Untitled")</span>
-                                <span class="chip-date">@postit.Datum.ToString("dd MMM yyyy")</span>
-                                <span class="chip-snippet">@(postit.PostIt1.Length > 80 ? postit.PostIt1[..80] + "…" : postit.PostIt1)</span>
+                                @if (!string.IsNullOrEmpty(postit.Datei))
+                                {
+                                    <div class="chip-thumb">
+                                        @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postit.Datei, altText = postit.Titel ?? "PostIt", width = 36, height = 36 })
+                                    </div>
+                                }
+                                <div class="chip-text">
+                                    <span class="chip-title">@(postit.Titel ?? "Untitled")</span>
+                                    <span class="chip-date">@postit.Datum.ToString("dd MMM yyyy")</span>
+                                    <span class="chip-snippet">@(postit.PostIt1.Length > 80 ? postit.PostIt1[..80] + "…" : postit.PostIt1)</span>
+                                </div>
                             </a>
                         }
                     </div>
@@ -89,9 +105,17 @@
                         @foreach (var toplab in Model.Results.TopLabs)
                         {
                             <a href="/toplab/@toplab.TopLabGuid" class="search-chip search-chip--toplab">
-                                <span class="chip-title">@(toplab.Titel ?? "Untitled Answer")</span>
-                                <span class="chip-date">@toplab.Datum.ToString("dd MMM yyyy")</span>
-                                <span class="chip-snippet">@(toplab.TopLab1.Length > 80 ? toplab.TopLab1[..80] + "…" : toplab.TopLab1)</span>
+                                @if (!string.IsNullOrEmpty(toplab.Datei))
+                                {
+                                    <div class="chip-thumb">
+                                        @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = toplab.Titel ?? "TopLab", width = 36, height = 36 })
+                                    </div>
+                                }
+                                <div class="chip-text">
+                                    <span class="chip-title">@(toplab.Titel ?? "Untitled Answer")</span>
+                                    <span class="chip-date">@toplab.Datum.ToString("dd MMM yyyy")</span>
+                                    <span class="chip-snippet">@(toplab.TopLab1.Length > 80 ? toplab.TopLab1[..80] + "…" : toplab.TopLab1)</span>
+                                </div>
                             </a>
                         }
                     </div>

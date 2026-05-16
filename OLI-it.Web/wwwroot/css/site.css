@@ -1610,9 +1610,10 @@ body.slot-dev::before {
 /* Base chip — clickable box */
 .search-chip {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 190px;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  width: 210px;
   padding: 9px 12px;
   border-radius: 6px;
   border: 1px solid #ddd;
@@ -1641,6 +1642,39 @@ body.slot-dev::before {
 .search-chip--stamm:hover  { box-shadow: 0 4px 12px rgba(139, 0, 0, 0.15); }
 .search-chip--postit:hover { box-shadow: 0 4px 12px rgba(180, 140, 0, 0.18); }
 .search-chip--toplab:hover { box-shadow: 0 4px 12px rgba(34, 139, 34, 0.15); }
+
+/* Chip thumbnail (left side) */
+.chip-thumb {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chip-thumb .image-thumbnail {
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+}
+
+.chip-thumb .thumbnail-img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Chip text stack (right side) */
+.chip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
 
 /* Chip text layers */
 .chip-title {
