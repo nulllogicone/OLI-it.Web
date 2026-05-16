@@ -1,0 +1,102 @@
+@page "/search"
+@model OLI_it.Web.Pages.SearchModel
+@{
+    ViewData["Title"] = "Search";
+    var hasResults = Model.Results != null;
+    var totalCount = hasResults
+        ? Model.Results!.Stamms.Count + Model.Results!.PostIts.Count + Model.Results!.TopLabs.Count
+        : 0;
+}
+
+<div class="page-header">
+    <h1>search</h1>
+    <p>wildcard search across users, messages and answers &mdash; use <code>*</code> as wildcard</p>
+</div>
+
+<div class="content-section">
+    <form method="get" action="/search" class="search-form">
+        <div class="search-input-group">
+            <input type="text"
+                   name="Term"
+                   value="@Model.Term"
+                   placeholder="e.g. john* or *question*"
+                   class="search-input"
+                   autofocus />
+            <button type="submit" class="search-btn">search</button>
+        </div>
+    </form>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Term))
+    {
+        <div class="search-summary">
+            @if (hasResults && totalCount > 0)
+            {
+                <span>@totalCount result@(totalCount == 1 ? "" : "s") for <strong>@Model.Term</strong></span>
+            }
+            else
+            {
+                <span>no results for <strong>@Model.Term</strong></span>
+            }
+        </div>
+
+        @if (hasResults)
+        {
+            @* Stamm results *@
+            @if (Model.Results!.Stamms.Count > 0)
+            {
+                <section class="search-section">
+                    <h2 class="search-section-header">users <span class="search-count">(@Model.Results.Stamms.Count)</span></h2>
+                    <div class="search-chips">
+                        @foreach (var stamm in Model.Results.Stamms)
+                        {
+                            <a href="/stamm/@stamm.StammGuid" class="search-chip search-chip--stamm">
+                                <span class="chip-title">@stamm.Stamm1</span>
+                                <span class="chip-date">@stamm.Datum.ToString("dd MMM yyyy")</span>
+                                @if (!string.IsNullOrWhiteSpace(stamm.Beschreibung))
+                                {
+                                    <span class="chip-snippet">@(stamm.Beschreibung.Length > 80 ? stamm.Beschreibung[..80] + "…" : stamm.Beschreibung)</span>
+                                }
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+
+            @* PostIt results *@
+            @if (Model.Results!.PostIts.Count > 0)
+            {
+                <section class="search-section">
+                    <h2 class="search-section-header">messages <span class="search-count">(@Model.Results.PostIts.Count)</span></h2>
+                    <div class="search-chips">
+                        @foreach (var postit in Model.Results.PostIts)
+                        {
+                            <a href="/postit/@postit.PostItGuid" class="search-chip search-chip--postit">
+                                <span class="chip-title">@(postit.Titel ?? "Untitled")</span>
+                                <span class="chip-date">@postit.Datum.ToString("dd MMM yyyy")</span>
+                                <span class="chip-snippet">@(postit.PostIt1.Length > 80 ? postit.PostIt1[..80] + "…" : postit.PostIt1)</span>
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+
+            @* TopLab results *@
+            @if (Model.Results!.TopLabs.Count > 0)
+            {
+                <section class="search-section">
+                    <h2 class="search-section-header">answers <span class="search-count">(@Model.Results.TopLabs.Count)</span></h2>
+                    <div class="search-chips">
+                        @foreach (var toplab in Model.Results.TopLabs)
+                        {
+                            <a href="/toplab/@toplab.TopLabGuid" class="search-chip search-chip--toplab">
+                                <span class="chip-title">@(toplab.Titel ?? "Untitled Answer")</span>
+                                <span class="chip-date">@toplab.Datum.ToString("dd MMM yyyy")</span>
+                                <span class="chip-snippet">@(toplab.TopLab1.Length > 80 ? toplab.TopLab1[..80] + "…" : toplab.TopLab1)</span>
+                            </a>
+                        }
+                    </div>
+                </section>
+            }
+        }
+    }
+</div>
