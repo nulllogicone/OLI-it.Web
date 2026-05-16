@@ -29,7 +29,11 @@ $ErrorActionPreference = "Stop"
 $docsPath    = $PSScriptRoot
 $decPath     = Join-Path $docsPath "07-decisions"
 $backlogPath = Join-Path $docsPath "08-backlog.md"
-$oqPath      = Join-Path $docsPath "99-open-questions.md"
+$oqPath       = Join-Path $docsPath "99-open-questions.md"
+$slopDataPath = Join-Path (Split-Path $docsPath -Parent) "slop\data"
+$ideasPath    = Join-Path $slopDataPath "ideas.md"
+$devTodosPath = Join-Path $slopDataPath "todos.md"
+$discussPath  = Join-Path $slopDataPath "discussions.md"
 
 Write-Host "Generating OLI-it.Web stakeholder dashboard..." -ForegroundColor Cyan
 
@@ -40,8 +44,8 @@ function HtmlEnc([string]$s) {
 
 function Get-StatusClass([string]$status) {
     $s = ($status -replace '\u2705', '' -replace '\s+', ' ').Trim().ToLower()
-    if ($s -match 'completed|done')   { return 'done' }
-    if ($s -match 'in.?progress')     { return 'progress' }
+    if ($s -match 'completed|done|resolved') { return 'done' }
+    if ($s -match 'in.?progress|exploring|preview') { return 'progress' }
     if ($s -match 'blocked')          { return 'blocked' }
     return 'todo'
 }
@@ -82,6 +86,31 @@ if ($bl -match '(?s)## Change Log\s*\n(.+)$') {
         $changelog.Add($m.Groups[1].Value.Trim())
     }
 }
+
+# ─── Parse Slop Data Files ───────────────────────────────────────────────────
+function Parse-SlopFile([string]$path) {
+    $items = [System.Collections.Generic.List[pscustomobject]]::new()
+    if (-not (Test-Path $path)) { return ,$items }
+    $content = Get-Content $path -Raw
+    foreach ($m in [regex]::Matches($content, '(?m)^## ([\w]+-\d+):\s*(.+?)[\r\n]+([\s\S]*?)(?=(?:\r?\n)## |\z)')) {
+        $body = $m.Groups[3].Value
+        $items.Add([pscustomobject]@{
+            Id       = $m.Groups[1].Value.Trim()
+            Title    = $m.Groups[2].Value.Trim()
+            UseCase  = ''
+            Status   = if ($body -match '\*\*Status:\*\*\s*(.+)')   { $matches[1].Trim() } else { 'unknown' }
+            Priority = if ($body -match '\*\*Priority:\*\*\s*(.+)') { $matches[1].Trim() } else { '' }
+            Created  = if ($body -match '\*\*Created:\*\*\s*(.+)')  { $matches[1].Trim() } else { '' }
+            Tags     = if ($body -match '\*\*Tags:\*\*\s*(.+)')     { $matches[1].Trim() } else { '' }
+            Notes    = if ($body -match '\*\*Notes:\*\*\s*(.+)')    { $matches[1].Trim() } else { '' }
+        })
+    }
+    return ,$items
+}
+
+$ideas    = Parse-SlopFile $ideasPath
+$devTodos = Parse-SlopFile $devTodosPath
+$discuss  = Parse-SlopFile $discussPath
 
 # ─── Parse Open Questions ─────────────────────────────────────────────────────
 $oq       = Get-Content $oqPath -Raw
@@ -124,6 +153,15 @@ $p2Total  = $phase2.Count
 $p2Pct    = if ($p2Total -gt 0) { [math]::Round(($p2Done / $p2Total) * 100) } else { 0 }
 
 $genDate = Get-Date -Format "yyyy-MM-dd HH:mm"
+
+$ideasTotal   = $ideas.Count
+$ideasInProg  = @($ideas    | Where-Object { (Get-StatusClass $_.Status) -eq 'progress' }).Count
+$ideasNew     = @($ideas    | Where-Object { (Get-StatusClass $_.Status) -eq 'todo'     }).Count
+$todosTotal   = $devTodos.Count
+$todosOpen    = @($devTodos | Where-Object { (Get-StatusClass $_.Status) -ne 'done'     }).Count
+$todosDone    = @($devTodos | Where-Object { (Get-StatusClass $_.Status) -eq 'done'     }).Count
+$discussTotal = $discuss.Count
+$discussOpen  = @($discuss  | Where-Object { (Get-StatusClass $_.Status) -ne 'done'     }).Count
 
 # ─── Kanban Board Builder ────────────────────────────────────────────────────
 function Build-KanbanCard($item, [bool]$showUseCase) {
@@ -173,6 +211,39 @@ function Build-KanbanBoard($items, [bool]$showUseCase = $false) {
     return $board
 }
 
+function Build-StatusBadge([string]$status) {
+    $cls = Get-StatusClass $status
+    $css = switch ($cls) {
+        'done'     { 'bs-done' }
+        'progress' { 'bs-progress' }
+        'blocked'  { 'bs-blocked' }
+        default    { 'bs-todo' }
+    }
+    return "<span class='badge-status $css'>$(HtmlEnc $status)</span>"
+}
+
+function Build-DiscussionCards($items) {
+    if ($items.Count -eq 0) { return "<p class='text-muted' style='font-size:.85rem'>No discussions yet.</p>" }
+    $html = "<div class='disc-grid'>"
+    foreach ($item in $items) {
+        $cls     = Get-StatusClass $item.Status
+        $cardCss = switch ($cls) { 'done' { 'disc-done' } 'progress' { 'disc-progress' } default { 'disc-open' } }
+        $tagHtml = ''
+        if ($item.Tags) {
+            $pills   = ($item.Tags -split ',') | ForEach-Object { "<span class='tag-pill'>$(HtmlEnc $_.Trim())</span>" }
+            $tagHtml = "<div class='disc-meta'>" + ($pills -join '') + "</div>"
+        }
+        $notesHtml = if ($item.Notes) { "<div class='disc-notes'>$(HtmlEnc $item.Notes)</div>" } else { '' }
+        $html += "<div class='disc-card $cardCss'>"
+        $html += "<div class='disc-card-header'><div><span class='disc-id'>$($item.Id)</span><div class='disc-title'>$(HtmlEnc $item.Title)</div></div>$(Build-StatusBadge $item.Status)</div>"
+        $html += $notesHtml
+        $html += $tagHtml
+        $html += "</div>"
+    }
+    $html += "</div>"
+    return $html
+}
+
 # ─── Open Questions HTML ──────────────────────────────────────────────────────
 $oqHtml = ''
 foreach ($grp in $oqGroups) {
@@ -206,8 +277,11 @@ foreach ($adr in $adrs) {
 $clHtml = ($changelog | Select-Object -Last 10 | ForEach-Object { "<li>$(HtmlEnc $_)</li>" }) -join ''
 
 # ─── Kanban Boards ────────────────────────────────────────────────────────────
-$p1Board = Build-KanbanBoard $phase1 $true
-$p2Board = Build-KanbanBoard $phase2 $false
+$p1Board     = Build-KanbanBoard $phase1   $true
+$p2Board     = Build-KanbanBoard $phase2   $false
+$ideasBoard  = Build-KanbanBoard $ideas    $false
+$todosBoard  = Build-KanbanBoard $devTodos $false
+$discussHtml = Build-DiscussionCards $discuss
 
 # ─── Dashboard HTML ───────────────────────────────────────────────────────────
 # Note: $() expressions below are PowerShell interpolation — intentional.
@@ -269,6 +343,22 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
 .cl-list li { font-size:.8rem; border-left:3px solid #e3f2fd; padding:.2rem .6rem; margin-bottom:.25rem; color:#444; }
 .cl-list li:first-child { border-color:#1565c0; font-weight:600; }
 .dash-footer { text-align:center; color:#aaa; font-size:.72rem; padding:1.5rem 0 2rem; }
+.disc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:.85rem; }
+.disc-card { background:#fff; border-radius:8px; padding:.85rem 1rem; box-shadow:0 1px 3px rgba(0,0,0,.07); border-left:4px solid #78909c; }
+.disc-card.disc-open     { border-color:#78909c; }
+.disc-card.disc-progress { border-color:#1565c0; }
+.disc-card.disc-done     { border-color:#2e7d32; opacity:.75; }
+.disc-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; margin-bottom:.35rem; }
+.disc-id    { font-size:.65rem; font-weight:700; color:#9e9e9e; text-transform:uppercase; display:block; }
+.disc-title { font-size:.85rem; font-weight:600; color:#212121; line-height:1.35; }
+.disc-notes { font-size:.78rem; color:#555; margin-top:.35rem; line-height:1.4; }
+.disc-meta  { display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.45rem; }
+.tag-pill   { font-size:.62rem; background:#e3f2fd; color:#1565c0; border-radius:10px; padding:.1em .55em; font-weight:600; }
+.badge-status { font-size:.65rem; padding:.2em .55em; border-radius:10px; white-space:nowrap; font-weight:600; }
+.bs-todo     { background:#eceff1; color:#546e7a; }
+.bs-progress { background:#e3f2fd; color:#1565c0; }
+.bs-done     { background:#e8f5e9; color:#2e7d32; }
+.bs-blocked  { background:#ffebee; color:#c62828; }
 @media (max-width:768px) { .kboard { flex-direction:column; } .kcol { flex:none; } }
 </style>
 </head>
@@ -312,6 +402,34 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
     </div>
   </div>
 
+  <!-- Slop Metrics -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">$ideasTotal</div><div class="metric-label">Total Ideas</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-blue">$ideasInProg</div><div class="metric-label">Ideas Exploring</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">$ideasNew</div><div class="metric-label">Ideas New</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-amber">$todosOpen</div><div class="metric-label">Dev Todos Open</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">$discussTotal</div><div class="metric-label">Discussions</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-amber">$discussOpen</div><div class="metric-label">Discussions Open</div></div>
+    </div>
+  </div>
+
+  <!-- Ideas -->
+  <div class="section-card">
+    <h2>Ideas &amp; Features &nbsp;<small class="text-muted fw-normal text-lowercase">($ideasTotal items)</small></h2>
+    $ideasBoard
+  </div>
+
   <!-- Progress -->
   <div class="section-card">
     <h2>Delivery Progress</h2>
@@ -335,6 +453,18 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
   <div class="section-card">
     <h2>Phase 2 &mdash; Enhancements &nbsp;<small class="text-muted fw-normal text-lowercase">($p2Total items)</small></h2>
     $p2Board
+  </div>
+
+  <!-- Discussions -->
+  <div class="section-card">
+    <h2>Discussions &nbsp;<small class="text-muted fw-normal text-lowercase">($discussTotal open: $discussOpen)</small></h2>
+    $discussHtml
+  </div>
+
+  <!-- Dev Todos -->
+  <div class="section-card">
+    <h2>Dev Todos &nbsp;<small class="text-muted fw-normal text-lowercase">($todosTotal items &bull; $todosDone done)</small></h2>
+    $todosBoard
   </div>
 
   <!-- Open Questions + ADRs -->
