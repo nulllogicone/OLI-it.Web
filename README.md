@@ -91,7 +91,7 @@ Full setup instructions, configuration reference, and infrastructure deployment 
 | Document | Description |
 |----------|-------------|
 | [Vision](docs/00-vision.md) | Background, goals, and success criteria for this rewrite |
-| [Motivation](docs/00-motivation.md) | Why the technology choices were made |
+| [Motivation](docs/000-motivation.md) | Why the technology choices were made |
 | [Domain Entities](docs/01-domain-entities.md) | Core entities and their relationships |
 | [Use Cases](docs/03-use-cases.md) | Detailed user stories and acceptance criteria |
 | [Architecture](docs/06-architecture.md) | Stack, project structure, and key decisions |
