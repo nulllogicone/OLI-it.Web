@@ -1,6 +1,6 @@
 # OLI-it.Web — Documentation Index
 
-Last updated: 2026-01-24
+Last updated: 2026-05-20
 
 ## How to use these docs
 
@@ -9,6 +9,7 @@ Last updated: 2026-01-24
 - Refine incrementally; record every decision in `070-decisions/`.
 - Park unresolved items in `990-open-questions.md`.
 - **German→English mapping:** See [german-english-quick-reference.md](german-english-quick-reference.md) for database entity names.
+- **Delivery note:** broad page-content localization rollout is currently deferred until core feature parity progresses further.
 
 ## Infrastructure Deployment Notes
 

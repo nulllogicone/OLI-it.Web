@@ -1,6 +1,6 @@
 # Open Questions
 
-Last updated: 2026-04-09
+Last updated: 2026-05-20
 Status: active
 
 ## Domain & Protocol
@@ -29,7 +29,7 @@ Status: active
 
 - OQ-015: Is the Wordspace Navigator built as a Razor partial, a Blazor component, or JavaScript-driven?
 - ✅ OQ-016: Answered - All pages should be mobile-responsive for MVP.
-- ✅ OQ-017: Answered - Not in scope yet; localization is higher priority.
+- ✅ OQ-017: Answered - Theme toggle is not in scope; however, broad UI localization rollout is currently deferred until core feature completion.
 
 ## Delivery
 
@@ -59,3 +59,4 @@ Status: active
 - 2026-04-09: Removed OQ-021 - StammStatisticsOverview was a non-essential idea and is out of scope.
 - 2026-04-09: Answered OQ-019 - Parity validation before go-live is done by the current project team.
 - 2026-04-09: Answered OQ-020 - Rollout strategy is side-by-side staging.
+- 2026-05-20: Updated OQ-017 note - localization remains planned but is intentionally deferred while feature completeness is prioritized.
