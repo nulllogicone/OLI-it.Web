@@ -27,9 +27,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $docsPath    = $PSScriptRoot
-$decPath     = Join-Path $docsPath "07-decisions"
-$backlogPath = Join-Path $docsPath "08-backlog.md"
-$oqPath       = Join-Path $docsPath "99-open-questions.md"
+$decPath     = if (Test-Path (Join-Path $docsPath "070-decisions")) { Join-Path $docsPath "070-decisions" } else { Join-Path $docsPath "07-decisions" }
+$backlogPath = if (Test-Path (Join-Path $docsPath "080-backlog.md")) { Join-Path $docsPath "080-backlog.md" } else { Join-Path $docsPath "08-backlog.md" }
+$oqPath       = if (Test-Path (Join-Path $docsPath "990-open-questions.md")) { Join-Path $docsPath "990-open-questions.md" } else { Join-Path $docsPath "99-open-questions.md" }
 $slopDataPath = Join-Path (Split-Path $docsPath -Parent) "slop\data"
 $ideasPath    = Join-Path $slopDataPath "ideas.md"
 $devTodosPath = Join-Path $slopDataPath "todos.md"
