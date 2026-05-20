@@ -1,16 +1,26 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using OLI_it.Web.Data;
 using OLI_it.Web.Endpoints;
+using OLI_it.Web.Middleware;
 using OLI_it.Web.Services;
+using System.Globalization;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
+var supportedCultureCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "en", "de", "es" };
+var supportedCultures = supportedCultureCodes
+    .Select(code => new CultureInfo(code))
+    .ToList();
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddRazorPages()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
 // Add anti-forgery protection
 builder.Services.AddAntiforgery(options =>
@@ -73,6 +83,24 @@ builder.Services.AddScoped<JournalService>();
 builder.Services.AddScoped<ChartService>();
 
 var app = builder.Build();
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+localizationOptions.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(context =>
+{
+    if (context.Items.TryGetValue("UiLanguage", out var value)
+        && value is string languageCode
+        && supportedCultureCodes.Contains(languageCode))
+    {
+        return Task.FromResult<ProviderCultureResult?>(new ProviderCultureResult(languageCode, languageCode));
+    }
+
+    return Task.FromResult<ProviderCultureResult?>(null);
+}));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -83,7 +111,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseUiLanguagePathMiddleware(supportedCultureCodes);
 
+app.UseRequestLocalization(localizationOptions);
 app.UseRouting();
 
 app.UseAuthentication();

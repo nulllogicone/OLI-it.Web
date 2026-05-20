@@ -1,11 +1,46 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
 @inject Microsoft.Extensions.Configuration.IConfiguration _config
 @inject Microsoft.Extensions.Hosting.IHostEnvironment _hostEnv
+@{
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant();
+    var requestPath = Context?.Request?.Path.Value ?? "/";
+    var queryString = Context?.Request?.QueryString.Value ?? string.Empty;
+    var scheme = Context?.Request?.Scheme ?? "https";
+    var host = Context?.Request?.Host.Value ?? string.Empty;
+
+    string PrefixPath(string languageCode, string path)
+    {
+        var normalizedPath = string.IsNullOrWhiteSpace(path) ? "/" : path;
+        if (!normalizedPath.StartsWith('/'))
+        {
+            normalizedPath = $"/{normalizedPath}";
+        }
+
+        return normalizedPath == "/"
+            ? $"/{languageCode}"
+            : $"/{languageCode}{normalizedPath}";
+    }
+
+    string BuildAbsoluteLanguageUrl(string languageCode)
+    {
+        var localizedPath = $"{PrefixPath(languageCode, requestPath)}{queryString}";
+        return string.IsNullOrWhiteSpace(host)
+            ? localizedPath
+            : $"{scheme}://{host}{localizedPath}";
+    }
+
+    var canonicalUrl = BuildAbsoluteLanguageUrl(currentCulture);
+}
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - OLI-it</title>
+    <link rel="canonical" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="en" href="@BuildAbsoluteLanguageUrl("en")" />
+    <link rel="alternate" hreflang="de" href="@BuildAbsoluteLanguageUrl("de")" />
+    <link rel="alternate" hreflang="es" href="@BuildAbsoluteLanguageUrl("es")" />
+    <link rel="alternate" hreflang="x-default" href="@BuildAbsoluteLanguageUrl("en")" />
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />

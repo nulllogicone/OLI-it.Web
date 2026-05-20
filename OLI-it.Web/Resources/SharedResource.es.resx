@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ViewYourProfile" xml:space="preserve">
+    <value>Ver tu perfil</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="StammNamePlaceholder" xml:space="preserve">
+    <value>Nombre Stamm</value>
+  </data>
+  <data name="UnterschriftPlaceholder" xml:space="preserve">
+    <value>Unterschrift</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="HomePageTitle" xml:space="preserve">
+    <value>OLI-it - Inicio</value>
+  </data>
+  <data name="HomePageTagline" xml:space="preserve">
+    <value>Una red inteligente de comunicación individual</value>
+  </data>
+  <data name="HomeIntroParagraph1" xml:space="preserve">
+    <value>Puedes hacer preguntas, publicar anuncios o buscar socios en contextos privados y profesionales, de forma general o muy específica.</value>
+  </data>
+  <data name="HomeIntroParagraph2" xml:space="preserve">
+    <value>El autor de un mensaje describe tanto el contenido (motivación y tema) como las propiedades del destinatario deseado en un espacio de palabras jerárquico con puntos de colores.</value>
+  </data>
+  <data name="HomeFeatureHeadline" xml:space="preserve">
+    <value>Todos pueden leer todos los mensajes y respuestas</value>
+  </data>
+  <data name="HomeFeatureSubline" xml:space="preserve">
+    <value>Debes iniciar sesión para escribir.</value>
+  </data>
+  <data name="HomeFeatureListTitle" xml:space="preserve">
+    <value>Si has iniciado sesión, puedes:</value>
+  </data>
+  <data name="HomeFeatureItem1" xml:space="preserve">
+    <value>crear nuevos mensajes</value>
+  </data>
+  <data name="HomeFeatureItem2" xml:space="preserve">
+    <value>buscar mensajes con tus perfiles de filtro</value>
+  </data>
+  <data name="HomeFeatureItem3" xml:space="preserve">
+    <value>dar respuestas y evaluarlas</value>
+  </data>
+  <data name="HomeFeatureItem4" xml:space="preserve">
+    <value>y ganar dinero</value>
+  </data>
+  <data name="RecentUsers" xml:space="preserve">
+    <value>Usuarios recientes</value>
+  </data>
+  <data name="Thumbnail" xml:space="preserve">
+    <value>Miniatura</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Correo electrónico</value>
+  </data>
+  <data name="RegistrationDate" xml:space="preserve">
+    <value>Fecha de registro</value>
+  </data>
+  <data name="ImagePath" xml:space="preserve">
+    <value>Ruta de imagen</value>
+  </data>
+  <data name="StammImageAltText" xml:space="preserve">
+    <value>Imagen de Stamm {0}</value>
+  </data>
+  <data name="NoneValue" xml:space="preserve">
+    <value>(ninguno)</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>ver</value>
+  </data>
+</root>
