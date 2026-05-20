@@ -109,9 +109,6 @@ Active ADRs in `docs/07-decisions/`:
 - Merge to `main` + manual approval → deploy to **production slot**.
 - Infrastructure changes deploy via `infra-main-bicep.yml` (Bicep, also approval-gated for prod).
 
-### Stakeholder Dashboard
-A pre-build step runs `docs/generate-dashboard.ps1` to produce an HTML dashboard from the docs. This is triggered automatically during `dotnet build`. The prompt that drives it is in `.github/prompts/generate-dashboard.prompt.md`.
-
 ## Docs Folder — Always Consider
 
 Before answering questions about domain, architecture, decisions, or UI, **always consider the relevant files in `docs/`**. Consult them when context is needed; do not rely on memory alone.
