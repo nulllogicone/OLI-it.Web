@@ -41,7 +41,7 @@ Application-level strategies for clarity:
 - Onboarding documentation is critical
 
 ### Mitigation
-- **Documentation:** Maintain `02-data-model.md` with complete mapping table
+- **Documentation:** Maintain `020-data-model.md` with complete mapping table
 - **IDE Support:** Use XML comments so IntelliSense shows English descriptions
 - **Code Style:** Encourage using descriptive variable names even if types are German
   ```csharp
@@ -119,5 +119,5 @@ Create SQL synonyms with English names pointing to German tables.
 
 ## References
 
-- `02-data-model.md` - Complete German↔English mapping table
-- `01-domain-entities.md` - Entity descriptions with both names
+- `020-data-model.md` - Complete German↔English mapping table
+- `010-domain-entities.md` - Entity descriptions with both names

@@ -79,5 +79,5 @@ Load data in C#, perform matching logic in-memory.
 
 ## References
 
-- `01-domain-entities.md` - Matchmaking glossary and rules
-- `02-data-model.md` - Tables involved in matching (Olis, Ilos, get, fit)
+- `010-domain-entities.md` - Matchmaking glossary and rules
+- `020-data-model.md` - Tables involved in matching (Olis, Ilos, get, fit)

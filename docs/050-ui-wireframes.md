@@ -6,7 +6,7 @@ Status: in-progress
 ## Purpose
 
 Low-fidelity sketches and interaction notes for key pages.  
-Reference [04-ui-ia.md](04-ui-ia.md) for the full page inventory.
+Reference [040-ui-ia.md](040-ui-ia.md) for the full page inventory.
 
 ## Layout Structure
 

@@ -4,7 +4,7 @@
 
 - **Never commit** changes without the user reviewing them first.
 - **Never push** without explicit user confirmation.
-- Always show a `git diff` or file summary and wait for approval before any `git commit` or `git push`.
+- Always show a `git diff` or file summary and wait for explicit user approval before proceeding with any `git commit` or `git push`.
 
 ## Build & Run
 
@@ -25,6 +25,14 @@ dotnet test "OLI-it.Web" --no-build
 ```
 
 > There are no test projects yet. When adding tests, use xUnit or NUnit in a new `OLI-it.Web.Tests` project.
+
+### Troubleshooting Build & Run Errors
+
+- If `dotnet build` fails, provide the full error message and check:
+  - NuGet package dependencies are restored (`dotnet restore`)
+  - Target framework matches the project configuration
+  - Connection strings or secrets are properly configured
+- If `dotnet run` fails, ensure the database connection is available and Azure Key Vault secrets are accessible.
 
 ## Architecture
 
@@ -61,13 +69,14 @@ The database schema uses German names — **preserve them exactly**. Do not rena
 | `Zweig` | Branch |
 
 Full glossary: [`docs/german-english-quick-reference.md`](../docs/german-english-quick-reference.md)  
-Entity details: [`docs/01-domain-entities.md`](../docs/01-domain-entities.md)
+Entity details: [`docs/010-domain-entities.md`](../docs/010-domain-entities.md)
 
 ## Key Conventions
 
 ### Database-First EF Core
 - The SQL Server schema is the source of truth. **Never create EF migrations.**
 - To reflect schema changes, re-scaffold: see [`docs/ef-scaffolding-guide.md`](../docs/ef-scaffolding-guide.md).
+  - If the scaffolding guide becomes outdated due to schema changes, notify the user and provide manual re-scaffolding steps or guidance to update the documentation.
 - All entity classes live in `Models/` and are generated — do not hand-edit them.
 
 ### Razor Pages Pattern
@@ -110,18 +119,18 @@ Before answering questions about domain, architecture, decisions, or UI, **alway
 | File | Summary |
 |------|---------|
 | `docs/README.md` | Documentation index and navigation guide |
-| `docs/00-motivation.md` | Why OLI-it exists; problem statement and goals |
-| `docs/00-vision.md` | Long-term product vision |
-| `docs/01-domain-entities.md` | All domain entities with fields and relationships |
-| `docs/02-data-model.md` | Database schema overview and ER relationships |
-| `docs/03-use-cases.md` | User stories and use-case descriptions |
-| `docs/04-ui-ia.md` | UI information architecture; page hierarchy |
-| `docs/05-ui-wireframes.md` | Wireframe descriptions for key screens |
-| `docs/06-architecture.md` | Technical architecture; layers, patterns, dependencies |
-| `docs/07-decisions/ADR-0001-database-first-approach.md` | Decision: use existing DB schema, no EF migrations |
-| `docs/07-decisions/ADR-0002-stored-procedure-matchmaking.md` | Decision: matchmaking in SQL stored procs, not C# |
-| `docs/07-decisions/ADR-0003-german-table-names.md` | Decision: preserve German table/column names as-is |
-| `docs/08-backlog.md` | Prioritised feature and bug backlog |
-| `docs/99-open-questions.md` | Unresolved design and product questions |
+| `docs/000-motivation.md` | Why OLI-it exists; problem statement and goals |
+| `docs/001-vision.md` | Long-term product vision |
+| `docs/010-domain-entities.md` | All domain entities with fields and relationships |
+| `docs/020-data-model.md` | Database schema overview and ER relationships |
+| `docs/030-use-cases.md` | User stories and use-case descriptions |
+| `docs/040-ui-ia.md` | UI information architecture; page hierarchy |
+| `docs/050-ui-wireframes.md` | Wireframe descriptions for key screens |
+| `docs/060-architecture.md` | Technical architecture; layers, patterns, dependencies |
+| `docs/070-decisions/ADR-0001-database-first-approach.md` | Decision: use existing DB schema, no EF migrations |
+| `docs/070-decisions/ADR-0002-stored-procedure-matchmaking.md` | Decision: matchmaking in SQL stored procs, not C# |
+| `docs/070-decisions/ADR-0003-german-table-names.md` | Decision: preserve German table/column names as-is |
+| `docs/080-backlog.md` | Prioritised feature and bug backlog |
+| `docs/990-open-questions.md` | Unresolved design and product questions |
 | `docs/ef-scaffolding-guide.md` | How to re-scaffold EF models from the database |
 | `docs/german-english-quick-reference.md` | German ↔ English entity name mapping |

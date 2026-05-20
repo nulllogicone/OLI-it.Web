@@ -10,7 +10,7 @@ Status: draft
 - SQL Server
 - German table names from original implementation
 - Matching logic implemented as stored procedure
-- Domain model in `01-domain-entities.md` provides conceptual mapping
+- Domain model in `010-domain-entities.md` provides conceptual mapping
 
 ---
 
