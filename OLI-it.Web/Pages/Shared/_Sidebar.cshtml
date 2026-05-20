@@ -30,15 +30,16 @@
             <span class="menu-description">image gallery</span>
         </li>
         <li class="menu-item">
-            <a href="/search">
+            <a href="/search" class="@(currentPage.Contains("Search") ? "active" : "")">
                 search
             </a>
             <span class="menu-description">for users, messages or answers</span>
         </li>
         <li class="menu-item">
-            <a href="/rss">
-                RSS
+            <a href="/wortraum" class="@(currentPage.Contains("Wortraum") ? "active" : "")">
+                wortraum
             </a>
+            <span class="menu-description">word space hierarchy</span>
         </li>
         <li class="menu-item">
             <a href="/links">
@@ -46,21 +47,9 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="/terms">
-                terms and conditions
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="/imprint">
+            <a href="/imprint" class="@(currentPage.Contains("Imprint") ? "active" : "")">
                 imprint
             </a>
-        </li>
-        <li class="menu-divider"></li>
-        <li class="menu-item">
-            <a href="/dashboard.html" target="_blank" rel="noopener">
-                stakeholder dashboard
-            </a>
-            <span class="menu-description">delivery progress and blockers</span>
         </li>
     </ul>
 </nav>

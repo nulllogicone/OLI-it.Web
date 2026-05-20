@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dev Dashboard — OLI-it.Web</title>
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+  crossorigin="anonymous">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+/* ── Base ── */
+body { background: #f0f2f5; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+/* ── Header ── */
+.dash-header {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 55%, #388e3c 100%);
+  color: #fff; padding: 1.5rem 0 1.25rem; margin-bottom: 1.5rem;
+}
+.dash-header h1 { font-size: 1.55rem; font-weight: 700; margin: 0; letter-spacing: -.01em; }
+.dash-header .sub { opacity: .75; font-size: .82rem; margin-top: .25rem; }
+
+/* ── Metrics ── */
+.metric-card {
+  background: #fff; border-radius: 10px; padding: 1rem;
+  text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); height: 100%;
+}
+.metric-value { font-size: 2.2rem; font-weight: 700; line-height: 1; }
+.metric-label { font-size: .68rem; color: #888; text-transform: uppercase; letter-spacing: .05em; margin-top: .25rem; }
+.mv-gray   { color: #546e7a; }
+.mv-green  { color: #2e7d32; }
+.mv-amber  { color: #e65100; }
+.mv-blue   { color: #1565c0; }
+.mv-purple { color: #7b1fa2; }
+.mv-red    { color: #c62828; }
+
+/* ── Section card ── */
+.section-card {
+  background: #fff; border-radius: 10px;
+  padding: 1.25rem 1.4rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 1.5rem;
+}
+
+/* ── Tab nav ── */
+.dash-tabs { border-bottom: 2px solid #e0e0e0; margin-bottom: 1.25rem; }
+.dash-tabs .nav-link {
+  color: #555; font-weight: 600; font-size: .85rem;
+  padding: .5rem 1.1rem; border: none;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  background: none; transition: color .15s;
+}
+.dash-tabs .nav-link:hover  { color: #2e7d32; }
+.dash-tabs .nav-link.active { color: #1b5e20; border-bottom-color: #1b5e20; }
+.tab-badge { font-size: .65rem; margin-left: .3rem; vertical-align: middle; }
+
+/* ── Kanban board ── */
+.kboard { display: flex; gap: .8rem; overflow-x: auto; padding-bottom: .5rem; align-items: flex-start; }
+.kcol {
+  flex: 0 0 270px; border-radius: 8px; border: 1px solid #e0e0e0;
+  background: #fafafa; display: flex; flex-direction: column;
+}
+.kcol-header {
+  padding: .5rem .85rem; font-weight: 700; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .07em;
+  display: flex; justify-content: space-between; align-items: center;
+  border-radius: 7px 7px 0 0;
+}
+.kcol-count { background: rgba(255,255,255,.3); border-radius: 12px; padding: .05em .5em; font-size: .9em; }
+.kcol-body {
+  padding: .5rem; display: flex; flex-direction: column;
+  gap: .35rem; min-height: 60px; max-height: 480px; overflow-y: auto; flex: 1;
+}
+.kcol-footer { padding: .4rem .5rem; border-top: 1px solid #f0f0f0; }
+
+/* Quick add input */
+.quick-add-input {
+  border: 1px dashed #ccc; border-radius: 5px;
+  padding: .3rem .6rem; font-size: .78rem; width: 100%;
+  outline: none; background: transparent; color: #555;
+  transition: border-color .15s, background .15s;
+}
+.quick-add-input:focus {
+  border-color: #2e7d32; border-style: solid;
+  background: #fff; box-shadow: 0 0 0 2px rgba(46,125,50,.1);
+}
+.quick-add-input::placeholder { color: #bbb; }
+
+/* ── Cards ── */
+.kcard {
+  background: #fff; border-radius: 6px; padding: .5rem .65rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07); border-left: 3px solid #bdbdbd;
+  cursor: pointer; transition: box-shadow .15s, transform .12s;
+}
+.kcard:hover { box-shadow: 0 3px 10px rgba(0,0,0,.12); transform: translateY(-1px); }
+.kcard-id    { font-size: .62rem; font-weight: 700; color: #bdbdbd; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.kcard-title { font-size: .8rem; line-height: 1.35; color: #212121; font-weight: 500; }
+.kcard-notes {
+  font-size: .68rem; color: #aaa; margin-top: .2rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.kcard-chips { display: flex; flex-wrap: wrap; gap: .2rem; margin-top: .3rem; align-items: center; }
+.kcard-date  { font-size: .62rem; color: #ccc; margin-left: auto; }
+.kcard-empty { text-align: center; color: #ccc; padding: 1.5rem .5rem; font-size: .78rem; }
+
+/* ── Chips ── */
+.chip { display: inline-block; padding: .12em .5em; border-radius: 10px; font-size: .6rem; font-weight: 700; line-height: 1.4; }
+.chip-high   { background: #ffebee; color: #c62828; }
+.chip-medium { background: #fff3e0; color: #e65100; }
+.chip-low    { background: #e8f5e9; color: #2e7d32; }
+.chip-tag    { background: #e3f2fd; color: #1565c0; font-weight: 600; }
+
+/* ── Modal ── */
+.small-label { font-size: .78rem; font-weight: 600; margin-bottom: .2rem; }
+
+/* ── Footer ── */
+.dash-footer { text-align: center; color: #aaa; font-size: .7rem; padding: 1.25rem 0 2rem; }
+
+@media (max-width: 768px) { .kboard { flex-direction: column; } .kcol { flex: none; } }
+</style>
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────────────────────────── -->
+<div class="dash-header">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h1><i class="bi bi-kanban me-2"></i>Dev Dashboard &mdash; OLI-it.Web</h1>
+        <div class="sub">Personal workspace &bull; todos, ideas &amp; discussions &bull; data in <code style="opacity:.8">slop/data/*.md</code></div>
+      </div>
+      <button class="btn btn-light btn-sm fw-semibold" onclick="openAddModal()">
+        <i class="bi bi-plus-lg me-1"></i>Add Item
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container pb-4">
+
+  <!-- ── Metrics ─────────────────────────────────────────────────────────── -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="metric-card"><div class="metric-value mv-gray"  id="m-total">–</div><div class="metric-label">Todos</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="metric-card"><div class="metric-value mv-blue"  id="m-inprog">–</div><div class="metric-label">In Progress</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="metric-card"><div class="metric-value mv-green" id="m-done">–</div><div class="metric-label">Done</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="metric-card"><div class="metric-value mv-gray"  id="m-blocked">–</div><div class="metric-label">Blocked</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="metric-card"><div class="metric-value mv-purple" id="m-ideas">–</div><div class="metric-label">Active Ideas</div></div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="metric-card"><div class="metric-value mv-amber" id="m-discs">–</div><div class="metric-label">Open Discussions</div></div>
+    </div>
+  </div>
+
+  <!-- ── Tabs + Boards ────────────────────────────────────────────────────── -->
+  <div class="section-card">
+    <ul class="nav dash-tabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" data-type="todos" onclick="switchTab('todos')">
+          <i class="bi bi-check2-square"></i> Todos
+          <span class="badge bg-secondary tab-badge" id="tab-count-todos">0</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-type="ideas" onclick="switchTab('ideas')">
+          <i class="bi bi-lightbulb"></i> Ideas
+          <span class="badge bg-secondary tab-badge" id="tab-count-ideas">0</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-type="discussions" onclick="switchTab('discussions')">
+          <i class="bi bi-chat-dots"></i> Discussions
+          <span class="badge bg-secondary tab-badge" id="tab-count-discussions">0</span>
+        </button>
+      </li>
+    </ul>
+
+    <div id="board-todos"></div>
+    <div id="board-ideas"       style="display:none"></div>
+    <div id="board-discussions" style="display:none"></div>
+  </div>
+
+</div>
+
+<!-- ── Add / Edit Modal ──────────────────────────────────────────────────── -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="modalHeading" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header border-0 pb-1">
+        <h5 class="modal-title fw-bold" id="modalHeading">Add Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body pt-2">
+        <input type="hidden" id="f-id">
+        <input type="hidden" id="f-type-edit">
+
+        <div class="mb-3">
+          <label class="small-label form-label" for="f-title">Title <span class="text-danger">*</span></label>
+          <input type="text" class="form-control form-control-sm" id="f-title" placeholder="What's on your mind?">
+          <div class="invalid-feedback">Title is required</div>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="small-label form-label" for="f-type">Type</label>
+            <select class="form-select form-select-sm" id="f-type" onchange="onTypeChange()">
+              <option value="todos">Todo</option>
+              <option value="ideas">Idea</option>
+              <option value="discussions">Discussion</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="small-label form-label" for="f-status">Status</label>
+            <select class="form-select form-select-sm" id="f-status"></select>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="small-label form-label" for="f-priority">Priority</label>
+            <select class="form-select form-select-sm" id="f-priority">
+              <option value="">— none —</option>
+              <option value="high">🔴 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="small-label form-label" for="f-tags">Tags</label>
+            <input type="text" class="form-control form-control-sm" id="f-tags" placeholder="comma, separated">
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label class="small-label form-label" for="f-notes">Notes</label>
+          <textarea class="form-control form-control-sm" id="f-notes" rows="3" placeholder="Context, links, details…"></textarea>
+        </div>
+
+        <div id="f-meta" class="text-muted mt-2" style="font-size:.7rem; display:none"></div>
+      </div>
+      <div class="modal-footer border-0 pt-1">
+        <button class="btn btn-outline-danger btn-sm me-auto" id="btn-delete" style="display:none" onclick="deleteItem()">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+        <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-success btn-sm px-3" onclick="saveModal()">
+          <i class="bi bi-check-lg me-1"></i>Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ────────────────────────────────────────────────────────────── -->
+<div class="dash-footer">
+  <div class="container">
+    Dev Dashboard &bull; Data in <code>slop/data/*.md</code> &bull; OLI-it.Web (nulllogicone)
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmE/GYm9o3G6Q3JqzVWZnH3qNnf2"
+  crossorigin="anonymous"></script>
+<script>
+// ── Column config ─────────────────────────────────────────────────────────────
+// [status, label, header-color, card-border-color]
+const COLUMNS = {
+  todos:       [['todo','Backlog','#78909c','#bdbdbd'], ['in-progress','In Progress','#1565c0','#1976d2'], ['done','Done','#2e7d32','#388e3c'], ['blocked','Blocked','#c62828','#d32f2f']],
+  ideas:       [['new','New','#7b1fa2','#9c27b0'], ['exploring','Exploring','#e65100','#ef6c00'], ['accepted','Accepted','#2e7d32','#388e3c'], ['rejected','Rejected','#b71c1c','#c62828']],
+  discussions: [['open','Open','#01579b','#0277bd'], ['in-progress','In Progress','#e65100','#ef6c00'], ['resolved','Resolved','#2e7d32','#388e3c']],
+};
+
+let _data      = { todos: [], ideas: [], discussions: [] };
+let _activeTab = 'todos';
+let _modal     = null;
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  load();
+});
+
+function getModal() {
+  if (!_modal) _modal = new bootstrap.Modal(document.getElementById('itemModal'));
+  return _modal;
+}
+
+async function load() {
+  var boardEl = document.getElementById('board-todos');
+  boardEl.innerHTML = '<div class="text-muted p-3" style="font-size:.85rem"><i class="bi bi-arrow-repeat me-1"></i>Loading…</div>';
+  try {
+    const r = await fetch('/api/data');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    _data = await r.json();
+    renderMetrics();
+    renderAll();
+  } catch(e) {
+    boardEl.innerHTML = '<div class="alert alert-danger m-2" style="font-size:.82rem"><strong>Could not load data.</strong><br>' + e.message + '<br><small>Is the server running? <code>npm start</code> in the <code>slop/</code> folder.</small></div>';
+    console.error('Failed to load data', e);
+  }
+}
+
+// ── Metrics ───────────────────────────────────────────────────────────────────
+function renderMetrics() {
+  var t = _data.todos;
+  var blocked = t.filter(function(i) { return i.status === 'blocked'; }).length;
+  set('m-total',   t.length,                                                          'mv-gray');
+  set('m-inprog',  t.filter(function(i) { return i.status === 'in-progress'; }).length, 'mv-blue');
+  set('m-done',    t.filter(function(i) { return i.status === 'done'; }).length,      'mv-green');
+  set('m-blocked', blocked,                                                            blocked > 0 ? 'mv-red' : 'mv-gray');
+  set('m-ideas',   _data.ideas.filter(function(i) { return i.status === 'new' || i.status === 'exploring'; }).length, 'mv-purple');
+  set('m-discs',   _data.discussions.filter(function(i) { return i.status !== 'resolved'; }).length, 'mv-amber');
+}
+
+function set(id, val, cls) {
+  var el = document.getElementById(id);
+  el.textContent = val;
+  el.className   = 'metric-value ' + cls;
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  _activeTab = tab;
+  document.querySelectorAll('.dash-tabs .nav-link').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.type === tab);
+  });
+  ['todos','ideas','discussions'].forEach(function(t) {
+    document.getElementById('board-' + t).style.display = t === tab ? '' : 'none';
+  });
+}
+
+function renderAll() {
+  ['todos','ideas','discussions'].forEach(function(type) {
+    renderBoard(type);
+    document.getElementById('tab-count-' + type).textContent = _data[type].length;
+  });
+}
+
+// ── Kanban board ──────────────────────────────────────────────────────────────
+function renderBoard(type) {
+  var items = _data[type];
+  var cols  = COLUMNS[type];
+  var html  = '<div class="kboard">';
+
+  cols.forEach(function(col) {
+    var status     = col[0];
+    var label      = col[1];
+    var hdrColor   = col[2];
+    var cardBorder = col[3];
+    var colItems   = items.filter(function(i) { return i.status === status; });
+
+    html += '<div class="kcol">';
+    html += '<div class="kcol-header" style="background:' + hdrColor + ';color:#fff">';
+    html += '<span>' + label + '</span>';
+    html += '<span class="kcol-count">' + colItems.length + '</span>';
+    html += '</div>';
+    html += '<div class="kcol-body">';
+    if (colItems.length === 0) {
+      html += '<div class="kcard-empty"><i class="bi bi-inbox" style="font-size:1.1rem"></i><br>Nothing here</div>';
+    } else {
+      colItems.forEach(function(item) { html += renderCard(item, type, cardBorder); });
+    }
+    html += '</div>';
+    html += '<div class="kcol-footer">';
+    html += '<input class="quick-add-input" placeholder="+ Quick add, press Enter"';
+    html += ' data-type="' + type + '" data-status="' + status + '"';
+    html += ' onkeydown="quickAdd(event,this)">';
+    html += '</div>';
+    html += '</div>';
+  });
+
+  html += '</div>';
+  document.getElementById('board-' + type).innerHTML = html;
+}
+
+function renderCard(item, type, borderColor) {
+  var priClass = { high:'chip-high', medium:'chip-medium', low:'chip-low' };
+  var chips = '';
+  if (item.priority) {
+    chips += '<span class="chip ' + (priClass[item.priority] || '') + '">' + item.priority + '</span>';
+  }
+  if (item.tags) {
+    item.tags.split(',').forEach(function(t) {
+      var tag = t.trim();
+      if (tag) chips += '<span class="chip chip-tag">' + esc(tag) + '</span>';
+    });
+  }
+  var html = '<div class="kcard" style="border-left-color:' + borderColor + '" onclick="openEditModal(\'' + type + '\',\'' + item.id + '\')">';
+  html += '<span class="kcard-id">' + item.id + '</span>';
+  html += '<div class="kcard-title">' + esc(item.title) + '</div>';
+  if (item.notes) html += '<div class="kcard-notes">' + esc(item.notes) + '</div>';
+  if (chips || item.created) {
+    html += '<div class="kcard-chips">' + chips;
+    if (item.created) html += '<span class="kcard-date ms-auto">' + item.created + '</span>';
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ── Quick add ─────────────────────────────────────────────────────────────────
+async function quickAdd(e, input) {
+  if (e.key !== 'Enter') return;
+  var title = input.value.trim();
+  if (!title) return;
+  input.value    = '';
+  input.disabled = true;
+  await httpPost('/api/items/' + input.dataset.type, { title: title, status: input.dataset.status });
+  input.disabled = false;
+  await load();
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function fillStatusOptions(type, selected) {
+  var sel = document.getElementById('f-status');
+  sel.innerHTML = (COLUMNS[type] || []).map(function(col) {
+    return '<option value="' + col[0] + '"' + (col[0] === selected ? ' selected' : '') + '>' + col[1] + '</option>';
+  }).join('');
+}
+
+function onTypeChange() {
+  fillStatusOptions(document.getElementById('f-type').value, '');
+}
+
+function openAddModal(type, status) {
+  type = type || _activeTab;
+  document.getElementById('modalHeading').textContent = 'Add Item';
+  document.getElementById('f-id').value        = '';
+  document.getElementById('f-type-edit').value = '';
+  document.getElementById('f-title').value     = '';
+  document.getElementById('f-title').classList.remove('is-invalid');
+  document.getElementById('f-type').value      = type;
+  document.getElementById('f-type').disabled   = false;
+  fillStatusOptions(type, status || '');
+  document.getElementById('f-priority').value  = '';
+  document.getElementById('f-tags').value      = '';
+  document.getElementById('f-notes').value     = '';
+  document.getElementById('btn-delete').style.display = 'none';
+  document.getElementById('f-meta').style.display     = 'none';
+  getModal().show();
+  setTimeout(function() { document.getElementById('f-title').focus(); }, 300);
+}
+
+function openEditModal(type, id) {
+  var item = (_data[type] || []).find(function(i) { return i.id === id; });
+  if (!item) return;
+  document.getElementById('modalHeading').textContent = 'Edit ' + id;
+  document.getElementById('f-id').value        = id;
+  document.getElementById('f-type-edit').value = type;
+  document.getElementById('f-title').value     = item.title;
+  document.getElementById('f-title').classList.remove('is-invalid');
+  document.getElementById('f-type').value      = type;
+  document.getElementById('f-type').disabled   = true;
+  fillStatusOptions(type, item.status);
+  document.getElementById('f-priority').value  = item.priority || '';
+  document.getElementById('f-tags').value      = item.tags     || '';
+  document.getElementById('f-notes').value     = item.notes    || '';
+  document.getElementById('btn-delete').style.display = '';
+  var meta = document.getElementById('f-meta');
+  meta.style.display  = '';
+  meta.textContent    = 'ID: ' + item.id + '  ·  Created: ' + item.created;
+  getModal().show();
+}
+
+async function saveModal() {
+  var id       = document.getElementById('f-id').value;
+  var editType = document.getElementById('f-type-edit').value;
+  var type     = editType || document.getElementById('f-type').value;
+  var title    = document.getElementById('f-title').value.trim();
+  if (!title) {
+    document.getElementById('f-title').classList.add('is-invalid');
+    return;
+  }
+  document.getElementById('f-title').classList.remove('is-invalid');
+  var payload = {
+    title:    title,
+    status:   document.getElementById('f-status').value,
+    priority: document.getElementById('f-priority').value,
+    tags:     document.getElementById('f-tags').value.trim(),
+    notes:    document.getElementById('f-notes').value.trim(),
+  };
+  if (id) {
+    await httpPatch('/api/items/' + type + '/' + id, payload);
+  } else {
+    await httpPost('/api/items/' + type, payload);
+  }
+  getModal().hide();
+  await load();
+}
+
+async function deleteItem() {
+  var id   = document.getElementById('f-id').value;
+  var type = document.getElementById('f-type-edit').value;
+  if (!id || !confirm('Delete ' + id + '?')) return;
+  await httpDelete('/api/items/' + type + '/' + id);
+  getModal().hide();
+  await load();
+}
+
+// ── HTTP helpers ──────────────────────────────────────────────────────────────
+function httpPost(url, body) {
+  return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function(r) { return r.json(); });
+}
+function httpPatch(url, body) {
+  return fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function(r) { return r.json(); });
+}
+function httpDelete(url) {
+  return fetch(url, { method: 'DELETE' }).then(function(r) { return r.json(); });
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+@page "/charts"
+@model OLI_it.Web.Pages.ChartsModel
+@{
+    ViewData["Title"] = "Charts";
+}
+
+<div class="page-header">
+    <h1>charts</h1>
+    <p>statistical overview &mdash; richest authors, priciest messages, top answers, most clicks</p>
+</div>
+
+<div class="content-section charts-page">
+
+    @* ── Author ── *@
+    <section class="chart-section">
+        <h2 class="chart-section-title">author</h2>
+        <div class="chart-columns">
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--rich">rich</h3>
+                @foreach (var stamm in Model.Data.RichStamm)
+                {
+                    <a href="/stamm/@stamm.StammGuid" class="chart-row">
+                        <span class="chart-value chart-value--positive">@stamm.KooK!.Value.ToString("N2")</span>
+                        @if (!string.IsNullOrEmpty(stamm.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = stamm.Datei, altText = stamm.Stamm1, width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@stamm.Stamm1</span>
+                    </a>
+                }
+            </div>
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--poor">poor</h3>
+                @foreach (var stamm in Model.Data.PoorStamm)
+                {
+                    <a href="/stamm/@stamm.StammGuid" class="chart-row">
+                        <span class="chart-value chart-value--negative">@stamm.KooK!.Value.ToString("N2")</span>
+                        @if (!string.IsNullOrEmpty(stamm.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = stamm.Datei, altText = stamm.Stamm1, width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@stamm.Stamm1</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+    @* ── Message ── *@
+    <section class="chart-section">
+        <h2 class="chart-section-title">message</h2>
+        <div class="chart-columns">
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--rich">expensive</h3>
+                @foreach (var postit in Model.Data.ExpensivePostIt)
+                {
+                    <a href="/postit/@postit.PostItGuid" class="chart-row">
+                        <span class="chart-value chart-value--positive">@postit.KooK.ToString("N2")</span>
+                        @if (!string.IsNullOrEmpty(postit.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postit.Datei, altText = postit.Titel ?? "message", width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@(postit.Titel ?? postit.PostIt1.Substring(0, Math.Min(60, postit.PostIt1.Length)))</span>
+                    </a>
+                }
+            </div>
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--poor">cheap</h3>
+                @foreach (var postit in Model.Data.CheapPostIt)
+                {
+                    <a href="/postit/@postit.PostItGuid" class="chart-row">
+                        <span class="chart-value chart-value--negative">@postit.KooK.ToString("N2")</span>
+                        @if (!string.IsNullOrEmpty(postit.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postit.Datei, altText = postit.Titel ?? "message", width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@(postit.Titel ?? postit.PostIt1.Substring(0, Math.Min(60, postit.PostIt1.Length)))</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+    @* ── Answer ── *@
+    <section class="chart-section">
+        <h2 class="chart-section-title">answer</h2>
+        <div class="chart-columns">
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--rich">top</h3>
+                @foreach (var toplab in Model.Data.TopTopLab)
+                {
+                    <a href="/toplab/@toplab.TopLabGuid" class="chart-row">
+                        <span class="chart-value chart-value--positive">@toplab.Lohn.ToString("N2")</span>
+                        @if (!string.IsNullOrEmpty(toplab.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = toplab.Titel ?? "answer", width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@(toplab.Titel ?? toplab.TopLab1.Substring(0, Math.Min(80, toplab.TopLab1.Length)))</span>
+                    </a>
+                }
+            </div>
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--poor">flop</h3>
+                @foreach (var toplab in Model.Data.FlopTopLab)
+                {
+                    <a href="/toplab/@toplab.TopLabGuid" class="chart-row">
+                        <span class="chart-value chart-value--negative">@toplab.Lohn.ToString("N2")</span>
+                        @if (!string.IsNullOrEmpty(toplab.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = toplab.Titel ?? "answer", width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@(toplab.Titel ?? toplab.TopLab1.Substring(0, Math.Min(80, toplab.TopLab1.Length)))</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+    @* ── Clicks ── *@
+    <section class="chart-section">
+        <h2 class="chart-section-title">clicks</h2>
+        <div class="chart-columns">
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--rich">top</h3>
+                @foreach (var postit in Model.Data.TopClicksPostIt)
+                {
+                    <a href="/postit/@postit.PostItGuid" class="chart-row">
+                        <span class="chart-value chart-value--neutral">@postit.Hits.ToString("N0")</span>
+                        @if (!string.IsNullOrEmpty(postit.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postit.Datei, altText = postit.Titel ?? "message", width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@(postit.Titel ?? postit.PostIt1.Substring(0, Math.Min(60, postit.PostIt1.Length)))</span>
+                    </a>
+                }
+            </div>
+            <div class="chart-column">
+                <h3 class="chart-column-title chart-column-title--poor">flop</h3>
+                @foreach (var postit in Model.Data.FlopClicksPostIt)
+                {
+                    <a href="/postit/@postit.PostItGuid" class="chart-row">
+                        <span class="chart-value chart-value--neutral">@postit.Hits.ToString("N0")</span>
+                        @if (!string.IsNullOrEmpty(postit.Datei))
+                        {
+                            <span class="chart-thumb">
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postit.Datei, altText = postit.Titel ?? "message", width = 32, height = 32 })
+                            </span>
+                        }
+                        <span class="chart-label">@(postit.Titel ?? postit.PostIt1.Substring(0, Math.Min(60, postit.PostIt1.Length)))</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+</div>

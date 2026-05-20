@@ -1,0 +1,97 @@
+@page "/journal"
+@model OLI_it.Web.Pages.JournalModel
+@{
+    ViewData["Title"] = "Timeline";
+    var filters = new[] {
+        ("", "*", "all"),
+        ("S", "author", "author"),
+        ("P", "message", "message"),
+        ("A", "recipient", "recipient"),
+        ("T", "answer", "answer"),
+    };
+}
+
+<div class="page-header">
+    <h1>timeline</h1>
+    <p>latest entries &mdash; messages, authors, answers and recipients</p>
+</div>
+
+<div class="content-section">
+    <form method="get" action="/journal" class="journal-controls">
+        <div class="journal-filter-group">
+            @foreach (var (value, label, title) in filters)
+            {
+                var isActive = (Model.Filter ?? "") == value;
+                <a href="/journal?filter=@value&count=@Model.Count"
+                   class="journal-filter-btn @(isActive ? "active" : "")"
+                   title="@title">@label</a>
+            }
+        </div>
+        <div class="journal-count-group">
+            <label class="journal-count-label" for="countInput">rows</label>
+            <input id="countInput"
+                   type="number"
+                   name="count"
+                   value="@Model.Count"
+                   min="1"
+                   max="@OLI_it.Web.Services.JournalService.MaxCount"
+                   class="journal-count-input" />
+            <input type="hidden" name="filter" value="@(Model.Filter ?? "")" />
+            <button type="submit" class="journal-filter-btn">go</button>
+        </div>
+    </form>
+
+    @if (!Model.Entries.Any())
+    {
+        <p class="text-muted">No entries found.</p>
+    }
+    else
+    {
+        <div class="timeline-feed">
+            @for (int i = 0; i < Model.Entries.Count; i++)
+            {
+                var entry = Model.Entries[i];
+                var typeClass = JournalModel.GetTypeClass(entry.Zeichen);
+                var url = JournalModel.GetEntryUrl(entry);
+                var label = JournalModel.GetTypeLabel(entry.Zeichen);
+                var dateParts = JournalModel.FormatDate(entry.Datum).Split(' ');
+                var isLast = i == Model.Entries.Count - 1;
+
+                <div class="timeline-item @typeClass">
+                    <div class="timeline-date-col">
+                        @dateParts[0]
+                        @if (dateParts.Length > 1)
+                        {
+                            <br />@dateParts[1]
+                        }
+                    </div>
+                    <div class="timeline-line-col">
+                        <div class="timeline-dot"></div>
+                        @if (!isLast)
+                        {
+                            <div class="timeline-connector"></div>
+                        }
+                    </div>
+                    <a href="@url" class="timeline-card">
+                        <div class="timeline-card-inner">
+                            @if (!string.IsNullOrEmpty(entry.Datei))
+                            {
+                                <div class="timeline-thumbnail">
+                                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = entry.Datei, altText = entry.Titel ?? "entry image", width = 48, height = 48 })
+                                </div>
+                            }
+                            <div class="timeline-card-body">
+                                <div class="timeline-title">@(entry.Titel ?? "—")</div>
+                                @if (!string.IsNullOrEmpty(entry.Wert))
+                                {
+                                    <div class="timeline-excerpt">@entry.Wert</div>
+                                }
+                                <span class="timeline-badge">@label</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -18,7 +18,7 @@ Status: draft
 | BL-009 | Inbox — matched messages per user | UC-005 | ENT-MessageDelivery | not started |
 | BL-010 | Message detail page + answer submission | UC-006 | ENT-Answer | not started |
 | BL-011 | Rate answers + credit transactions | UC-007, UC-011 | ENT-Rating, ENT-Transaction | not started |
-| BL-012 | Journal page (public chronological) | UC-008 | ENT-Message | not started |
+| BL-012 | Journal page (public chronological) | UC-008 | ENT-Message | ✅ completed |
 | BL-013 | Charts page (rankings) | UC-009 | ENT-Message, ENT-User | not started |
 | BL-014 | Search (users, messages, answers) | UC-010 | All searchable | not started |
 | BL-015 | User profile + transaction history | UC-011 | ENT-User, ENT-Transaction | not started |
@@ -58,3 +58,4 @@ Status: draft
 - 2026-04-08: Added BL-114 - DocFx + GitHub Pages follow-up (deferred).
 - 2026-04-08: Updated BL-106 - Marked in progress; documented rewritten nulllogicone.net API surface (JSON/XML/RDF) and linked public repository.
 - 2026-04-08: Completed BL-017 - RSS feed removed from scope (not needed anymore).
+- 2026-05-17: Completed BL-012 - Journal page implemented; timeline feed with type filters, count selector (1–200 rows), public access, and reverse-chronological ordering. Shows all entry types (messages, authors, answers, recipients).

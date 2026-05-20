@@ -55,6 +55,22 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
 .cl-list li { font-size:.8rem; border-left:3px solid #e3f2fd; padding:.2rem .6rem; margin-bottom:.25rem; color:#444; }
 .cl-list li:first-child { border-color:#1565c0; font-weight:600; }
 .dash-footer { text-align:center; color:#aaa; font-size:.72rem; padding:1.5rem 0 2rem; }
+.disc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:.85rem; }
+.disc-card { background:#fff; border-radius:8px; padding:.85rem 1rem; box-shadow:0 1px 3px rgba(0,0,0,.07); border-left:4px solid #78909c; }
+.disc-card.disc-open     { border-color:#78909c; }
+.disc-card.disc-progress { border-color:#1565c0; }
+.disc-card.disc-done     { border-color:#2e7d32; opacity:.75; }
+.disc-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; margin-bottom:.35rem; }
+.disc-id    { font-size:.65rem; font-weight:700; color:#9e9e9e; text-transform:uppercase; display:block; }
+.disc-title { font-size:.85rem; font-weight:600; color:#212121; line-height:1.35; }
+.disc-notes { font-size:.78rem; color:#555; margin-top:.35rem; line-height:1.4; }
+.disc-meta  { display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.45rem; }
+.tag-pill   { font-size:.62rem; background:#e3f2fd; color:#1565c0; border-radius:10px; padding:.1em .55em; font-weight:600; }
+.badge-status { font-size:.65rem; padding:.2em .55em; border-radius:10px; white-space:nowrap; font-weight:600; }
+.bs-todo     { background:#eceff1; color:#546e7a; }
+.bs-progress { background:#e3f2fd; color:#1565c0; }
+.bs-done     { background:#e8f5e9; color:#2e7d32; }
+.bs-blocked  { background:#ffebee; color:#c62828; }
 @media (max-width:768px) { .kboard { flex-direction:column; } .kcol { flex:none; } }
 </style>
 </head>
@@ -65,7 +81,7 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
       <div>
         <h1>OLI-it.Web &mdash; Stakeholder Dashboard</h1>
-        <div class="sub">0L1 Open Messaging Platform &bull; Generated: 2026-05-13 18:58 &bull; Backlog: 2026-04-08</div>
+        <div class="sub">0L1 Open Messaging Platform &bull; Generated: 2026-05-16 23:13 &bull; Backlog: 2026-04-08</div>
       </div>
       <div class="d-flex gap-2 align-items-center mt-1">
         <span class="badge bg-warning text-dark fs-6 px-3 py-2">Phase 1 &mdash; MVP Parity</span>
@@ -98,6 +114,34 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
     </div>
   </div>
 
+  <!-- Slop Metrics -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">5</div><div class="metric-label">Total Ideas</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-blue">2</div><div class="metric-label">Ideas Exploring</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">3</div><div class="metric-label">Ideas New</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-amber">4</div><div class="metric-label">Dev Todos Open</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-gray">3</div><div class="metric-label">Discussions</div></div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+      <div class="metric-card"><div class="metric-value mv-amber">3</div><div class="metric-label">Discussions Open</div></div>
+    </div>
+  </div>
+
+  <!-- Ideas -->
+  <div class="section-card">
+    <h2>Ideas &amp; Features &nbsp;<small class="text-muted fw-normal text-lowercase">(5 items)</small></h2>
+    <div class='kboard'><div class='kcol kcol-todo'><div class='kcol-header'>Backlog<span class='kcol-count'>3</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>IDEA-001</span><div class='kcard-title'>Full-text search across PostIts</div><div class='kcard-sub'>Could use SQL Server FTS or Azure AI Search. FTS is simpler and already in the DB tier</div></div><div class='kcard'><span class='kcard-id'>IDEA-003</span><div class='kcard-title'>Dark mode support</div><div class='kcard-sub'>Bootstrap 5.3 has native color mode support — should be low effort</div></div><div class='kcard'><span class='kcard-id'>IDEA-004</span><div class='kcard-title'>Progressive Web App (PWA)</div><div class='kcard-sub'>Add manifest + service worker to make OLI-it installable on mobile home screen</div></div></div></div><div class='kcol kcol-progress'><div class='kcol-header'>In Progress<span class='kcol-count'>2</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>IDEA-002</span><div class='kcard-title'>Real-time notifications with SignalR</div><div class='kcard-sub'>Notify Stamm when they receive a new TopLab. Prototype branch: feature/signalr-spike</div></div><div class='kcard'><span class='kcard-id'>IDEA-005</span><div class='kcard-title'>Add the most simple input textbox to the dashboard to create a md file</div><div class='kcard-sub'>This worked 'zero-prompt', from first shot on, the dashboard textbox created a new paragraph in the md file.</div></div></div></div><div class='kcol kcol-done'><div class='kcol-header'>Done<span class='kcol-count'>0</span></div><div class='kcol-body'><div class='kcard-empty'>Nothing here yet</div></div></div></div>
+  </div>
+
   <!-- Progress -->
   <div class="section-card">
     <h2>Delivery Progress</h2>
@@ -121,6 +165,18 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
   <div class="section-card">
     <h2>Phase 2 &mdash; Enhancements &nbsp;<small class="text-muted fw-normal text-lowercase">(14 items)</small></h2>
     <div class='kboard'><div class='kcol kcol-todo'><div class='kcol-header'>Backlog<span class='kcol-count'>10</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>BL-101</span><div class='kcard-title'>Mobile-responsive layout</div><div class='kcard-sub'>Bootstrap responsive pass</div></div><div class='kcard'><span class='kcard-id'>BL-102</span><div class='kcard-title'>Notifications for matched messages</div><div class='kcard-sub'>Email or in-app</div></div><div class='kcard'><span class='kcard-id'>BL-103</span><div class='kcard-title'>Admin moderation dashboard</div><div class='kcard-sub'>Flag/review messages</div></div><div class='kcard'><span class='kcard-id'>BL-104</span><div class='kcard-title'>Advanced wordspace editing (drag-drop ordering)</div></div><div class='kcard'><span class='kcard-id'>BL-105</span><div class='kcard-title'>Analytics/reporting for authors</div><div class='kcard-sub'>Views, delivery count</div></div><div class='kcard'><span class='kcard-id'>BL-109</span><div class='kcard-title'>Hash passwords instead of plaintext storage</div><div class='kcard-sub'>Use BCrypt or ASP.NET Core Identity password hasher</div></div><div class='kcard'><span class='kcard-id'>BL-110</span><div class='kcard-title'>Implement account lockout after failed login attempts</div><div class='kcard-sub'>Lock account for X minutes after Y failed attempts</div></div><div class='kcard'><span class='kcard-id'>BL-111</span><div class='kcard-title'>StammCard → StammStatisticsOverview link</div><div class='kcard-sub'>Add a link in the meta-stamm-info box (top-right of StammCard) to a new `StammStatisticsOverview` page that renders charts from recent Stamm activity (journal volume, answer rates, credit flow, etc.)</div></div><div class='kcard'><span class='kcard-id'>BL-112</span><div class='kcard-title'>PostItViewer — bare URI content page</div><div class='kcard-sub'>A minimal page that fetches and renders a URI's content in its native format (plain text, HTML, Markdown, etc.) with zero chrome: no menu, header, nav, or border. Intended for embedding Gists, blog snippets, and standalone statements as PostIt content.</div></div><div class='kcard'><span class='kcard-id'>BL-114</span><div class='kcard-title'>DocFx docs site + GitHub Pages publishing</div><div class='kcard-sub'>Set up DocFx to build project docs and publish them to GitHub Pages as a public documentation portal (dashboard can be integrated later).</div></div></div></div><div class='kcol kcol-progress'><div class='kcol-header'>In Progress<span class='kcol-count'>1</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>BL-106</span><div class='kcard-title'>Modern API exposure (.NET Core rewrite)</div><div class='kcard-sub'>Completely rewritten modern .NET Core page at https://nulllogicone.net with API endpoints for JSON, XML, and RDF. Public repo: https://github.com/nulllogicone/nulllogicone.net</div></div></div></div><div class='kcol kcol-done'><div class='kcol-header'>Done<span class='kcol-count'>3</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>BL-107</span><div class='kcard-title'>Implement rate limiting for login endpoint</div><div class='kcard-sub'>Fixed window: 5 attempts/minute per IP using built-in RateLimiter</div></div><div class='kcard'><span class='kcard-id'>BL-108</span><div class='kcard-title'>Add anti-forgery token handling to login API</div><div class='kcard-sub'>Re-enable CSRF protection for login/logout endpoints</div></div><div class='kcard'><span class='kcard-id'>BL-113</span><div class='kcard-title'>Stakeholder dashboard overview (progress + issues)</div><div class='kcard-sub'>A concise dashboard for business stakeholders, product owners, and scrum master to track delivery progress, current issues/blockers, and overall project health at a glance. Proposed implementation: leverage a Copilot agent workflow (similar to spec-kit style) to scrape and interpret project markdown artifacts (issues, feature requests, requirements, acceptance criteria, backlog IDs like BL-112) and synthesize a dependency-aware overview.</div></div></div></div></div>
+  </div>
+
+  <!-- Discussions -->
+  <div class="section-card">
+    <h2>Discussions &nbsp;<small class="text-muted fw-normal text-lowercase">(3 open: 3)</small></h2>
+    <div class='disc-grid'><div class='disc-card disc-open'><div class='disc-card-header'><div><span class='disc-id'>DIS-001</span><div class='disc-title'>Cache Stamm profiles separately from Netz hierarchy?</div></div><span class='badge-status bs-todo'>open</span></div><div class='disc-notes'>WortraumCacheService currently caches the whole Netz/Baum hierarchy together. Should Stamm profiles get their own TTL since they change more frequently?</div><div class='disc-meta'><span class='tag-pill'>caching</span><span class='tag-pill'>architecture</span></div></div><div class='disc-card disc-progress'><div class='disc-card-header'><div><span class='disc-id'>DIS-002</span><div class='disc-title'>API versioning strategy</div></div><span class='badge-status bs-progress'>in-progress</span></div><div class='disc-notes'>URL-based (/api/v1/) vs header-based (Accept-Version). Leaning URL prefix since it's simpler for Razor Pages fetch calls and easier to test in browser</div><div class='disc-meta'><span class='tag-pill'>api</span><span class='tag-pill'>architecture</span></div></div><div class='disc-card disc-open'><div class='disc-card-header'><div><span class='disc-id'>DIS-003</span><div class='disc-title'>Image CDN vs direct Blob Storage serving</div></div><span class='badge-status bs-todo'>open</span></div><div class='disc-notes'>Azure CDN in front of Blob Storage would help thumbnail load times globally. Worth the extra infra cost and complexity at current scale?</div><div class='disc-meta'><span class='tag-pill'>images</span><span class='tag-pill'>performance</span><span class='tag-pill'>azure</span></div></div></div>
+  </div>
+
+  <!-- Dev Todos -->
+  <div class="section-card">
+    <h2>Dev Todos &nbsp;<small class="text-muted fw-normal text-lowercase">(5 items &bull; 1 done)</small></h2>
+    <div class='kboard'><div class='kcol kcol-todo'><div class='kcol-header'>Backlog<span class='kcol-count'>3</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>TODO-002</span><div class='kcard-title'>Write unit tests for PostIt service</div><div class='kcard-sub'>Cover CRUD operations and pagination logic</div></div><div class='kcard'><span class='kcard-id'>TODO-003</span><div class='kcard-title'>Improve error handling in auth endpoints</div><div class='kcard-sub'>Return proper 401/403 with JSON error bodies instead of HTML redirects</div></div><div class='kcard'><span class='kcard-id'>TODO-004</span><div class='kcard-title'>Add cursor-based pagination to PostIt feed</div><div class='kcard-sub'>Infinite scroll on front end, cursor pagination in API to avoid OFFSET issues</div></div></div></div><div class='kcol kcol-progress'><div class='kcol-header'>In Progress<span class='kcol-count'>1</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>TODO-001</span><div class='kcard-title'>Review and update EF scaffolding guide</div><div class='kcard-sub'>Scaffold command needs updating after DB schema changes in sprint 4</div></div></div></div><div class='kcol kcol-done'><div class='kcol-header'>Done<span class='kcol-count'>1</span></div><div class='kcol-body'><div class='kcard'><span class='kcard-id'>TODO-005</span><div class='kcard-title'>Set up structured logging with Serilog</div><div class='kcard-sub'>Using Serilog with seq sink for local dev, App Insights for Azure</div></div></div></div></div>
   </div>
 
   <!-- Open Questions + ADRs -->
@@ -152,7 +208,7 @@ body { background:#f0f2f5; font-family:'Segoe UI',system-ui,sans-serif; }
 
 <div class="dash-footer">
   <div class="container">
-    Generated by <code>docs/generate-dashboard.ps1</code> from project markdown files &bull; OLI-it.Web (nulllogicone) &bull; 2026-05-13 18:58
+    Generated by <code>docs/generate-dashboard.ps1</code> from project markdown files &bull; OLI-it.Web (nulllogicone) &bull; 2026-05-16 23:13
   </div>
 </div>
 

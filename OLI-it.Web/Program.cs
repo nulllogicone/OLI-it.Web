@@ -63,6 +63,15 @@ builder.Services.AddSingleton<WortraumCacheService>();
 // Add Azure Blob Storage Service
 builder.Services.AddSingleton<AzureBlobStorageService>();
 
+// Add Search Service
+builder.Services.AddScoped<SearchService>();
+
+// Add Journal Service
+builder.Services.AddScoped<JournalService>();
+
+// Add Chart Service
+builder.Services.AddScoped<ChartService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

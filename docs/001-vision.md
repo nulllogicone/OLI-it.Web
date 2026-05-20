@@ -82,7 +82,7 @@ Deliver a modernized equivalent of the existing live application on ASP.NET Core
 
 ## Agent-Driven Development
 
-See [`000-motivation.md`](000-motivation.md) for the specific motivation behind the technology choice — in particular why agent (Copilot / open-claw) operability was a driving factor.
+See [`00-motivation.md`](00-motivation.md) for the specific motivation behind the technology choice — in particular why agent (Copilot / open-claw) operability was a driving factor.
 
 ## Key Reference Material
 
