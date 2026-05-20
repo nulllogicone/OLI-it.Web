@@ -25,11 +25,6 @@ public class RegisterModel : PageModel
 
     public IActionResult OnGet()
     {
-        if (User?.Identity?.IsAuthenticated ?? false)
-        {
-            return RedirectToPage("/Index");
-        }
-
         return Page();
     }
 
@@ -126,13 +121,13 @@ public class RegisterModel : PageModel
         [Required]
         [StringLength(50, MinimumLength = 4)]
         [DataType(DataType.Password)]
-        [Display(Name = "Unterschrift")]
+        [Display(Name = "Password")]
         public string Unterschrift { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm Unterschrift")]
-        [Compare(nameof(Unterschrift), ErrorMessage = "Unterschrift and confirmation do not match.")]
+        [Display(Name = "Confirm Password")]
+        [Compare(nameof(Unterschrift), ErrorMessage = "Password and confirmation do not match.")]
         public string ConfirmUnterschrift { get; set; } = string.Empty;
     }
 }
