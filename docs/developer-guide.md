@@ -41,6 +41,13 @@ dotnet run --project OLI-it.Web
 # HTTPS: https://localhost:7119
 ```
 
+On Ubuntu/Linux, trust the .NET dev certificate for browser HTTPS:
+
+```bash
+dotnet dev-certs https --export-path /tmp/localhost.crt --format PEM --no-password
+certutil -d sql:$HOME/.pki/nssdb -A -t "P,," -n "localhost" -i /tmp/localhost.crt
+```
+
 ### CI pipeline steps
 
 These mirror what the GitHub Actions workflow executes:

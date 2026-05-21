@@ -25,6 +25,11 @@ public class RegisterModel : PageModel
 
     public IActionResult OnGet()
     {
+        if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            return RedirectAuthenticatedUser();
+        }
+
         return Page();
     }
 
@@ -32,7 +37,7 @@ public class RegisterModel : PageModel
     {
         if (User?.Identity?.IsAuthenticated ?? false)
         {
-            return RedirectToPage("/Index");
+            return RedirectAuthenticatedUser();
         }
 
         if (!ModelState.IsValid)
@@ -103,6 +108,17 @@ public class RegisterModel : PageModel
 
         _logger.LogInformation("Registration successful for user: {StammName}", stamm.Stamm1);
         return RedirectToPage("/Stamm/Index", new { id = stamm.StammGuid });
+    }
+
+    private IActionResult RedirectAuthenticatedUser()
+    {
+        var stammGuidClaim = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Guid.TryParse(stammGuidClaim, out var stammGuid))
+        {
+            return RedirectToPage("/Stamm/Index", new { id = stammGuid });
+        }
+
+        return RedirectToPage("/Index");
     }
 
     public sealed class RegistrationInput
