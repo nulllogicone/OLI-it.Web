@@ -453,9 +453,11 @@ body.slot-dev::before {
 .postit-table .sticky-note-row td {
   background: transparent;
   padding: 12px 10px;
+  border-top: 1px solid rgba(58, 43, 20, 0.4);
 }
 
 .postit-table .sticky-note-row td:first-child {
+  border-left: 1px solid rgba(58, 43, 20, 0.4);
   border-radius: 4px 0 0 4px;
 }
 
@@ -900,7 +902,8 @@ body.slot-dev::before {
   background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 
               inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border: none;
+  border-top: 1px solid rgba(58, 43, 20, 0.55);
+  border-left: 1px solid rgba(58, 43, 20, 0.55);
   border-radius: 2px;
   transform: rotate(-0.5deg);
   position: relative;
