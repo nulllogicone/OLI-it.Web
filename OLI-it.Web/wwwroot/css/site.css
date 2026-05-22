@@ -433,6 +433,36 @@ body.slot-dev::before {
   text-align: center;
 }
 
+/* PostIt Table - Sticky Note Styling */
+.postit-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.postit-table .sticky-note-row {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.postit-table .sticky-note-row:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.postit-table .sticky-note-row td {
+  background: transparent;
+  padding: 12px 10px;
+}
+
+.postit-table .sticky-note-row td:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.postit-table .sticky-note-row td:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
 /* Action Links */
 .action-links {
   display: flex;
@@ -863,6 +893,94 @@ body.slot-dev::before {
 
 .postit-card {
   border-left: 4px solid #FFD700;
+}
+
+/* Sticky Note Style - Yellow background with shadow */
+.sticky-note {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 2px;
+  transform: rotate(-0.5deg);
+  position: relative;
+}
+
+.sticky-note:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: rotate(-0.5deg) translateY(-2px);
+}
+
+/* Alternative sticky note style for table rows */
+.sticky-note-row {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.sticky-note-row td {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+}
+
+/* PostIt card - flat sticky note layout, no header/body split */
+.postit-card.sticky-note {
+  padding: 16px 18px 14px;
+  overflow: hidden;
+}
+
+/* Override inherited entity-card-header background so yellow shows through */
+.postit-card .entity-card-header {
+  background: transparent;
+  border-bottom: none;
+}
+
+.postit-thumb-float {
+  float: left;
+  margin: 0 14px 10px 0;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  flex-shrink: 0;
+}
+
+.postit-thumb-float .image-thumbnail {
+  margin: 0;
+}
+
+.postit-thumb-float .thumbnail-img {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.postit-meta-float {
+  float: right;
+  margin: 0 0 10px 14px;
+}
+
+.postit-actions-float {
+  float: right;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -4px -4px 0 8px;
+}
+
+.postit-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #333;
+  overflow: hidden;
+}
+
+.postit-body {
+  overflow: hidden;
+}
+
+.postit-clearfix {
+  clear: both;
 }
 
 /* Generic card meta box (top-right header widget) */

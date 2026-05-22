@@ -5,7 +5,7 @@
 
 @if (Model?.Any() == true)
 {
-    <table class="simple-table">
+    <table class="simple-table postit-table">
         <thead>
             <tr>
                 <th>Thumbnail</th>
@@ -14,14 +14,13 @@
                 <th>Balance</th>
                 <th>Answers</th>
                 <th>Image Path</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var wurzel in Model)
             {
                 var answersCount = wurzel.PostIt.TopLabs?.Count ?? 0;
-                <tr>
+                <tr class="sticky-note-row" onclick="window.location='/postit/@wurzel.PostItGuid'" style="cursor:pointer">
                     <td>
                         @if (!string.IsNullOrEmpty(wurzel.PostIt.Datei))
                         {
@@ -33,9 +32,6 @@
                     <td>@wurzel.Bezahlt.ToString("C")</td>
                     <td><span class="count-badge">@answersCount</span></td>
                     <td>@(wurzel.PostIt.Datei ?? "(none)")</td>
-                    <td>
-                        <a href="/postit/@wurzel.PostItGuid">view</a>
-                    </td>
                 </tr>
             }
         </tbody>
