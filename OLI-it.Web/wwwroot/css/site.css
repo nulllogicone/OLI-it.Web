@@ -983,6 +983,140 @@ body.slot-dev::before {
   clear: both;
 }
 
+.trunk-card {
+  background: linear-gradient(135deg, #fffdfb 0%, #f8f1e8 100%);
+  box-shadow: 0 4px 14px rgba(92, 58, 30, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 2px solid #5C3A1E;
+  border-radius: 10px;
+}
+
+.trunk-card .entity-card-header {
+  display: block;
+  padding: 20px;
+  background-color: transparent;
+  border-bottom: none;
+  position: relative;
+}
+
+.trunk-card .entity-card-header::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.trunk-thumbnail-float {
+  float: left;
+  margin: 0 14px 12px 0;
+}
+
+.trunk-thumbnail-float .image-thumbnail {
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 60px;
+  height: 60px;
+}
+
+.trunk-thumbnail-float .thumbnail-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.trunk-meta-float {
+  float: right;
+  margin-left: 12px;
+  margin-right: 74px;
+}
+
+.trunk-card-actions {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trunk-card-actions .edit-btn {
+  margin-right: 0;
+}
+
+.trunk-card .entity-card-header h2 {
+  margin: 0 0 10px;
+  padding-top: 2px;
+  font-size: 22px;
+  color: #4a2f17;
+}
+
+.trunk-card .entity-description {
+  background-color: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(92, 58, 30, 0.18);
+}
+
+.trunk-card .entity-link a {
+  color: #5C3A1E;
+}
+
+.trunk-card .card-meta-box {
+  background-color: rgba(92, 58, 30, 0.08);
+  border-color: rgba(92, 58, 30, 0.28);
+}
+
+.trunk-card .card-meta-datum,
+.trunk-card .card-meta-stats-link {
+  color: #5C3A1E;
+}
+
+.trunk-card .card-meta-value {
+  color: #3f2814;
+}
+
+.stamm-table th {
+  background-color: #faf2ea;
+  color: #5C3A1E;
+}
+
+.stamm-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.stamm-table .trunk-row {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  background: linear-gradient(135deg, #fffcf8 0%, #f8efe5 100%);
+  box-shadow: 0 2px 8px rgba(92, 58, 30, 0.12);
+}
+
+.stamm-table .trunk-row:hover {
+  box-shadow: 0 6px 14px rgba(92, 58, 30, 0.16);
+  transform: translateY(-1px);
+}
+
+.stamm-table .trunk-row:focus-visible {
+  outline: 2px solid #5C3A1E;
+  outline-offset: -2px;
+  box-shadow: 0 6px 14px rgba(92, 58, 30, 0.16);
+}
+
+.stamm-table .trunk-row td {
+  background: transparent;
+  border-bottom: 1px solid #eadfd4;
+  padding: 12px 10px;
+}
+
+.stamm-table .trunk-row td:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.stamm-table .trunk-row td:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.stamm-table .author-row {
+  background: linear-gradient(135deg, #fdf8f2 0%, #f1e3d3 100%);
+}
 /* Generic card meta box (top-right header widget) */
 .card-meta-box {
   display: flex;
