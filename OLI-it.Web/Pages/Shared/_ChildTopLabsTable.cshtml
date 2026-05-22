@@ -5,7 +5,9 @@
 
 @if (Model?.Any() == true)
 {
-    <table class="simple-table">
+    var isStammContext = context == "stamm";
+    var tableClass = isStammContext ? "simple-table stamm-table" : "simple-table";
+    <table class="@tableClass">
         <thead>
             <tr>
                 <th>Thumbnail</th>
@@ -21,35 +23,51 @@
                 <th>Date</th>
                 <th>Reward</th>
                 <th>Image Path</th>
-                <th></th>
+                @if (!isStammContext)
+                {
+                    <th></th>
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var toplab in Model)
             {
-                <tr>
-                    <td>
-                        @if (!string.IsNullOrEmpty(toplab.Datei))
-                        {
-                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
-                        }
-                    </td>
-                    <td>@(toplab.Titel ?? "(no title)")</td>
-                    @if (context == "stamm")
-                    {
+                var targetUrl = $"/toplab/{toplab.TopLabGuid}";
+                @if (isStammContext)
+                {
+                    <tr class="trunk-row" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
+                        <td>
+                            @if (!string.IsNullOrEmpty(toplab.Datei))
+                            {
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
+                            }
+                        </td>
+                        <td>@(toplab.Titel ?? "(no title)")</td>
                         <td>@(toplab.PostIt?.Titel ?? "Untitled")</td>
-                    }
-                    else
-                    {
+                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                        <td>@toplab.Lohn.ToString("C")</td>
+                        <td>@(toplab.Datei ?? "(none)")</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(toplab.Datei))
+                            {
+                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
+                            }
+                        </td>
+                        <td>@(toplab.Titel ?? "(no title)")</td>
                         <td>@(toplab.Stamm?.Stamm1 ?? "Unknown")</td>
-                    }
-                    <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
-                    <td>@toplab.Lohn.ToString("C")</td>
-                    <td>@(toplab.Datei ?? "(none)")</td>
-                    <td>
-                        <a href="/toplab/@toplab.TopLabGuid">view</a>
-                    </td>
-                </tr>
+                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                        <td>@toplab.Lohn.ToString("C")</td>
+                        <td>@(toplab.Datei ?? "(none)")</td>
+                        <td>
+                            <a href="/toplab/@toplab.TopLabGuid">view</a>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
