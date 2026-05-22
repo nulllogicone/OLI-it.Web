@@ -2,7 +2,7 @@
 
 > *Connect any sender with any recipient — without prior acquaintance.*
 
-**OLI-it** is an open messaging platform built around a semantic matchmaking protocol called **0L1** (zero-L-one). Instead of routing messages through social graphs or keyword searches, 0L1 matches senders and recipients by comparing *descriptions* against *filter profiles* in a shared, hierarchical wordspace.
+**OLI-it** is an open messaging platform built around a semantic matchmaking protocol called **0L1** (Null-Logic-One). Instead of routing messages through social graphs or keyword searches, 0L1 matches senders and recipients by comparing *descriptions* against *filter profiles* in a shared, hierarchical wordspace.
 
 The platform has been running since 1994 and is live at **[oli-it.com](https://www.oli-it.com)**.  
 This repository is a full rewrite of the original ASP.NET WebForms application to modern .NET.
@@ -11,12 +11,13 @@ This repository is a full rewrite of the original ASP.NET WebForms application t
 
 ## How It Works
 
-Every message on OLI-it carries two kinds of metadata set by the **author**:
+Every message on OLI-it carries three kinds of metadata set by the **author**:
 
 1. **A self-description** — who the author is, expressed as marked nodes in the wordspace.
-2. **Recipient criteria** — what kind of person the author wants to reach, expressed the same way.
+2. **Content and intend** - of the messag, why was it written, what answers are expected. expressed as marked nodes in the wordspace.
+3. **Recipient criteria** — what kind of person the author wants to reach, expressed the same way.
 
-Every **recipient** maintains one or more **filter profiles** — their own description of themselves and what content they want.
+Every **recipient** maintains one or more **filter profiles** — their own description of themselves and what content they want to receive.
 
 The **matchmaking algorithm** delivers a message to a recipient only when *all mutual criteria are satisfied on both sides*. No message is ever shown to someone who does not match — and no match is made unless the recipient's profile also fits the sender's criteria.
 

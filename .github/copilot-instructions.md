@@ -24,7 +24,7 @@ dotnet build "OLI-it.Web" --configuration Release --no-restore
 dotnet test "OLI-it.Web" --no-build
 ```
 
-> There are no test projects yet. When adding tests, use xUnit or NUnit in a new `OLI-it.Web.Tests` project.
+> There are no test projects yet. When adding tests, use xUnit in a new `OLI-it.Web.Tests` project.
 
 ### Troubleshooting Build & Run Errors
 
