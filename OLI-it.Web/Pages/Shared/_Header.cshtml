@@ -1,9 +1,28 @@
 @{
-    var currentCulture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    string T(string key) => OLI_it.Web.Localization.SharedText.Get(key);
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant();
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
     var stammName = User?.Identity?.Name ?? string.Empty;
     var stammGuid = User?.Claims?.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     var datei = User?.Claims?.FirstOrDefault(c => c.Type == "Datei")?.Value;
+    var currentPath = Context?.Request?.Path.Value ?? "/";
+    var queryString = Context?.Request?.QueryString.Value ?? string.Empty;
+
+    string PrefixPath(string languageCode, string path)
+    {
+        var normalizedPath = string.IsNullOrWhiteSpace(path) ? "/" : path;
+        if (!normalizedPath.StartsWith('/'))
+        {
+            normalizedPath = $"/{normalizedPath}";
+        }
+
+        return normalizedPath == "/"
+            ? $"/{languageCode}"
+            : $"/{languageCode}{normalizedPath}";
+    }
+
+    string BuildLanguageLink(string languageCode) => $"{PrefixPath(languageCode, currentPath)}{queryString}";
+    string CurrentCulturePath(string path) => PrefixPath(currentCulture, path);
 }
 
 @* Hidden form for anti-forgery token (used by logout) *@
@@ -13,15 +32,15 @@
 
 <header class="app-header">
     <div class="header-left">
-        <a href="/" class="logo-link">
+        <a href="@CurrentCulturePath("/")" class="logo-link">
             <img src="~/images/oli-it-logo.svg" alt="OLI-it" class="logo" />
         </a>
         <div class="language-selector">
-            <a href="?lang=en" class="@(currentCulture == "EN" ? "active" : "")">EN</a>
+            <a href="@BuildLanguageLink("en")" class="@(currentCulture == "en" ? "active" : "")">EN</a>
             <span class="separator">|</span>
-            <a href="?lang=de" class="@(currentCulture == "DE" ? "active" : "")">DE</a>
+            <a href="@BuildLanguageLink("de")" class="@(currentCulture == "de" ? "active" : "")">DE</a>
             <span class="separator">|</span>
-            <a href="?lang=es" class="@(currentCulture == "ES" ? "active" : "")">ES</a>
+            <a href="@BuildLanguageLink("es")" class="@(currentCulture == "es" ? "active" : "")">ES</a>
         </div>
     </div>
     <div class="header-right">
@@ -30,12 +49,12 @@
             <div class="user-info">
                 @if (!string.IsNullOrEmpty(datei))
                 {
-                    <a href="/stamm/@stammGuid" title="View your profile">
+                    <a href="@CurrentCulturePath($"/stamm/{stammGuid}")" title="@T("ViewYourProfile")">
                         @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = datei, altText = stammName, width = 40, height = 40 })
                     </a>
                 }
-                <a href="/stamm/@stammGuid" class="username-link" title="View your profile">@stammName</a>
-                <button type="button" class="logout-button" onclick="handleLogout(event)">Logout</button>
+                <a href="@CurrentCulturePath($"/stamm/{stammGuid}")" class="username-link" title="@T("ViewYourProfile")">@stammName</a>
+                <button type="button" class="logout-button" onclick="handleLogout(event)">@T("Logout")</button>
             </div>
         }
         else
@@ -43,9 +62,9 @@
             <div class="auth-links">
                 <form id="headerLoginForm" class="inline-login-form" onsubmit="handleLogin(event)">
                     @Html.AntiForgeryToken()
-                    <input type="text" name="stammName" id="stammName" placeholder="Stamm Name" required class="login-input" />
-                    <input type="password" name="unterschrift" id="unterschrift" placeholder="Unterschrift" required class="login-input" />
-                    <button type="submit" class="login-button">Login</button>
+                    <input type="text" name="stammName" id="stammName" placeholder="@T("StammNamePlaceholder")" required class="login-input" />
+                    <input type="password" name="unterschrift" id="unterschrift" placeholder="@T("UnterschriftPlaceholder")" required class="login-input" />
+                    <button type="submit" class="login-button">@T("Login")</button>
                 </form>
                 <span id="loginError" class="login-error" style="display: none;"></span>
             </div>

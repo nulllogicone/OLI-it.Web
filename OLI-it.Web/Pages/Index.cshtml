@@ -1,37 +1,33 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "OLI-it - Home";
+    string T(string key) => OLI_it.Web.Localization.SharedText.Get(key);
+    string TFmt(string key, params object[] args) => OLI_it.Web.Localization.SharedText.Get(key, args);
+    ViewData["Title"] = T("HomePageTitle");
 }
 
 <div class="page-header">
     <h1>OLI-it</h1>
-    <p>An intelligent network of individual communication</p>
+    <p>@T("HomePageTagline")</p>
 </div>
 
 <div class="content-section">
     <div class="intro-text">
-        <p>
-            You can ask questions, post classified ads or search partners. private, and professional. 
-            In general and very specific.
-        </p>
-        <p>
-            The author of a message describes itself the contents of the message (motivation & Topic) 
-            and the properties of the desired receiver. In a hierarchical word space with colored dots.
-        </p>
+        <p>@T("HomeIntroParagraph1")</p>
+        <p>@T("HomeIntroParagraph2")</p>
     </div>
 
     <div class="feature-highlight">
-        <h2>Everyone can read all messages and replies</h2>
-        <p>You must be logged in to write.</p>
+        <h2>@T("HomeFeatureHeadline")</h2>
+        <p>@T("HomeFeatureSubline")</p>
 
         <div class="feature-list">
-            <h3>If you're logged in, you can:</h3>
+            <h3>@T("HomeFeatureListTitle")</h3>
             <ul>
-                <li>create new messages</li>
-                <li>search with your filter profiles for messages</li>
-                <li>provide answers and evaluate them</li>
-                <li>and earn money!</li>
+                <li>@T("HomeFeatureItem1")</li>
+                <li>@T("HomeFeatureItem2")</li>
+                <li>@T("HomeFeatureItem3")</li>
+                <li>@T("HomeFeatureItem4")</li>
             </ul>
         </div>
     </div>
@@ -39,15 +35,15 @@
     @if (Model.StammList.Any())
     {
         <div class="stamm-list">
-            <h3>Recent Users</h3>
+            <h3>@T("RecentUsers")</h3>
             <table class="simple-table">
                 <thead>
                     <tr>
-                        <th>Thumbnail</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Registration Date</th>
-                        <th>Image Path</th>
+                        <th>@T("Thumbnail")</th>
+                        <th>@T("Name")</th>
+                        <th>@T("Email")</th>
+                        <th>@T("RegistrationDate")</th>
+                        <th>@T("ImagePath")</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -58,15 +54,15 @@
                             <td>
                                 @if (!string.IsNullOrEmpty(stamm.Datei))
                                 {
-                                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = stamm.Datei, altText = $"Stamm {stamm.Stamm1} Image", width = 80, height = 80 })
+                                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = stamm.Datei, altText = TFmt("StammImageAltText", stamm.Stamm1), width = 80, height = 80 })
                                 }
                             </td>
                             <td>@stamm.Stamm1</td>
                             <td>@stamm.EMail</td>
                             <td>@stamm.Datum.ToShortDateString()</td>
-                            <td>@(stamm.Datei ?? "(none)")</td>
+                            <td>@(stamm.Datei ?? T("NoneValue"))</td>
                             <td>
-                                <a href="/stamm/@stamm.StammGuid">view</a>
+                                <a href="/stamm/@stamm.StammGuid">@T("View")</a>
                             </td>
                         </tr>
                     }
