@@ -21,12 +21,12 @@ flowchart LR
     Angler --> TopLab["💬 TopLab<br/>Answer"]
     TopLab --> Stamm
 
-    subgraph Wortraum["🌐 Wortraum Context (NKPZ)"]
+    subgraph Wortraum["🌐 Wortraum Context (NKBZ)"]
         Netz["N: Netz"]
         Knoten["K: Knoten"]
-        Pfad["P: Pfad"]
+        Baum["B: Baum"]
         Zweig["Z: Zweig"]
-        Netz --> Knoten --> Pfad --> Zweig
+        Netz --> Knoten --> Baum --> Zweig
     end
 
     PostIt -. classified by .-> Wortraum
