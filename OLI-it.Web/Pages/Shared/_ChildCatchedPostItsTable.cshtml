@@ -2,7 +2,7 @@
 
 @if (Model?.Any() == true)
 {
-    <table class="simple-table">
+    <table class="simple-table postit-table">
         <thead>
             <tr>
                 <th>PostIt</th>
@@ -11,25 +11,19 @@
                 <th>Read</th>
                 <th>Seen</th>
                 <th>Emailed</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var news in Model)
             {
-                <tr>
+                var targetUrl = news.Code?.PostItGuid != null ? $"/postit/{news.Code.PostItGuid}" : null;
+                <tr class="sticky-note-row" tabindex="@(targetUrl != null ? "0" : null)" role="@(targetUrl != null ? "link" : null)" style="@(targetUrl != null ? "cursor:pointer" : null)" onclick="@(targetUrl != null ? $"window.location='{targetUrl}'" : null)" onkeydown="@(targetUrl != null ? $"if (event.key === 'Enter' || event.key === ' ') {{ event.preventDefault(); window.location='{targetUrl}'; }}" : null)">
                     <td>@(news.Code?.PostIt?.Titel ?? "Unknown")</td>
                     <td>@(news.Code?.Kommentar ?? "-")</td>
                     <td>@(news.Datum?.ToString("yyyy-MM-dd") ?? "-")</td>
                     <td>@(news.Gelesen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
                     <td>@(news.Gesehen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
                     <td>@(news.Gemailt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                    <td>
-                        @if (news.Code?.PostItGuid != null)
-                        {
-                            <a href="/postit/@news.Code.PostItGuid">view</a>
-                        }
-                    </td>
                 </tr>
             }
         </tbody>
