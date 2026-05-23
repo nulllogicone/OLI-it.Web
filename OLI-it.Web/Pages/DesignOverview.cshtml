@@ -6,144 +6,139 @@
 
 <div class="page-header">
     <h1>design overview</h1>
-    <p>SAPCT + NKPZ classes, entity styles, and the OLI-it communication cycle</p>
-</div>
+    <p>SAPCT + NKPZ classes, entity styles, css, and the OLI-it meaning</p>
+    <p><a
+        href="https://github.com/nulllogicone/OLI-it.Web/blob/frederic-luchting/design-overview-page/docs/design-overview-page/README.md">https://github.com/nulllogicone/OLI-it.Web/blob/frederic-luchting/design-overview-page/docs/design-overview-page/README.md</a>>
+    </div>
 
-<div class="content-section">
-    <section class="mb-4">
-        <h2>Class overview</h2>
-        <p>
-            This page demonstrates the current real OLI-it classes and entity card styles used in the application.
-        </p>
-        <div class="table-responsive">
-            <table class="table table-sm table-bordered">
-                <thead>
-                    <tr>
-                        <th>Class group</th>
-                        <th>Class</th>
-                        <th>Example purpose in design overview</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td rowspan="5">SAPCT</td>
-                        <td>S</td>
-                        <td>Stamm (author/source in the cycle)</td>
-                    </tr>
-                    <tr>
-                        <td>A</td>
-                        <td>Angler (filter profile / receiver logic)</td>
-                    </tr>
-                    <tr>
-                        <td>P</td>
-                        <td>PostIt (message payload)</td>
-                    </tr>
-                    <tr>
-                        <td>C</td>
-                        <td>Code/classification cues in the message context</td>
-                    </tr>
-                    <tr>
-                        <td>T</td>
-                        <td>TopLab (answer/response)</td>
-                    </tr>
-                    <tr>
-                        <td rowspan="4">NKPZ</td>
-                        <td>N</td>
-                        <td>Netz (network structures in Wortraum)</td>
-                    </tr>
-                    <tr>
-                        <td>K</td>
-                        <td>Knoten (nodes)</td>
-                    </tr>
-                    <tr>
-                        <td>P</td>
-                        <td>Pfad / process path in communication flow</td>
-                    </tr>
-                    <tr>
-                        <td>Z</td>
-                        <td>Zweig (branches in tree-like structures)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+    <div class="content-section">
+        <section class="mb-4">
+            <h2>Class overview</h2>
+            <p>
+                This page demonstrates the current real OLI-it classes and entity card styles used in the application.
+            </p>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Class group</th>
+                            <th>Class</th>
+                            <th>Example purpose in design overview</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="5">SAPCT</td>
+                            <td>S</td>
+                            <td>Stamm (author/source in the cycle)</td>
+                        </tr>
+                        <tr>
+                            <td>A</td>
+                            <td>Angler (filter profile / receiver logic)</td>
+                        </tr>
+                        <tr>
+                            <td>P</td>
+                            <td>PostIt (message payload)</td>
+                        </tr>
+                        <tr>
+                            <td>C</td>
+                            <td>Code/classification cues in the message context</td>
+                        </tr>
+                        <tr>
+                            <td>T</td>
+                            <td>TopLab (answer/response)</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="4">NKPZ</td>
+                            <td>N</td>
+                            <td>Netz (network structures in Wortraum)</td>
+                        </tr>
+                        <tr>
+                            <td>K</td>
+                            <td>Knoten (nodes)</td>
+                        </tr>
+                        <tr>
+                            <td>P</td>
+                            <td>Pfad / process path in communication flow</td>
+                        </tr>
+                        <tr>
+                            <td>Z</td>
+                            <td>Zweig (branches in tree-like structures)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    <section class="mb-4">
-        <h2>Entity design samples (real classes)</h2>
-        <p>These samples intentionally use the same classes as live entity cards.</p>
+        <section class="mb-4">
+            <h2>Entity design samples (real classes)</h2>
+            <p>These samples intentionally use the same classes as live entity cards.</p>
 
-        <div class="mb-3">
-            <div class="entity-card stamm-card">
-                <div class="entity-card-header">
-                    <h3>Stamm: Frederic</h3>
-                    <div class="card-meta-box">
+            <div class="mb-3">
+                <div class="entity-card stamm-card">
+                    <div class="entity-card-header">
+                        <h3>Stamm: Frederic</h3>
+                        <div class="card-meta-box">
+                            <span class="card-meta-datum">2026-05-22</span>
+                            <span class="card-meta-value">42.00</span>
+                        </div>
+                    </div>
+                    <div class="entity-card-body">
+                        <div class="entity-description">
+                            The Stamm is the author/sender in the cycle and creates a PostIt.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="entity-card postit-card sticky-note">
+                    <div class="postit-actions-float">
+                        <span class="close-btn" aria-hidden="true">&times;</span>
+                    </div>
+                    <div class="card-meta-box postit-meta-float">
                         <span class="card-meta-datum">2026-05-22</span>
-                        <span class="card-meta-value">42.00</span>
+                        <span class="card-meta-value">7 hits</span>
                     </div>
+                    <h3 class="postit-title">PostIt: Looking for project partner</h3>
+                    <div class="postit-body">
+                        <div class="entity-description">
+                            This PostIt represents the message with motivation and topic details.
+                        </div>
+                    </div>
+                    <div class="postit-clearfix"></div>
                 </div>
-                <div class="entity-card-body">
-                    <div class="entity-description">
-                        The Stamm is the author/sender in the cycle and creates a PostIt.
+            </div>
+
+            <div class="mb-3">
+                <div class="entity-card angler-card">
+                    <div class="entity-card-header">
+                        <h3>Angler: Data Engineering Filter</h3>
+                    </div>
+                    <div class="entity-card-body">
+                        <div class="entity-description">
+                            Angler receives and filters matching PostIts according to profile logic.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mb-3">
-            <div class="entity-card postit-card sticky-note">
-                <div class="postit-actions-float">
-                    <span class="close-btn" aria-hidden="true">&times;</span>
-                </div>
-                <div class="card-meta-box postit-meta-float">
-                    <span class="card-meta-datum">2026-05-22</span>
-                    <span class="card-meta-value">7 hits</span>
-                </div>
-                <h3 class="postit-title">PostIt: Looking for project partner</h3>
-                <div class="postit-body">
-                    <div class="entity-description">
-                        This PostIt represents the message with motivation and topic details.
+            <div>
+                <div class="entity-card toplab-card">
+                    <div class="entity-card-header">
+                        <h3>TopLab: Candidate response</h3>
+                        <div class="card-meta-box">
+                            <span class="card-meta-datum">2026-05-22</span>
+                            <span class="card-meta-value">15.00</span>
+                        </div>
                     </div>
-                </div>
-                <div class="postit-clearfix"></div>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <div class="entity-card angler-card">
-                <div class="entity-card-header">
-                    <h3>Angler: Data Engineering Filter</h3>
-                </div>
-                <div class="entity-card-body">
-                    <div class="entity-description">
-                        Angler receives and filters matching PostIts according to profile logic.
+                    <div class="entity-card-body">
+                        <div class="entity-description">
+                            TopLab is the answer sent back into the communication cycle.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div>
-            <div class="entity-card toplab-card">
-                <div class="entity-card-header">
-                    <h3>TopLab: Candidate response</h3>
-                    <div class="card-meta-box">
-                        <span class="card-meta-datum">2026-05-22</span>
-                        <span class="card-meta-value">15.00</span>
-                    </div>
-                </div>
-                <div class="entity-card-body">
-                    <div class="entity-description">
-                        TopLab is the answer sent back into the communication cycle.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <h2>Flow documentation</h2>
-        <p>
-            Mermaid flow diagrams and editable architecture assets are documented in
-            <code>docs/design-overview-page/README.md</code>.
-        </p>
-    </section>
-</div>
+    </div>
