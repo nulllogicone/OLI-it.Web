@@ -81,7 +81,7 @@ namespace OLI_it.Web.Pages.PostIt
                     TopLabGuid = t.TopLabGuid,
                     Title = t.Titel,
                     Body = t.TopLab1,
-                    AuthorName = t.Stamm.Stamm1,
+                    AuthorName = t.Stamm != null ? t.Stamm.Stamm1 : "Unknown author",
                     Reward = t.Lohn,
                     CreatedAt = t.Datum
                 })
