@@ -2,7 +2,7 @@
 
 > *Connect any sender with any recipient — without prior acquaintance.*
 
-**OLI-it** is an open messaging platform built around a semantic matchmaking protocol called **0L1** (Null-Logic-One). Instead of routing messages through social graphs or keyword searches, 0L1 matches senders and recipients by comparing *descriptions* against *filter profiles* in a shared, hierarchical wordspace.
+**OLI-it** is an open messaging platform built around a semantic matchmaking protocol called **0L1** (Null-Logic-One). Instead of routing messages through social graphs or keyword searches, 0L1 matches messages based on precise mutual criteria expressed in a semantic wordspace.
 
 The platform has been running since 1994 and is live at **[oli-it.com](https://www.oli-it.com)**.  
 This repository is a full rewrite of the original ASP.NET WebForms application to modern .NET.
@@ -19,7 +19,7 @@ Every message on OLI-it carries three kinds of metadata set by the **author**:
 
 Every **recipient** maintains one or more **filter profiles** — their own description of themselves and what content they want to receive.
 
-The **matchmaking algorithm** delivers a message to a recipient only when *all mutual criteria are satisfied on both sides*. No message is ever shown to someone who does not match — and no match is made unless the recipient's profile also fits the sender's criteria.
+The **matchmaking algorithm** delivers a message to a recipient only when *all mutual criteria are satisfied on both sides*. No message is ever shown to someone who does not match — and no match is left unseen by someone who asked for it.
 
 ```
 Author          Wordspace          Recipient
@@ -60,11 +60,11 @@ A modern rewrite of the live application:
 | Front-end | Bootstrap + vanilla JS (no build step) |
 | Hosting | Azure App Service + Azure Blob Storage |
 
-The database schema and matchmaking stored procedures are the source of truth and are not modified by this project. The schema uses German table names (`Stamm`, `PostIt`, `TopLab`, `Angler`, …) — see the [domain glossary](docs/german-english-quick-reference.md) for a translation reference.
+The database schema and matchmaking stored procedures are the source of truth and are not modified by this project. The schema uses German table names (`Stamm`, `PostIt`, `TopLab`, `Angler`, …) reflecting the original 1994 design.
 
 ### Current delivery focus
 
-Localization work (EN/DE/ES UI content rollout) is intentionally paused while core feature parity is completed first. The existing language URL switching remains available, but broad page-content translation is deferred until the main product slices are further along.
+Localization work (EN/DE/ES UI content rollout) is intentionally paused while core feature parity is completed first. The existing language URL switching remains available, but broad page-content translations will resume once MVP workflows are complete.
 
 ---
 
@@ -105,5 +105,5 @@ Full setup instructions, configuration reference, and infrastructure deployment 
 ## Author
 
 Conceived and built by **Frederic Luchting**.  
-Protocol described in: *"Soulmate"*, ISWC 2011.
+Protocol described in: [*"Soulmate"* (ISWC 2011, 4 pages)](http://iswc2011.semanticweb.org/fileadmin/iswc/Papers/outrageous/iswc2011outrageousid_submission_13.pdf)
 
