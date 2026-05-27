@@ -23,6 +23,39 @@ body {
   box-sizing: border-box;
 }
 
+/* ── SAPCT Entity Color Tokens ──────────────────────────── */
+:root {
+  /* S – Stamm (author) */
+  --stamm-color:         #8B0000;
+  --stamm-color-text:    #8B0000;
+  --stamm-tint:          rgba(139, 0, 0, 0.07);
+  --stamm-tint-border:   rgba(139, 0, 0, 0.25);
+  --stamm-tint-badge:    rgba(139, 0, 0, 0.10);
+
+  /* A – Angler (filter profile) */
+  --angler-color:        #1E90FF;
+  --angler-color-text:   #0a6ac7;
+  --angler-tint:         rgba(30, 144, 255, 0.10);
+
+  /* P – PostIt (message) */
+  --postit-color:        #FFD700;
+  --postit-color-accent: #c8a000;
+  --postit-color-text:   #a07800;
+  --postit-tint:         rgba(180, 140, 0, 0.08);
+  --postit-tint-border:  rgba(180, 140, 0, 0.35);
+  --postit-tint-badge:   rgba(255, 215, 0, 0.20);
+
+  /* C – Code (tag / classification) */
+  --code-color:          #808080;
+
+  /* T – TopLab (answer) */
+  --toplab-color:        #228B22;
+  --toplab-color-text:   #1d6b1d;
+  --toplab-tint:         rgba(34, 139, 34, 0.09);
+  --toplab-tint-border:  rgba(34, 139, 34, 0.30);
+  --toplab-tint-badge:   rgba(34, 139, 34, 0.10);
+}
+
 body.slot-test::before,
 body.slot-dev::before {
   content: "";
@@ -890,11 +923,11 @@ body.slot-dev::before {
 
 /* Card type colors - using left border */
 .stamm-card {
-  border-left: 4px solid #8B0000;
+  border-left: 4px solid var(--stamm-color);
 }
 
 .postit-card {
-  border-left: 4px solid #FFD700;
+  border-left: 4px solid var(--postit-color);
 }
 
 /* Sticky Note Style - Yellow background with shadow */
@@ -1174,42 +1207,42 @@ body.slot-dev::before {
 
 /* Entity-specific meta box accent colors */
 .stamm-card .card-meta-box {
-  background-color: rgba(139, 0, 0, 0.07);
-  border-color: rgba(139, 0, 0, 0.25);
+  background-color: var(--stamm-tint);
+  border-color: var(--stamm-tint-border);
 }
 
 .stamm-card .card-meta-datum {
-  color: #8B0000;
+  color: var(--stamm-color-text);
 }
 
 .postit-card .card-meta-box {
-  background-color: rgba(180, 140, 0, 0.08);
-  border-color: rgba(180, 140, 0, 0.35);
+  background-color: var(--postit-tint);
+  border-color: var(--postit-tint-border);
 }
 
 .postit-card .card-meta-datum {
-  color: #7a6000;
+  color: var(--postit-color-text);
 }
 
 .toplab-card .card-meta-box {
-  background-color: rgba(34, 139, 34, 0.09);
-  border-color: rgba(34, 139, 34, 0.3);
+  background-color: var(--toplab-tint);
+  border-color: var(--toplab-tint-border);
 }
 
 .toplab-card .card-meta-datum {
-  color: #1d6b1d;
+  color: var(--toplab-color-text);
 }
 
 .angler-card {
-  border-left: 4px solid #1E90FF;
+  border-left: 4px solid var(--angler-color);
 }
 
 .toplab-card {
-  border-left: 4px solid #228B22;
+  border-left: 4px solid var(--toplab-color);
 }
 
 .code-card {
-  border-left: 4px solid #808080;
+  border-left: 4px solid var(--code-color);
 }
 
 /* Card meta stats link */
@@ -1220,7 +1253,7 @@ body.slot-dev::before {
   font-size: 11px;
   font-weight: 600;
   text-decoration: none;
-  color: #8B0000;
+  color: var(--stamm-color);
   opacity: 0.7;
   margin-top: 2px;
   letter-spacing: 0.3px;
@@ -1277,7 +1310,7 @@ body.slot-dev::before {
 }
 
 .stats-tile-green .stats-tile-value {
-  color: #1d6b1d;
+  color: var(--toplab-color-text);
 }
 
 .stats-tile-red {
@@ -1286,16 +1319,16 @@ body.slot-dev::before {
 }
 
 .stats-tile-red .stats-tile-value {
-  color: #8B0000;
+  color: var(--stamm-color);
 }
 
 .stats-tile-accent {
-  background-color: rgba(139, 0, 0, 0.07);
-  border-color: rgba(139, 0, 0, 0.25);
+  background-color: var(--stamm-tint);
+  border-color: var(--stamm-tint-border);
 }
 
 .stats-tile-accent .stats-tile-value {
-  color: #8B0000;
+  color: var(--stamm-color);
 }
 
 .chart-section {
@@ -1605,9 +1638,9 @@ body.slot-dev::before {
 }
 
 .journal-filter-btn.active {
-  background: #8B0000;
+  background: var(--stamm-color);
   color: #fff;
-  border-color: #8B0000;
+  border-color: var(--stamm-color);
 }
 
 .journal-count-group {
@@ -1761,21 +1794,29 @@ body.slot-dev::before {
 
 /* Type-specific colours (match entity card borders) */
 
-.timeline-item-postit .timeline-dot   { background: #FFD700; }
-.timeline-item-postit .timeline-card  { border-left-color: #FFD700; }
-.timeline-item-postit .timeline-badge { background: rgba(255, 215, 0, 0.2); color: #a07800; }
+.timeline-item-postit .timeline-dot            { background: var(--postit-color); }
+.timeline-item-postit .timeline-card           { border-left-color: var(--postit-color); }
+.timeline-item-postit .timeline-badge          { background: var(--postit-tint-badge); color: var(--postit-color-text); }
+.timeline-item-postit .timeline-title          { color: var(--postit-color-text); }
+.timeline-item-postit .timeline-card:hover     { background-color: rgba(200, 160, 0, 0.05); }
 
-.timeline-item-stamm .timeline-dot   { background: #8B0000; }
-.timeline-item-stamm .timeline-card  { border-left-color: #8B0000; }
-.timeline-item-stamm .timeline-badge { background: rgba(139, 0, 0, 0.1); color: #8B0000; }
+.timeline-item-stamm .timeline-dot             { background: var(--stamm-color); }
+.timeline-item-stamm .timeline-card            { border-left-color: var(--stamm-color); }
+.timeline-item-stamm .timeline-badge           { background: var(--stamm-tint-badge); color: var(--stamm-color-text); }
+.timeline-item-stamm .timeline-title           { color: var(--stamm-color-text); }
+.timeline-item-stamm .timeline-card:hover      { background-color: rgba(139, 0, 0, 0.04); }
 
-.timeline-item-toplab .timeline-dot   { background: #228B22; }
-.timeline-item-toplab .timeline-card  { border-left-color: #228B22; }
-.timeline-item-toplab .timeline-badge { background: rgba(34, 139, 34, 0.1); color: #1a6b1a; }
+.timeline-item-toplab .timeline-dot            { background: var(--toplab-color); }
+.timeline-item-toplab .timeline-card           { border-left-color: var(--toplab-color); }
+.timeline-item-toplab .timeline-badge          { background: var(--toplab-tint-badge); color: var(--toplab-color-text); }
+.timeline-item-toplab .timeline-title          { color: var(--toplab-color-text); }
+.timeline-item-toplab .timeline-card:hover     { background-color: rgba(34, 139, 34, 0.04); }
 
-.timeline-item-angler .timeline-dot   { background: #1E90FF; }
-.timeline-item-angler .timeline-card  { border-left-color: #1E90FF; }
-.timeline-item-angler .timeline-badge { background: rgba(30, 144, 255, 0.1); color: #0a6ac7; }
+.timeline-item-angler .timeline-dot            { background: var(--angler-color); }
+.timeline-item-angler .timeline-card           { border-left-color: var(--angler-color); }
+.timeline-item-angler .timeline-badge          { background: var(--angler-tint); color: var(--angler-color-text); }
+.timeline-item-angler .timeline-title          { color: var(--angler-color-text); }
+.timeline-item-angler .timeline-card:hover     { background-color: rgba(30, 144, 255, 0.04); }
 
 @media (max-width: 600px) {
   .timeline-date-col {
@@ -1890,9 +1931,9 @@ body.slot-dev::before {
 }
 
 /* Entity accent colours (matching full cards) */
-.search-chip--stamm  { border-left-color: #8B0000; }
-.search-chip--postit { border-left-color: #c8a000; }
-.search-chip--toplab { border-left-color: #228B22; }
+.search-chip--stamm  { border-left-color: var(--stamm-color); }
+.search-chip--postit { border-left-color: var(--postit-color-accent); }
+.search-chip--toplab { border-left-color: var(--toplab-color); }
 
 .search-chip--stamm:hover  { box-shadow: 0 4px 12px rgba(139, 0, 0, 0.15); }
 .search-chip--postit:hover { box-shadow: 0 4px 12px rgba(180, 140, 0, 0.18); }
@@ -2006,8 +2047,8 @@ body.slot-dev::before {
 }
 
 .chart-column-title--rich {
-  color: #228B22;
-  border-bottom-color: #228B22;
+  color: var(--toplab-color);
+  border-bottom-color: var(--toplab-color);
 }
 
 .chart-column-title--poor {
@@ -2043,7 +2084,7 @@ body.slot-dev::before {
 }
 
 .chart-value--positive {
-  color: #228B22;
+  color: var(--toplab-color);
 }
 
 .chart-value--negative {
@@ -2092,6 +2133,19 @@ body.slot-dev::before {
 .chart-row:hover .chart-label {
   color: #007bff;
 }
+
+/* SAPCT entity accents per chart section */
+.chart-section--stamm  .chart-section-title { color: var(--stamm-color-text); }
+.chart-section--postit .chart-section-title { color: var(--postit-color-text); }
+.chart-section--toplab .chart-section-title { color: var(--toplab-color); }
+
+.chart-section--stamm  .chart-row:hover { background-color: rgba(139, 0, 0, 0.05); color: var(--stamm-color-text); }
+.chart-section--postit .chart-row:hover { background-color: rgba(200, 160, 0, 0.06); color: var(--postit-color-text); }
+.chart-section--toplab .chart-row:hover { background-color: rgba(34, 139, 34, 0.05); color: var(--toplab-color); }
+
+.chart-section--stamm  .chart-row:hover .chart-label { color: var(--stamm-color-text); }
+.chart-section--postit .chart-row:hover .chart-label { color: var(--postit-color-text); }
+.chart-section--toplab .chart-row:hover .chart-label { color: var(--toplab-color); }
 
 @media (max-width: 700px) {
   .chart-columns {
