@@ -61,6 +61,10 @@ A modern rewrite of the live application:
 
 The database schema and matchmaking stored procedures are the source of truth and are not modified by this project. The schema uses German table names (`Stamm`, `PostIt`, `TopLab`, `Angler`, …) — see the [domain glossary](docs/german-english-quick-reference.md) for a translation reference.
 
+### Current delivery focus
+
+Localization work (EN/DE/ES UI content rollout) is intentionally paused while core feature parity is completed first. The existing language URL switching remains available, but broad page-content translation is deferred until the main product slices are further along.
+
 ---
 
 ## Getting Started
