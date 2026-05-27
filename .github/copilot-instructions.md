@@ -24,7 +24,7 @@ dotnet build "OLI-it.Web" --configuration Release --no-restore
 dotnet test "OLI-it.Web" --no-build
 ```
 
-> There are no test projects yet. When adding tests, use xUnit or NUnit in a new `OLI-it.Web.Tests` project.
+> There are no test projects yet. When adding tests, use xUnit in a new `OLI-it.Web.Tests` project.
 
 ### Troubleshooting Build & Run Errors
 
@@ -108,9 +108,6 @@ Active ADRs in `docs/07-decisions/`:
 - Push to any branch → build + test + deploy to **test slot** on `oliitrazorweb` Azure App Service.
 - Merge to `main` + manual approval → deploy to **production slot**.
 - Infrastructure changes deploy via `infra-main-bicep.yml` (Bicep, also approval-gated for prod).
-
-### Stakeholder Dashboard
-A pre-build step runs `docs/generate-dashboard.ps1` to produce an HTML dashboard from the docs. This is triggered automatically during `dotnet build`. The prompt that drives it is in `.github/prompts/generate-dashboard.prompt.md`.
 
 ## Docs Folder — Always Consider
 

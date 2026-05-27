@@ -1,0 +1,161 @@
+@page "/design-overview"
+@model OLI_it.Web.Pages.DesignOverviewModel
+@{
+    ViewData["Title"] = "Design Overview";
+
+    var sampleStammGuid = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    var samplePostItGuid = Guid.Parse("22222222-2222-2222-2222-222222222222");
+    var sampleTopLabGuid = Guid.Parse("33333333-3333-3333-3333-333333333333");
+    var sampleAnglerGuid = Guid.Parse("44444444-4444-4444-4444-444444444444");
+
+    var sampleStamm = new OLI_it.Web.Models.Stamm
+    {
+        StammGuid = sampleStammGuid,
+        Stamm1 = "Stamm Frederic",
+        EMail = "stamm@example.local",
+        KooK = 42.00m,
+        Datum = new DateTime(2026, 05, 22),
+        Beschreibung = "Stamm is the author who starts the communication cycle by sending a PostIt."
+    };
+
+    var samplePostIt = new OLI_it.Web.Models.PostIt
+    {
+        PostItGuid = samplePostItGuid,
+        Titel = "Looking for a project partner",
+        PostIt1 = "This PostIt represents the message payload with motivation and topic details.",
+        Datum = new DateTime(2026, 05, 22),
+        KooK = 15.00m,
+        Hits = 7,
+        Typ = "Sample"
+    };
+
+    var sampleAngler = new OLI_it.Web.Models.Angler
+    {
+        AnglerGuid = sampleAnglerGuid,
+        StammGuid = sampleStammGuid,
+        Angler1 = "Data Engineering Filter",
+        Gescannt = true,
+        Datum = new DateTime(2026, 05, 22),
+        Beschreibung = "Angler receives and filters matching PostIts."
+    };
+
+    var sampleTopLab = new OLI_it.Web.Models.TopLab
+    {
+        TopLabGuid = sampleTopLabGuid,
+        StammGuid = sampleStammGuid,
+        PostItGuid = samplePostItGuid,
+        Titel = "Candidate response",
+        TopLab1 = "TopLab is the response sent back into the Kreislauf.",
+        Lohn = 8.00m,
+        Datum = new DateTime(2026, 05, 22),
+        Typ = "Sample"
+    };
+}
+
+<div class="page-header">
+    <h1>design overview</h1>
+    <p>SAPCT + NKPZ classes, entity styles, CSS, and the OLI-it meaning</p>
+    <p>
+        <a href="https://github.com/nulllogicone/OLI-it.Web/blob/main/docs/design-overview-page/README.md" target="_blank" rel="noopener noreferrer">
+            View Mermaid flow documentation on GitHub
+        </a>
+    </p>
+</div>
+
+<div class="content-section">
+    <section class="mb-4">
+        <h2>Class overview</h2>
+        <p>
+            This page demonstrates the current real OLI-it classes and entity card styles used in the application.
+        </p>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th>Class group</th>
+                        <th>Class</th>
+                        <th>Example purpose in design overview</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="5">SAPCT</td>
+                        <td>S</td>
+                        <td>Stamm (author/source in the cycle)</td>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>Angler (filter profile / receiver logic)</td>
+                    </tr>
+                    <tr>
+                        <td>P</td>
+                        <td>PostIt (message payload)</td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>Code/classification cues in the message context</td>
+                    </tr>
+                    <tr>
+                        <td>T</td>
+                        <td>TopLab (answer/response)</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4">NKPZ</td>
+                        <td>N</td>
+                        <td>Netz (network structures in Wortraum)</td>
+                    </tr>
+                    <tr>
+                        <td>K</td>
+                        <td>Knoten (nodes)</td>
+                    </tr>
+                    <tr>
+                        <td>P</td>
+                        <td>Pfad / process path in communication flow</td>
+                    </tr>
+                    <tr>
+                        <td>Z</td>
+                        <td>Zweig (branches in tree-like structures)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="mb-4">
+        <h2>Entity design samples (real classes)</h2>
+        <p>
+            These samples render the same shared partials used by Stamm/PostIt/Angler/TopLab pages.
+        </p>
+
+        <div class="mb-3">
+            @await Html.PartialAsync("_StammCard", sampleStamm)
+        </div>
+
+        <div class="mb-3">
+            @{
+                var postItViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(ViewData)
+                {
+                    ["StammGuid"] = sampleStammGuid,
+                    ["AuthorStammGuid"] = sampleStammGuid
+                };
+            }
+            @await Html.PartialAsync("_PostItCard", samplePostIt, postItViewData)
+        </div>
+
+        <div class="mb-3">
+            @await Html.PartialAsync("_AnglerCard", sampleAngler)
+        </div>
+
+        <div>
+            @await Html.PartialAsync("_TopLabCard", sampleTopLab)
+        </div>
+    </section>
+
+    <section>
+        <h2>Flow documentation</h2>
+        <p>
+            Mermaid flow diagrams and editable architecture assets are documented in
+            <code>docs/design-overview-page/README.md</code>.
+        </p>
+    </section>
+</div>

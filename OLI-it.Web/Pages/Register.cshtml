@@ -1,0 +1,51 @@
+@page "/register"
+@model OLI_it.Web.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_Layout";
+}
+
+<div class="login-page">
+    <div class="login-container">
+        <h2>Create your Stamm account</h2>
+        <p class="text-muted">Register to create messages, filter profiles, and answers.</p>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Input.StammName"></label>
+                <input asp-for="Input.StammName" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Input.StammName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.EMail"></label>
+                <input asp-for="Input.EMail" class="form-control" autocomplete="email" />
+                <span asp-validation-for="Input.EMail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Unterschrift"></label>
+                <input asp-for="Input.Unterschrift" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Input.Unterschrift" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.ConfirmUnterschrift"></label>
+                <input asp-for="Input.ConfirmUnterschrift" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Input.ConfirmUnterschrift" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <p class="login-note text-muted">
+            Already registered? Use the login form in the header.
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

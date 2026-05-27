@@ -35,43 +35,4 @@
             </ul>
         </div>
     </div>
-
-    @if (Model.StammList.Any())
-    {
-        <div class="stamm-list">
-            <h3>Recent Users</h3>
-            <table class="simple-table">
-                <thead>
-                    <tr>
-                        <th>Thumbnail</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Registration Date</th>
-                        <th>Image Path</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var stamm in Model.StammList.Take(20))
-                    {
-                        <tr>
-                            <td>
-                                @if (!string.IsNullOrEmpty(stamm.Datei))
-                                {
-                                    @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = stamm.Datei, altText = $"Stamm {stamm.Stamm1} Image", width = 80, height = 80 })
-                                }
-                            </td>
-                            <td>@stamm.Stamm1</td>
-                            <td>@stamm.EMail</td>
-                            <td>@stamm.Datum.ToShortDateString()</td>
-                            <td>@(stamm.Datei ?? "(none)")</td>
-                            <td>
-                                <a href="/stamm/@stamm.StammGuid">view</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
 </div>

@@ -2,7 +2,7 @@
 
 @if (Model?.Any() == true)
 {
-    <table class="simple-table">
+    <table class="simple-table stamm-table">
         <thead>
             <tr>
                 <th>Thumbnail</th>
@@ -13,7 +13,6 @@
                 <th>Deadline</th>
                 <th>Emailed</th>
                 <th>Closed</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +28,9 @@
                     _ => $"Role {wurzel.StammZust}"
                 };
                 
-                <tr class="@(wurzel.StammZust == 1 ? "author-row" : "")">
+                var targetUrl = $"/stamm/{wurzel.StammGuid}";
+                var rowClass = wurzel.StammZust == 1 ? "trunk-row author-row" : "trunk-row";
+                <tr class="@rowClass" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
                     <td>
                         @if (!string.IsNullOrEmpty(wurzel.Stamm.Datei))
                         {
@@ -51,9 +52,6 @@
                     <td>@(wurzel.Frist?.ToString("yyyy-MM-dd") ?? "-")</td>
                     <td>@(wurzel.Gemailt ? "Yes" : "No")</td>
                     <td>@(wurzel.Closed ? "Yes" : "No")</td>
-                    <td>
-                        <a href="/stamm/@wurzel.StammGuid">view</a>
-                    </td>
                 </tr>
             }
         </tbody>
@@ -65,17 +63,16 @@ else
 }
 
 <style>
-    .author-row {
-        background-color: #f8f9fa;
+    .stamm-table .author-row {
         font-weight: 500;
     }
 
-    .simple-table td a {
+    .stamm-table td a {
         color: #212529;
         text-decoration: none;
     }
 
-    .simple-table td a:hover {
+    .stamm-table td a:hover {
         text-decoration: underline;
     }
 

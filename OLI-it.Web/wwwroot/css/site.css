@@ -433,6 +433,38 @@ body.slot-dev::before {
   text-align: center;
 }
 
+/* PostIt Table - Sticky Note Styling */
+.postit-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.postit-table .sticky-note-row {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.postit-table .sticky-note-row:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.postit-table .sticky-note-row td {
+  background: transparent;
+  padding: 12px 10px;
+  border-top: 1px solid rgba(58, 43, 20, 0.4);
+}
+
+.postit-table .sticky-note-row td:first-child {
+  border-left: 1px solid rgba(58, 43, 20, 0.4);
+  border-radius: 4px 0 0 4px;
+}
+
+.postit-table .sticky-note-row td:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
 /* Action Links */
 .action-links {
   display: flex;
@@ -865,6 +897,229 @@ body.slot-dev::before {
   border-left: 4px solid #FFD700;
 }
 
+/* Sticky Note Style - Yellow background with shadow */
+.sticky-note {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-top: 1px solid rgba(58, 43, 20, 0.55);
+  border-left: 1px solid rgba(58, 43, 20, 0.55);
+  border-radius: 2px;
+  transform: rotate(-0.5deg);
+  position: relative;
+}
+
+.sticky-note:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: rotate(-0.5deg) translateY(-2px);
+}
+
+/* Alternative sticky note style for table rows */
+.sticky-note-row {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.sticky-note-row td {
+  background: linear-gradient(135deg, #fffacd 0%, #ffeb99 100%);
+}
+
+/* PostIt card - flat sticky note layout, no header/body split */
+.postit-card.sticky-note {
+  padding: 16px 18px 14px;
+  overflow: hidden;
+}
+
+/* Override inherited entity-card-header background so yellow shows through */
+.postit-card .entity-card-header {
+  background: transparent;
+  border-bottom: none;
+}
+
+.postit-thumb-float {
+  float: left;
+  margin: 0 14px 10px 0;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  flex-shrink: 0;
+}
+
+.postit-thumb-float .image-thumbnail {
+  margin: 0;
+}
+
+.postit-thumb-float .thumbnail-img {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.postit-meta-float {
+  float: right;
+  margin: 0 0 10px 14px;
+}
+
+.postit-actions-float {
+  float: right;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -4px -4px 0 8px;
+}
+
+.postit-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #333;
+  overflow: hidden;
+}
+
+.postit-body {
+  overflow: hidden;
+}
+
+.postit-clearfix {
+  clear: both;
+}
+
+.trunk-card {
+  background: linear-gradient(135deg, #fffdfb 0%, #f8f1e8 100%);
+  box-shadow: 0 4px 14px rgba(92, 58, 30, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 2px solid #5C3A1E;
+  border-radius: 10px;
+}
+
+.trunk-card .entity-card-header {
+  display: block;
+  padding: 20px;
+  background-color: transparent;
+  border-bottom: none;
+  position: relative;
+}
+
+.trunk-card .entity-card-header::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.trunk-thumbnail-float {
+  float: left;
+  margin: 0 14px 12px 0;
+}
+
+.trunk-thumbnail-float .image-thumbnail {
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 60px;
+  height: 60px;
+}
+
+.trunk-thumbnail-float .thumbnail-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.trunk-meta-float {
+  float: right;
+  margin-left: 12px;
+  margin-right: 74px;
+}
+
+.trunk-card-actions {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trunk-card-actions .edit-btn {
+  margin-right: 0;
+}
+
+.trunk-card .entity-card-header h2 {
+  margin: 0 0 10px;
+  padding-top: 2px;
+  font-size: 22px;
+  color: #4a2f17;
+}
+
+.trunk-card .entity-description {
+  background-color: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(92, 58, 30, 0.18);
+}
+
+.trunk-card .entity-link a {
+  color: #5C3A1E;
+}
+
+.trunk-card .card-meta-box {
+  background-color: rgba(92, 58, 30, 0.08);
+  border-color: rgba(92, 58, 30, 0.28);
+}
+
+.trunk-card .card-meta-datum,
+.trunk-card .card-meta-stats-link {
+  color: #5C3A1E;
+}
+
+.trunk-card .card-meta-value {
+  color: #3f2814;
+}
+
+.stamm-table th {
+  background-color: #faf2ea;
+  color: #5C3A1E;
+}
+
+.stamm-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.stamm-table .trunk-row {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  background: linear-gradient(135deg, #fffcf8 0%, #f8efe5 100%);
+  box-shadow: 0 2px 8px rgba(92, 58, 30, 0.12);
+}
+
+.stamm-table .trunk-row:hover {
+  box-shadow: 0 6px 14px rgba(92, 58, 30, 0.16);
+  transform: translateY(-1px);
+}
+
+.stamm-table .trunk-row:focus-visible {
+  outline: 2px solid #5C3A1E;
+  outline-offset: -2px;
+  box-shadow: 0 6px 14px rgba(92, 58, 30, 0.16);
+}
+
+.stamm-table .trunk-row td {
+  background: transparent;
+  border-bottom: 1px solid #eadfd4;
+  padding: 12px 10px;
+}
+
+.stamm-table .trunk-row td:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.stamm-table .trunk-row td:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.stamm-table .author-row {
+  background: linear-gradient(135deg, #fdf8f2 0%, #f1e3d3 100%);
+}
 /* Generic card meta box (top-right header widget) */
 .card-meta-box {
   display: flex;
