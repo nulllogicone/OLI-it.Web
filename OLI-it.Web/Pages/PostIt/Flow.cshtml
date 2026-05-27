@@ -84,17 +84,17 @@
                         <article class="flow-node">
                             <div class="flow-node-type">Angler</div>
                             <a class="flow-node-title" href="/angler/@recipient.FilterProfileGuid">@recipient.FilterProfileName</a>
-                            <p class="flow-node-text">
-                                Status: @recipient.Status<br />
+                            <div class="flow-node-text">
+                                <div>Status: @recipient.Status</div>
                                 @if (recipient.MatchedAt.HasValue)
                                 {
-                                    <span>Matched: @recipient.MatchedAt.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                                    <div>Matched: @recipient.MatchedAt.Value.ToString("yyyy-MM-dd HH:mm")</div>
                                 }
                                 @if (recipient.ReadAt.HasValue)
                                 {
-                                    <br /><span>Read: @recipient.ReadAt.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                                    <div>Read: @recipient.ReadAt.Value.ToString("yyyy-MM-dd HH:mm")</div>
                                 }
-                            </p>
+                            </div>
                             @if (!string.IsNullOrWhiteSpace(recipient.FilterProfileDescription))
                             {
                                 <p class="flow-node-meta">@recipient.FilterProfileDescription</p>

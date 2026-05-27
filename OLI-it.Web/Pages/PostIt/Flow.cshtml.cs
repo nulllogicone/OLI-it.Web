@@ -51,10 +51,14 @@ namespace OLI_it.Web.Pages.PostIt
             RecipientFlows = matchedProfiles
                 .GroupBy(s => s.AnglerGuid)
                 .Select(group => group
-                    .OrderByDescending(s => s.Zeit ?? DateTime.MinValue)
-                    .ThenByDescending(s => s.Gelesen ?? DateTime.MinValue)
+                    .OrderByDescending(s => s.Zeit.HasValue)
+                    .ThenByDescending(s => s.Zeit)
+                    .ThenByDescending(s => s.Gelesen.HasValue)
+                    .ThenByDescending(s => s.Gelesen)
                     .First())
-                .OrderByDescending(s => s.Zeit ?? DateTime.MinValue)
+                .OrderByDescending(s => s.Zeit.HasValue)
+                .ThenByDescending(s => s.Zeit)
+                .ThenBy(s => s.Angler.Angler1)
                 .Select(s => new RecipientFlowItem
                 {
                     RecipientGuid = s.Angler.StammGuid,
