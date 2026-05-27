@@ -1,0 +1,154 @@
+@page "~/postit/{id:guid}/flow"
+@model OLI_it.Web.Pages.PostIt.FlowModel
+@{
+    ViewData["Title"] = "Message flow";
+}
+
+<div class="flow-page">
+    <div class="page-header flow-header">
+        <div>
+            <h1>Message flow</h1>
+            <p class="flow-subtitle">Follow the message from author to matching recipients and see how answers return.</p>
+        </div>
+        @if (Model.PostIt != null)
+        {
+            <a href="/postit/@Model.PostIt.PostItGuid" class="btn btn-outline-secondary btn-sm">Back to PostIt</a>
+        }
+    </div>
+
+    @if (Model.PostIt != null)
+    {
+        <div class="flow-summary">
+            <span><strong>@Model.RecipientFlows.Count</strong> matched filter profile(s)</span>
+            <span><strong>@Model.Answers.Count</strong> answer(s)</span>
+        </div>
+
+        <div class="flow-canvas">
+            <section class="flow-stage" data-flow-step="0">
+                <div class="flow-stage-title">1. Author</div>
+                @if (Model.Stamm != null)
+                {
+                    <article class="flow-node">
+                        <div class="flow-node-type">Stamm</div>
+                        <a class="flow-node-title" href="/stamm/@Model.Stamm.StammGuid">@Model.Stamm.Stamm1</a>
+                        @if (!string.IsNullOrWhiteSpace(Model.Stamm.Beschreibung))
+                        {
+                            <p class="flow-node-text">@Model.Stamm.Beschreibung</p>
+                        }
+                    </article>
+                }
+                else
+                {
+                    <p class="no-data">No author found for this PostIt.</p>
+                }
+            </section>
+
+            <section class="flow-stage" data-flow-step="1">
+                <div class="flow-stage-title">2. Message</div>
+                <article class="flow-node flow-node--message">
+                    <div class="flow-node-type">PostIt</div>
+                    <a class="flow-node-title" href="/postit/@Model.PostIt.PostItGuid">@(Model.PostIt.Titel ?? "Untitled")</a>
+                    <p class="flow-node-text">@Model.PostIt.PostIt1</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.PostIt.Url))
+                    {
+                        <a class="flow-node-link" href="@Model.PostIt.Url" target="_blank" rel="noopener noreferrer">@Model.PostIt.Url</a>
+                    }
+                </article>
+            </section>
+
+            <section class="flow-stage" data-flow-step="2">
+                <div class="flow-stage-title">3. Recipient</div>
+                @if (Model.RecipientFlows.Any())
+                {
+                    @foreach (var recipient in Model.RecipientFlows)
+                    {
+                        <article class="flow-node">
+                            <div class="flow-node-type">Recipient</div>
+                            <a class="flow-node-title" href="/stamm/@recipient.RecipientGuid">@recipient.RecipientName</a>
+                            <p class="flow-node-text">Matched via @recipient.FilterProfileName</p>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p class="no-data">No recipients matched this message yet.</p>
+                }
+            </section>
+
+            <section class="flow-stage" data-flow-step="3">
+                <div class="flow-stage-title">4. Filter profile</div>
+                @if (Model.RecipientFlows.Any())
+                {
+                    @foreach (var recipient in Model.RecipientFlows)
+                    {
+                        <article class="flow-node">
+                            <div class="flow-node-type">Angler</div>
+                            <a class="flow-node-title" href="/angler/@recipient.FilterProfileGuid">@recipient.FilterProfileName</a>
+                            <p class="flow-node-text">
+                                Status: @recipient.Status<br />
+                                @if (recipient.MatchedAt.HasValue)
+                                {
+                                    <span>Matched: @recipient.MatchedAt.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                                }
+                                @if (recipient.ReadAt.HasValue)
+                                {
+                                    <br /><span>Read: @recipient.ReadAt.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                                }
+                            </p>
+                            @if (!string.IsNullOrWhiteSpace(recipient.FilterProfileDescription))
+                            {
+                                <p class="flow-node-meta">@recipient.FilterProfileDescription</p>
+                            }
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p class="no-data">No filter profiles have matched yet.</p>
+                }
+            </section>
+
+            <section class="flow-stage flow-stage--answers" data-flow-step="4">
+                <div class="flow-stage-title">5. Answers return</div>
+                @if (Model.Answers.Any())
+                {
+                    @foreach (var answer in Model.Answers)
+                    {
+                        <article class="flow-node flow-node--answer">
+                            <div class="flow-node-type">TopLab</div>
+                            <a class="flow-node-title" href="/toplab/@answer.TopLabGuid">@(answer.Title ?? "Untitled answer")</a>
+                            <p class="flow-node-text">@answer.Body</p>
+                            <p class="flow-node-meta">
+                                From @answer.AuthorName · @answer.CreatedAt.ToString("yyyy-MM-dd")
+                                @if (answer.Reward > 0)
+                                {
+                                    <span> · Reward @answer.Reward.ToString("C")</span>
+                                }
+                            </p>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p class="no-data">No answers have been posted yet.</p>
+                }
+            </section>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stages = document.querySelectorAll('[data-flow-step]');
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            stages.forEach(function (stage, index) {
+                const delay = prefersReducedMotion ? 0 : index * 180;
+                window.setTimeout(function () {
+                    stage.classList.add('is-visible');
+                }, delay);
+            });
+        });
+    </script>
+}

@@ -21,6 +21,10 @@
 
     @if (Model.PostIt != null)
     {
+        <div class="mb-3">
+            <a href="/postit/@Model.PostIt.PostItGuid/flow" class="btn btn-outline-primary btn-sm">Open message flow</a>
+        </div>
+
         var tabs = new List<(string Id, string Label, bool IsActive)>
         {
             ("stamms", $"Stamms ({Model.PostItStamms?.Count ?? 0})", true),
@@ -55,4 +59,3 @@
 
     }
 </div>
-
