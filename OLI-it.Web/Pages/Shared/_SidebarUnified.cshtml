@@ -7,10 +7,11 @@
     {
         currentPage = "/" + currentPage;
     }
-    var stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? "";
-    var postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? "";
-    var anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? "";
-    var toplabGuid = Model?.TopLab?.TopLabGuid?.ToString() ?? "";
+    string stammGuid = "", postitGuid = "", anglerGuid = "", toplabGuid = "";
+    try { stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? ""; } catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
+    try { postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? ""; } catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
+    try { anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? ""; } catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
+    try { toplabGuid = Model?.TopLab?.TopLabGuid?.ToString() ?? ""; } catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
 }
 
 <nav class="sidebar-menu">
