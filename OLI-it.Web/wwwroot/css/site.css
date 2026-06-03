@@ -669,13 +669,14 @@ body.slot-dev::before {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   overflow: hidden;
   border-left: 4px solid #ddd;
+  position: relative;
 }
 
 .entity-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 15px 56px 15px 20px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #ddd;
 }
@@ -687,17 +688,29 @@ body.slot-dev::before {
   color: #333;
 }
 
-.entity-card-header .close-btn {
+.close-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: red 2px solid;
   font-size: 28px;
   line-height: 1;
   color: #999;
   text-decoration: none;
   cursor: pointer;
-  padding: 0 5px;
+  border-radius: 4px;
 }
 
-.entity-card-header .close-btn:hover {
+.close-btn:hover {
   color: #d9534f;
+  text-decoration: none;
 }
 
 .entity-card-header .edit-btn {
@@ -966,15 +979,17 @@ body.slot-dev::before {
 
 .postit-meta-float {
   float: right;
-  margin: 0 0 10px 14px;
+  margin: 0 72px 10px 14px;
 }
 
 .postit-actions-float {
-  float: right;
+  position: absolute;
+  top: 12px;
+  right: 46px;
   display: flex;
   align-items: center;
   gap: 4px;
-  margin: -4px -4px 0 8px;
+  z-index: 2;
 }
 
 .postit-title {
@@ -1041,7 +1056,7 @@ body.slot-dev::before {
 .trunk-card-actions {
   position: absolute;
   top: 18px;
-  right: 20px;
+  right: 52px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
