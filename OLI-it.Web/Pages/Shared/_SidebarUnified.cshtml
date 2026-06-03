@@ -7,10 +7,16 @@
     {
         currentPage = "/" + currentPage;
     }
-    var stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? "";
-    var postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? "";
-    var anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? "";
-    var toplabGuid = Model?.TopLab?.TopLabGuid?.ToString() ?? "";
+    
+    var stammGuid = "";
+    var postitGuid = "";
+    var anglerGuid = "";
+    var toplabGuid = "";
+    
+    try { stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? ""; } catch { }
+    try { postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? ""; } catch { }
+    try { anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? ""; } catch { }
+    try { toplabGuid = Model?.TopLab?.TopLabGuid?.ToString() ?? ""; } catch { }
 }
 
 <nav class="sidebar-menu">
