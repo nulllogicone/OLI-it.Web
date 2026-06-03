@@ -795,6 +795,12 @@ body.slot-dev::before {
   line-height: 1.6;
 }
 
+.entity-description-narrow-left {
+  display: inline-block;
+  width: fit-content;
+  max-width: min(100%, 72ch);
+}
+
 .entity-link {
   margin-top: 10px;
 }
