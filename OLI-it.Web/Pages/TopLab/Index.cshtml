@@ -35,22 +35,35 @@
 @section Head {
     @if (Model.TopLab != null)
     {
-        var jsonText = JsonSerializer.Serialize(Model.TopLab.TopLab1);
         var topLabUrl = $"https://oli-it.com/toplab/{Model.TopLab.TopLabGuid}";
-        var parentPostItBlock = Model.PostIt != null
-            ? $",\n          \"parentItem\": {{\n            \"@@type\": \"DiscussionForumPosting\",\n            \"headline\": {JsonSerializer.Serialize(Model.PostIt.Titel ?? "PostIt")},\n            \"url\": \"https://oli-it.com/postit/{Model.PostIt.PostItGuid}\"\n          }}"
-            : "";
-        var authorBlock = Model.Stamm != null
-            ? $",\n          \"author\": {{\n            \"@@type\": \"Person\",\n            \"name\": {JsonSerializer.Serialize(Model.Stamm.Stamm1)},\n            \"url\": \"https://oli-it.com/stamm/{Model.Stamm.StammGuid}\"\n          }}"
-            : "";
-        <script type="application/ld+json">
+        var ldJson = new Dictionary<string, object>
         {
-          "@@context": "https://schema.org",
-          "@@type": "Comment",
-          "text": @Html.Raw(jsonText),
-          "datePublished": "@Model.TopLab.Datum.ToString("yyyy-MM-dd")",
-          "url": "@topLabUrl"@Html.Raw(authorBlock)@Html.Raw(parentPostItBlock)
+            ["@context"] = "https://schema.org",
+            ["@type"] = "Comment",
+            ["text"] = Model.TopLab.TopLab1,
+            ["datePublished"] = Model.TopLab.Datum.ToString("yyyy-MM-dd"),
+            ["url"] = topLabUrl
+        };
+        if (Model.Stamm != null)
+        {
+            ldJson["author"] = new Dictionary<string, string>
+            {
+                ["@type"] = "Person",
+                ["name"] = Model.Stamm.Stamm1,
+                ["url"] = $"https://oli-it.com/stamm/{Model.Stamm.StammGuid}"
+            };
         }
+        if (Model.PostIt != null)
+        {
+            ldJson["parentItem"] = new Dictionary<string, string>
+            {
+                ["@type"] = "DiscussionForumPosting",
+                ["headline"] = Model.PostIt.Titel ?? "PostIt",
+                ["url"] = $"https://oli-it.com/postit/{Model.PostIt.PostItGuid}"
+            };
+        }
+        <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(ldJson, new JsonSerializerOptions { WriteIndented = true }))
         </script>
     }
 }

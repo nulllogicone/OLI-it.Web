@@ -66,26 +66,33 @@
 @section Head {
     @if (Model.PostIt != null)
     {
-        var jsonHeadline = JsonSerializer.Serialize(Model.PostIt.Titel ?? "PostIt");
-        var jsonText = JsonSerializer.Serialize(Model.PostIt.PostIt1);
         var postItUrl = $"https://oli-it.com/postit/{Model.PostIt.PostItGuid}";
-        var authorBlock = Model.Stamm != null
-            ? $",\n          \"author\": {{\n            \"@@type\": \"Person\",\n            \"name\": {JsonSerializer.Serialize(Model.Stamm.Stamm1)},\n            \"url\": \"https://oli-it.com/stamm/{Model.Stamm.StammGuid}\"\n          }}"
-            : "";
-        <script type="application/ld+json">
+        var ldJson = new Dictionary<string, object>
         {
-          "@@context": "https://schema.org",
-          "@@type": "DiscussionForumPosting",
-          "headline": @Html.Raw(jsonHeadline),
-          "text": @Html.Raw(jsonText),
-          "datePublished": "@Model.PostIt.Datum.ToString("yyyy-MM-dd")",
-          "url": "@postItUrl",
-          "interactionStatistic": {
-            "@@type": "InteractionCounter",
-            "interactionType": "https://schema.org/ViewAction",
-            "userInteractionCount": @Model.PostIt.Hits
-          }@Html.Raw(authorBlock)
+            ["@context"] = "https://schema.org",
+            ["@type"] = "DiscussionForumPosting",
+            ["headline"] = Model.PostIt.Titel ?? "PostIt",
+            ["text"] = Model.PostIt.PostIt1,
+            ["datePublished"] = Model.PostIt.Datum.ToString("yyyy-MM-dd"),
+            ["url"] = postItUrl,
+            ["interactionStatistic"] = new Dictionary<string, object>
+            {
+                ["@type"] = "InteractionCounter",
+                ["interactionType"] = "https://schema.org/ViewAction",
+                ["userInteractionCount"] = Model.PostIt.Hits
+            }
+        };
+        if (Model.Stamm != null)
+        {
+            ldJson["author"] = new Dictionary<string, string>
+            {
+                ["@type"] = "Person",
+                ["name"] = Model.Stamm.Stamm1,
+                ["url"] = $"https://oli-it.com/stamm/{Model.Stamm.StammGuid}"
+            };
         }
+        <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(ldJson, new JsonSerializerOptions { WriteIndented = true }))
         </script>
     }
 }

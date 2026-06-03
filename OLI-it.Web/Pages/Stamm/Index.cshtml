@@ -52,24 +52,28 @@
 @section Head {
     @if (Model.Stamm != null)
     {
-        var jsonName = JsonSerializer.Serialize(Model.Stamm.Stamm1);
-        var jsonDesc = Model.Stamm.Beschreibung is { Length: > 0 } d
-            ? JsonSerializer.Serialize(d)
-            : null;
         var stammUrl = $"https://oli-it.com/stamm/{Model.Stamm.StammGuid}";
-        <script type="application/ld+json">
+        var mainEntity = new Dictionary<string, object?>
         {
-          "@@context": "https://schema.org",
-          "@@type": "ProfilePage",
-          "dateCreated": "@Model.Stamm.Datum.ToString("yyyy-MM-dd")",
-          "url": "@stammUrl",
-          "mainEntity": {
-            "@@type": "Person",
-            "name": @Html.Raw(jsonName),
-            "identifier": "@Model.Stamm.StammGuid",
-            "url": "@stammUrl"@(jsonDesc != null ? $",\n            \"description\": {jsonDesc}" : "")
-          }
+            ["@type"] = "Person",
+            ["name"] = Model.Stamm.Stamm1,
+            ["identifier"] = Model.Stamm.StammGuid.ToString(),
+            ["url"] = stammUrl
+        };
+        if (Model.Stamm.Beschreibung is { Length: > 0 } d)
+        {
+            mainEntity["description"] = d;
         }
+        var ldJson = new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "ProfilePage",
+            ["dateCreated"] = Model.Stamm.Datum.ToString("yyyy-MM-dd"),
+            ["url"] = stammUrl,
+            ["mainEntity"] = mainEntity
+        };
+        <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(ldJson, new JsonSerializerOptions { WriteIndented = true }))
         </script>
     }
 }
