@@ -13,7 +13,7 @@
             <span class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</span>
             @if (Model.KooK.HasValue)
             {
-                <span class="card-meta-value flowkook-value">@Model.KooK.Value.ToString("N")</span>
+                <span class="card-meta-value flowkook-value" aria-label="@($"KooK value: {Model.KooK.Value:N}")">@Model.KooK.Value.ToString("N")</span>
             }
             <span class="card-meta-stats-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">

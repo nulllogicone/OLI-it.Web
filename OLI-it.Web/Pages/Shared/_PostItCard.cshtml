@@ -23,7 +23,7 @@
 
     <div class="card-meta-box postit-meta-float">
         <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
-        <div class="card-meta-value flowkook-value">@Model.KooK.ToString("N")</div>
+        <div class="card-meta-value flowkook-value" aria-label="@($"KooK value: {Model.KooK:N}")">@Model.KooK.ToString("N")</div>
         <div class="card-meta-value">@Model.Hits <small>hits</small></div>
     </div>
 
