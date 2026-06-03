@@ -19,6 +19,8 @@ Layer 2 — Entity table .postit-table         border-spacing for visual row gap
 Layer 3 — Row theme    .sticky-note-row      entity background + shadow on each row
 ```
 
+`wwwroot/css/OliWeb.css` can be used as an additional style layer for SAPCT accents and flowkook labels without changing the base card structure.
+
 **Key principles:**
 - Base characteristics live in **shared CSS classes** — no duplication between card and table row
 - Entity-specific overrides are minimal and scoped (e.g. `.postit-card .card-meta-box`)

@@ -1,7 +1,7 @@
 @model OLI_it.Web.Models.PostIt
 @using System.Security.Claims
 
-<div class="entity-card postit-card sticky-note">
+<div class="entity-card postit-card sticky-note sapct-entity sapct-entity-p">
     @if (!string.IsNullOrEmpty(Model.Datei))
     {
         <a href="/postit/@Model.PostItGuid" class="postit-thumb-float">
@@ -23,7 +23,7 @@
 
     <div class="card-meta-box postit-meta-float">
         <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
-        <div class="card-meta-value">@Model.KooK.ToString("N")</div>
+        <div class="card-meta-value flowkook-value">@Model.KooK.ToString("N")</div>
         <div class="card-meta-value">@Model.Hits <small>hits</small></div>
     </div>
 
@@ -43,4 +43,3 @@
 
     <div class="postit-clearfix"></div>
 </div>
-
