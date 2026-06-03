@@ -2,6 +2,7 @@
 @model OLI_it.Web.Pages.PostIt.FlowModel
 @{
     ViewData["Title"] = "Message flow";
+    const int collapseThreshold = 3;
 }
 
 <div class="flow-page">
@@ -23,12 +24,14 @@
             <span><strong>@Model.Answers.Count</strong> answer(s)</span>
         </div>
 
-        <div class="flow-canvas">
-            <section class="flow-stage" data-flow-step="0">
+        <div class="flow-diagram" id="flowDiagram">
+            <svg class="flow-links" id="flowLinks" aria-hidden="true"></svg>
+
+            <section class="flow-stage" data-flow-step="0" data-flow-stage="author">
                 <div class="flow-stage-title">1. Author</div>
                 @if (Model.Stamm != null)
                 {
-                    <article class="flow-node">
+                    <article class="flow-node flow-node--stamm" data-flow-node="author">
                         <div class="flow-node-type">Stamm</div>
                         <a class="flow-node-title" href="/stamm/@Model.Stamm.StammGuid">@Model.Stamm.Stamm1</a>
                         @if (!string.IsNullOrWhiteSpace(Model.Stamm.Beschreibung))
@@ -43,9 +46,9 @@
                 }
             </section>
 
-            <section class="flow-stage" data-flow-step="1">
+            <section class="flow-stage" data-flow-step="1" data-flow-stage="message">
                 <div class="flow-stage-title">2. Message</div>
-                <article class="flow-node flow-node--message">
+                <article class="flow-node flow-node--postit" data-flow-node="message">
                     <div class="flow-node-type">PostIt</div>
                     <a class="flow-node-title" href="/postit/@Model.PostIt.PostItGuid">@(Model.PostIt.Titel ?? "Untitled")</a>
                     <p class="flow-node-text">@Model.PostIt.PostIt1</p>
@@ -56,17 +59,35 @@
                 </article>
             </section>
 
-            <section class="flow-stage" data-flow-step="2">
+            <section class="flow-stage" data-flow-step="2" data-flow-stage="recipient">
                 <div class="flow-stage-title">3. Recipient</div>
                 @if (Model.RecipientFlows.Any())
                 {
-                    @foreach (var recipient in Model.RecipientFlows)
+                    <div class="flow-node-list" data-collapsible-group="recipients">
+                    @for (var i = 0; i < Model.RecipientFlows.Count; i++)
                     {
-                        <article class="flow-node">
+                        var recipient = Model.RecipientFlows[i];
+                        var collapsedClass = i >= collapseThreshold ? "is-collapsed" : string.Empty;
+                        <article class="flow-node flow-node--recipient @collapsedClass" data-flow-node="recipient" data-flow-index="@i">
                             <div class="flow-node-type">Recipient</div>
                             <a class="flow-node-title" href="/stamm/@recipient.RecipientGuid">@recipient.RecipientName</a>
                             <p class="flow-node-text">Matched via @recipient.FilterProfileName</p>
+                            <div class="flow-badge-row">
+                                <span class="flow-badge">@recipient.Status</span>
+                                @if (recipient.ReadAt.HasValue)
+                                {
+                                    <span class="flow-badge flow-badge--read">Read</span>
+                                }
+                            </div>
                         </article>
+                    }
+                    </div>
+
+                    @if (Model.RecipientFlows.Count > collapseThreshold)
+                    {
+                        <button type="button" class="flow-toggle" data-toggle-group="recipients" data-default-limit="@collapseThreshold">
+                            Show all recipients (@Model.RecipientFlows.Count)
+                        </button>
                     }
                 }
                 else
@@ -75,13 +96,16 @@
                 }
             </section>
 
-            <section class="flow-stage" data-flow-step="3">
+            <section class="flow-stage" data-flow-step="3" data-flow-stage="filter">
                 <div class="flow-stage-title">4. Filter profile</div>
                 @if (Model.RecipientFlows.Any())
                 {
-                    @foreach (var recipient in Model.RecipientFlows)
+                    <div class="flow-node-list" data-collapsible-group="filters">
+                    @for (var i = 0; i < Model.RecipientFlows.Count; i++)
                     {
-                        <article class="flow-node">
+                        var recipient = Model.RecipientFlows[i];
+                        var collapsedClass = i >= collapseThreshold ? "is-collapsed" : string.Empty;
+                        <article class="flow-node flow-node--angler @collapsedClass" data-flow-node="filter" data-flow-index="@i">
                             <div class="flow-node-type">Angler</div>
                             <a class="flow-node-title" href="/angler/@recipient.FilterProfileGuid">@recipient.FilterProfileName</a>
                             <div class="flow-node-text">
@@ -101,6 +125,14 @@
                             }
                         </article>
                     }
+                    </div>
+
+                    @if (Model.RecipientFlows.Count > collapseThreshold)
+                    {
+                        <button type="button" class="flow-toggle" data-toggle-group="filters" data-default-limit="@collapseThreshold">
+                            Show all filter profiles (@Model.RecipientFlows.Count)
+                        </button>
+                    }
                 }
                 else
                 {
@@ -108,13 +140,16 @@
                 }
             </section>
 
-            <section class="flow-stage flow-stage--answers" data-flow-step="4">
+            <section class="flow-stage flow-stage--answers" data-flow-step="4" data-flow-stage="answers">
                 <div class="flow-stage-title">5. Answers return</div>
                 @if (Model.Answers.Any())
                 {
-                    @foreach (var answer in Model.Answers)
+                    <div class="flow-node-list" data-collapsible-group="answers">
+                    @for (var i = 0; i < Model.Answers.Count; i++)
                     {
-                        <article class="flow-node flow-node--answer">
+                        var answer = Model.Answers[i];
+                        var collapsedClass = i >= collapseThreshold ? "is-collapsed" : string.Empty;
+                        <article class="flow-node flow-node--toplab @collapsedClass" data-flow-node="answer" data-flow-index="@i">
                             <div class="flow-node-type">TopLab</div>
                             <a class="flow-node-title" href="/toplab/@answer.TopLabGuid">@(answer.Title ?? "Untitled answer")</a>
                             <p class="flow-node-text">@answer.Body</p>
@@ -126,6 +161,14 @@
                                 }
                             </p>
                         </article>
+                    }
+                    </div>
+
+                    @if (Model.Answers.Count > collapseThreshold)
+                    {
+                        <button type="button" class="flow-toggle" data-toggle-group="answers" data-default-limit="@collapseThreshold">
+                            Show all answers (@Model.Answers.Count)
+                        </button>
                     }
                 }
                 else
@@ -142,13 +185,157 @@
         document.addEventListener('DOMContentLoaded', function () {
             const stages = document.querySelectorAll('[data-flow-step]');
             const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const diagram = document.getElementById('flowDiagram');
+            const linksSvg = document.getElementById('flowLinks');
+            const toggles = document.querySelectorAll('[data-toggle-group]');
 
             stages.forEach(function (stage, index) {
                 const delay = prefersReducedMotion ? 0 : index * 180;
                 window.setTimeout(function () {
                     stage.classList.add('is-visible');
+                    drawLinks();
                 }, delay);
             });
+
+            toggles.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const groupName = button.getAttribute('data-toggle-group');
+                    const group = document.querySelector('[data-collapsible-group="' + groupName + '"]');
+                    if (!group) {
+                        return;
+                    }
+
+                    const nodes = group.querySelectorAll('.flow-node');
+                    const hiddenNodes = group.querySelectorAll('.flow-node.is-collapsed');
+                    const shouldExpand = hiddenNodes.length > 0;
+
+                    if (shouldExpand) {
+                        nodes.forEach(function (node) {
+                            node.classList.remove('is-collapsed');
+                        });
+                        button.textContent = 'Collapse ' + groupName;
+                    } else {
+                        const defaultLimit = Number(button.getAttribute('data-default-limit')) || 3;
+                        nodes.forEach(function (node, index) {
+                            node.classList.toggle('is-collapsed', index >= defaultLimit);
+                        });
+
+                        if (groupName === 'recipients') {
+                            button.textContent = 'Show all recipients (' + nodes.length + ')';
+                        } else if (groupName === 'filters') {
+                            button.textContent = 'Show all filter profiles (' + nodes.length + ')';
+                        } else if (groupName === 'answers') {
+                            button.textContent = 'Show all answers (' + nodes.length + ')';
+                        }
+                    }
+
+                    drawLinks();
+                });
+            });
+
+            window.addEventListener('resize', drawLinks);
+
+            function drawLinks() {
+                if (!diagram || !linksSvg) {
+                    return;
+                }
+
+                linksSvg.innerHTML = '';
+
+                const diagramRect = diagram.getBoundingClientRect();
+                linksSvg.setAttribute('viewBox', '0 0 ' + Math.max(diagramRect.width, 1) + ' ' + Math.max(diagramRect.height, 1));
+
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+                marker.setAttribute('id', 'flowArrow');
+                marker.setAttribute('viewBox', '0 0 10 10');
+                marker.setAttribute('refX', '9');
+                marker.setAttribute('refY', '5');
+                marker.setAttribute('markerWidth', '7');
+                marker.setAttribute('markerHeight', '7');
+                marker.setAttribute('orient', 'auto-start-reverse');
+
+                const markerPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                markerPath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+                markerPath.setAttribute('fill', '#6b7280');
+                marker.appendChild(markerPath);
+                defs.appendChild(marker);
+                linksSvg.appendChild(defs);
+
+                const author = document.querySelector('[data-flow-node="author"]');
+                const message = document.querySelector('[data-flow-node="message"]');
+                const recipients = visibleNodes('[data-flow-node="recipient"]');
+                const filters = visibleNodes('[data-flow-node="filter"]');
+                const answers = visibleNodes('[data-flow-node="answer"]');
+
+                if (author && message) {
+                    connect(author, message);
+                }
+
+                recipients.forEach(function (recipient) {
+                    if (message) {
+                        connect(message, recipient);
+                    }
+                });
+
+                recipients.forEach(function (recipient, index) {
+                    const filter = filters[index];
+                    if (filter) {
+                        connect(recipient, filter);
+                    }
+                });
+
+                filters.forEach(function (filter) {
+                    answers.forEach(function (answer) {
+                        connect(filter, answer, true);
+                    });
+                });
+
+                answers.forEach(function (answer) {
+                    if (author) {
+                        connect(answer, author, true);
+                    }
+                });
+
+                function visibleNodes(selector) {
+                    return Array.from(document.querySelectorAll(selector)).filter(function (node) {
+                        return !node.classList.contains('is-collapsed');
+                    });
+                }
+
+                function connect(fromEl, toEl, subtle) {
+                    const fromRect = fromEl.getBoundingClientRect();
+                    const toRect = toEl.getBoundingClientRect();
+
+                    const startX = fromRect.right - diagramRect.left;
+                    const startY = fromRect.top + (fromRect.height / 2) - diagramRect.top;
+                    const endX = toRect.left - diagramRect.left;
+                    const endY = toRect.top + (toRect.height / 2) - diagramRect.top;
+
+                    const bend = Math.max(30, Math.abs(endX - startX) * 0.35);
+
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d',
+                        'M ' + startX + ' ' + startY +
+                        ' C ' + (startX + bend) + ' ' + startY + ', ' +
+                        (endX - bend) + ' ' + endY + ', ' +
+                        endX + ' ' + endY
+                    );
+                    path.setAttribute('class', subtle ? 'flow-link flow-link--subtle' : 'flow-link');
+                    path.setAttribute('fill', 'none');
+                    path.setAttribute('stroke', '#6b7280');
+                    path.setAttribute('stroke-width', subtle ? '1.4' : '1.7');
+                    path.setAttribute('stroke-linecap', 'round');
+                    path.setAttribute('opacity', subtle ? '0.65' : '0.85');
+                    if (subtle) {
+                        path.setAttribute('stroke-dasharray', '5 4');
+                    }
+                    path.setAttribute('marker-end', 'url(#flowArrow)');
+                    linksSvg.appendChild(path);
+                }
+            }
+
+            drawLinks();
         });
     </script>
 }
