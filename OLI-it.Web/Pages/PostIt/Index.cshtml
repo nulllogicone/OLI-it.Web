@@ -1,7 +1,14 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.PostIt.IndexModel
+@using System.Text.Json
 @{
-    ViewData["Title"] = "PostIt";
+    var postItTitle = Model.PostIt?.Titel ?? "PostIt";
+    var postItBody = Model.PostIt?.PostIt1 ?? "";
+    var postItDesc = postItBody.Length > 160 ? postItBody[..157] + "…" : postItBody;
+    ViewData["Title"] = postItTitle;
+    ViewData["Description"] = postItDesc;
+    ViewData["CanonicalUrl"] = $"https://oli-it.com/postit/{Model.PostIt?.PostItGuid}";
+    ViewData["OgType"] = "article";
 }
 
 <div class="browse-container">
@@ -56,3 +63,29 @@
     }
 </div>
 
+@section Head {
+    @if (Model.PostIt != null)
+    {
+        var jsonHeadline = JsonSerializer.Serialize(Model.PostIt.Titel ?? "PostIt");
+        var jsonText = JsonSerializer.Serialize(Model.PostIt.PostIt1);
+        var postItUrl = $"https://oli-it.com/postit/{Model.PostIt.PostItGuid}";
+        var authorBlock = Model.Stamm != null
+            ? $",\n          \"author\": {{\n            \"@@type\": \"Person\",\n            \"name\": {JsonSerializer.Serialize(Model.Stamm.Stamm1)},\n            \"url\": \"https://oli-it.com/stamm/{Model.Stamm.StammGuid}\"\n          }}"
+            : "";
+        <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "DiscussionForumPosting",
+          "headline": @Html.Raw(jsonHeadline),
+          "text": @Html.Raw(jsonText),
+          "datePublished": "@Model.PostIt.Datum.ToString("yyyy-MM-dd")",
+          "url": "@postItUrl",
+          "interactionStatistic": {
+            "@@type": "InteractionCounter",
+            "interactionType": "https://schema.org/ViewAction",
+            "userInteractionCount": @Model.PostIt.Hits
+          }@Html.Raw(authorBlock)
+        }
+        </script>
+    }
+}

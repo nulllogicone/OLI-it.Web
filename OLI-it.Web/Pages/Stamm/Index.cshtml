@@ -1,7 +1,14 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.Stamm.IndexModel
+@using System.Text.Json
 @{
-    ViewData["Title"] = "Stamm";
+    var stammName = Model.Stamm?.Stamm1 ?? "User";
+    ViewData["Title"] = stammName;
+    ViewData["Description"] = Model.Stamm?.Beschreibung is { Length: > 0 } desc
+        ? (desc.Length > 160 ? desc[..157] + "…" : desc)
+        : $"{stammName} — OLI-it user profile";
+    ViewData["CanonicalUrl"] = $"https://oli-it.com/stamm/{Model.Stamm?.StammGuid}";
+    ViewData["OgType"] = "profile";
 }
 
 <div class="browse-container">
@@ -42,3 +49,27 @@
     }
 </div>
 
+@section Head {
+    @if (Model.Stamm != null)
+    {
+        var jsonName = JsonSerializer.Serialize(Model.Stamm.Stamm1);
+        var jsonDesc = Model.Stamm.Beschreibung is { Length: > 0 } d
+            ? JsonSerializer.Serialize(d)
+            : null;
+        var stammUrl = $"https://oli-it.com/stamm/{Model.Stamm.StammGuid}";
+        <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "ProfilePage",
+          "dateCreated": "@Model.Stamm.Datum.ToString("yyyy-MM-dd")",
+          "url": "@stammUrl",
+          "mainEntity": {
+            "@@type": "Person",
+            "name": @Html.Raw(jsonName),
+            "identifier": "@Model.Stamm.StammGuid",
+            "url": "@stammUrl"@(jsonDesc != null ? $",\n            \"description\": {jsonDesc}" : "")
+          }
+        }
+        </script>
+    }
+}

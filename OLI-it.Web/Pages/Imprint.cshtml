@@ -2,6 +2,39 @@
 @model ImprintModel
 @{
     ViewData["Title"] = "Imprint";
+    ViewData["Description"] = "OLI-it imprint — contact information for Frederic Luchting, Amsterdam, Netherlands.";
+    ViewData["CanonicalUrl"] = "https://oli-it.com/imprint";
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "ContactPage",
+      "name": "Imprint",
+      "url": "https://oli-it.com/imprint",
+      "about": {
+        "@@type": "Organization",
+        "name": "OLI-it",
+        "url": "https://oli-it.com",
+        "email": "info@oli-it.com",
+        "telephone": "+31643680136",
+        "address": {
+          "@@type": "PostalAddress",
+          "streetAddress": "Tweede Jan van der Heijdenstraat 5",
+          "postalCode": "1073 VE",
+          "addressLocality": "Amsterdam",
+          "addressCountry": "NL"
+        },
+        "contactPoint": {
+          "@@type": "ContactPoint",
+          "email": "info@oli-it.com",
+          "telephone": "+31643680136",
+          "contactType": "customer support"
+        }
+      }
+    }
+    </script>
 }
 <h2>imprint</h2>
 

@@ -2,6 +2,29 @@
 @model IndexModel
 @{
     ViewData["Title"] = "OLI-it - Home";
+    ViewData["Description"] = "OLI-it — an intelligent network of individual communication. Ask questions, post classified ads or search partners, privately and professionally.";
+    ViewData["CanonicalUrl"] = "https://oli-it.com/";
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Organization",
+      "name": "OLI-it",
+      "url": "https://oli-it.com",
+      "logo": "https://oli-it.com/images/oli-it-logo.svg",
+      "description": "An intelligent network of individual communication",
+      "contactPoint": {
+        "@@type": "ContactPoint",
+        "email": "info@oli-it.com",
+        "contactType": "customer support"
+      },
+      "sameAs": [
+        "https://nulllogicone.net"
+      ]
+    }
+    </script>
 }
 
 <div class="page-header">
