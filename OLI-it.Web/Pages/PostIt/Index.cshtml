@@ -49,10 +49,14 @@
 
         <div id="toplabs" class="tab-content">
             <h3>TopLabs (Answers)</h3>
-            @{ ViewData["Context"] = "postit"; }
+            @{
+                ViewData["Context"] = "postit";
+                ViewData["SourceType"] = "postit";
+                ViewData["SourceGuid"] = Model.PostIt.PostItGuid.ToString();
+                ViewData["FromPostItGuid"] = Model.PostIt.PostItGuid.ToString();
+            }
             @await Html.PartialAsync("_ChildTopLabsTable", Model.PostItTopLabs ?? new List<OLI_it.Web.Models.TopLab>())
         </div>
 
     }
 </div>
-
