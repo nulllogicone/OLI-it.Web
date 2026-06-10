@@ -7,10 +7,21 @@
     {
         currentPage = "/" + currentPage;
     }
-    var stammGuid = Model?.Stamm?.StammGuid?.ToString() ?? "";
-    var postitGuid = Model?.PostIt?.PostItGuid?.ToString() ?? "";
-    var anglerGuid = Model?.Angler?.AnglerGuid?.ToString() ?? "";
-    var toplabGuid = Model?.TopLab?.TopLabGuid?.ToString() ?? "";
+    // TODO: The dynamic model + RuntimeBinderException catch is a workaround because page models
+    // don't share a common interface/base that exposes Stamm/PostIt/Angler/TopLab.
+    // Consider introducing a ISidebarContext interface (or a SidebarViewModel record) that all
+    // relevant page models implement/return, so property access is type-safe and this try/catch
+    // can be removed. Tracked for future refactor.
+    static string SafeGuid(dynamic model, Func<dynamic, string?> getter)
+    {
+        try { return getter(model) ?? ""; }
+        catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { return ""; }
+    }
+
+    var stammGuid  = SafeGuid(Model, m => m.Stamm?.StammGuid?.ToString());
+    var postitGuid = SafeGuid(Model, m => m.PostIt?.PostItGuid?.ToString());
+    var anglerGuid = SafeGuid(Model, m => m.Angler?.AnglerGuid?.ToString());
+    var toplabGuid = SafeGuid(Model, m => m.TopLab?.TopLabGuid?.ToString());
 }
 
 <nav class="sidebar-menu">

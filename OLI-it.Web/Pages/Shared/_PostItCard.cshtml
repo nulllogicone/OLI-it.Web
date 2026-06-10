@@ -9,7 +9,7 @@
         </a>
     }
 
-    <div class="postit-actions-float">
+    <div class="postit-actions-float card-actions-top-right">
         @if (User.Identity?.IsAuthenticated == true && ViewData["AuthorStammGuid"] != null && User.FindFirstValue(ClaimTypes.NameIdentifier) == ViewData["AuthorStammGuid"]?.ToString())
         {
             <a href="/postit/edit/@Model.PostItGuid" class="edit-btn" title="Edit PostIt">

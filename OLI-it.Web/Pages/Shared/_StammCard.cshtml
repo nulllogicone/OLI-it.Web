@@ -22,7 +22,7 @@
                 stats
             </span>
         </a>
-        <div class="trunk-card-actions">
+        <div class="trunk-card-actions card-actions-top-right">
             @if (User.Identity?.IsAuthenticated == true && User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.StammGuid.ToString())
             {
                 <a href="/stamm/edit/@Model.StammGuid" class="edit-btn" title="Edit Stamm">

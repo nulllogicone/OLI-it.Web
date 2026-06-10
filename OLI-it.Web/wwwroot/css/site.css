@@ -676,8 +676,14 @@ body.slot-dev::before {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
+  position: relative;
   background-color: #f8f9fa;
   border-bottom: 1px solid #ddd;
+}
+
+.angler-card .entity-card-header,
+.toplab-card .entity-card-header {
+  padding-right: 64px;
 }
 
 .entity-card-header h2,
@@ -687,20 +693,38 @@ body.slot-dev::before {
   color: #333;
 }
 
-.entity-card-header .close-btn {
-  font-size: 28px;
+.close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 24px;
+  font-weight: 500;
   line-height: 1;
-  color: #999;
+  color: #8c8c8c;
   text-decoration: none;
   cursor: pointer;
-  padding: 0 5px;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
-.entity-card-header .close-btn:hover {
+.close-btn:hover {
+  background-color: #f0f0f0;
   color: #d9534f;
 }
 
-.entity-card-header .edit-btn {
+.card-actions-top-right {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+
+.edit-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -714,12 +738,12 @@ body.slot-dev::before {
   margin-right: 8px;
 }
 
-.entity-card-header .edit-btn:hover {
+.edit-btn:hover {
   background-color: #f0f0f0;
   color: #007bff;
 }
 
-.entity-card-header .edit-btn svg {
+.edit-btn svg {
   width: 20px;
   height: 20px;
 }
@@ -960,15 +984,11 @@ body.slot-dev::before {
 
 .postit-meta-float {
   float: right;
-  margin: 0 0 10px 14px;
+  margin: 0 44px 10px 14px;
 }
 
 .postit-actions-float {
-  float: right;
-  display: flex;
-  align-items: center;
   gap: 4px;
-  margin: -4px -4px 0 8px;
 }
 
 .postit-title {
@@ -1033,11 +1053,6 @@ body.slot-dev::before {
 }
 
 .trunk-card-actions {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
 }
 
@@ -1194,6 +1209,7 @@ body.slot-dev::before {
 .toplab-card .card-meta-box {
   background-color: rgba(34, 139, 34, 0.09);
   border-color: rgba(34, 139, 34, 0.3);
+  margin-right: 44px;
 }
 
 .toplab-card .card-meta-datum {
