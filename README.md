@@ -22,13 +22,13 @@ Every **recipient** maintains one or more **filter profiles** — their own desc
 The **matchmaking algorithm** delivers a message to a recipient only when *all mutual criteria are satisfied on both sides*. No message is ever shown to someone who does not match — and no match is left unseen by someone who asked for it.
 
 ```
-Author          Wordspace          Recipient
+Author (S)          Wordspace (NKBZ)          Recipient (A)
   │   describes self ──► nodes ◄── describes self   │
   │   sets recipient  ──► nodes ◄── sets content     │
-  │            criteria            filter profile    │
+  │            criteria (C) | logic (OgIf) | filter profile (L)    │
   │                                                  │
   └───────── match? ────────────────────────────────►│
-                   only when both sides agree
+                   only when both sides agree (spiegle-x) --> Response (T), reward (kook)
 ```
 
 ---
