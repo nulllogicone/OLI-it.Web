@@ -1268,6 +1268,33 @@ body.slot-dev::before {
   color: #7a6000;
 }
 
+.catched-postits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.catched-postit-card {
+  margin-bottom: 0;
+}
+
+.catched-postit-meta {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 12px;
+  color: #4f4020;
+}
+
+.postit-thumb-placeholder {
+  width: 72px;
+  height: 72px;
+  border: 1px dashed rgba(79, 64, 32, 0.35);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
 .toplab-card .card-meta-box {
   background-color: rgba(34, 139, 34, 0.09);
   border-color: rgba(34, 139, 34, 0.3);
