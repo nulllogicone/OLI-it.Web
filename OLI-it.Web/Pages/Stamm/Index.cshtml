@@ -1,7 +1,14 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.Stamm.IndexModel
+@using System.Text.Json
 @{
-    ViewData["Title"] = "Stamm";
+    var stammName = Model.Stamm?.Stamm1 ?? "User";
+    ViewData["Title"] = stammName;
+    ViewData["Description"] = Model.Stamm?.Beschreibung is { Length: > 0 } desc
+        ? (desc.Length > 160 ? desc[..157] + "…" : desc)
+        : $"{stammName} — OLI-it user profile";
+    ViewData["CanonicalUrl"] = $"https://oli-it.com/stamm/{Model.Stamm?.StammGuid}";
+    ViewData["OgType"] = "profile";
 }
 
 <div class="browse-container">
@@ -42,3 +49,31 @@
     }
 </div>
 
+@section Head {
+    @if (Model.Stamm != null)
+    {
+        var stammUrl = $"https://oli-it.com/stamm/{Model.Stamm.StammGuid}";
+        var mainEntity = new Dictionary<string, object?>
+        {
+            ["@type"] = "Person",
+            ["name"] = Model.Stamm.Stamm1,
+            ["identifier"] = Model.Stamm.StammGuid.ToString(),
+            ["url"] = stammUrl
+        };
+        if (Model.Stamm.Beschreibung is { Length: > 0 } d)
+        {
+            mainEntity["description"] = d;
+        }
+        var ldJson = new Dictionary<string, object?>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "ProfilePage",
+            ["dateCreated"] = Model.Stamm.Datum.ToString("yyyy-MM-dd"),
+            ["url"] = stammUrl,
+            ["mainEntity"] = mainEntity
+        };
+        <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(ldJson, new JsonSerializerOptions { WriteIndented = true }))
+        </script>
+    }
+}

@@ -2,10 +2,62 @@
 <html lang="en">
 @inject Microsoft.Extensions.Configuration.IConfiguration _config
 @inject Microsoft.Extensions.Hosting.IHostEnvironment _hostEnv
+@{
+    var _pageTitle = ViewData["Title"] != null ? $"{ViewData["Title"]} - OLI-it" : "OLI-it";
+    var _pageDescription = (ViewData["Description"] as string) ?? "OLI-it — an intelligent network of individual communication. Ask questions, post classified ads or search partners.";
+    var _canonicalUrl = (ViewData["CanonicalUrl"] as string) ?? $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    var _ogType = (ViewData["OgType"] as string) ?? "website";
+    var _ogImage = ViewData["OgImage"] as string;
+}
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - OLI-it</title>
+    <title>@_pageTitle</title>
+    <meta name="description" content="@_pageDescription" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="@_canonicalUrl" />
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="OLI-it" />
+    <meta property="og:type" content="@_ogType" />
+    <meta property="og:title" content="@_pageTitle" />
+    <meta property="og:description" content="@_pageDescription" />
+    <meta property="og:url" content="@_canonicalUrl" />
+    @if (_ogImage != null)
+    {
+        <meta property="og:image" content="@_ogImage" />
+    }
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@_pageTitle" />
+    <meta name="twitter:description" content="@_pageDescription" />
+    @if (_ogImage != null)
+    {
+        <meta name="twitter:image" content="@_ogImage" />
+    }
+
+    <!-- Schema.org: WebSite -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "WebSite",
+      "name": "OLI-it",
+      "url": "https://oli-it.com",
+      "description": "An intelligent network of individual communication",
+      "potentialAction": {
+        "@@type": "SearchAction",
+        "target": {
+          "@@type": "EntryPoint",
+          "urlTemplate": "https://oli-it.com/search?Term={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    @await RenderSectionAsync("Head", required: false)
+
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />

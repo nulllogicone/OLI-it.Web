@@ -1,7 +1,14 @@
 @page "{id:guid}"
 @model OLI_it.Web.Pages.TopLab.IndexModel
+@using System.Text.Json
 @{
-    ViewData["Title"] = "TopLab";
+    var topLabTitle = Model.TopLab?.Titel ?? "Answer";
+    var topLabBody = Model.TopLab?.TopLab1 ?? "";
+    var topLabDesc = topLabBody.Length > 160 ? topLabBody[..157] + "…" : topLabBody;
+    ViewData["Title"] = topLabTitle;
+    ViewData["Description"] = topLabDesc;
+    ViewData["CanonicalUrl"] = $"https://oli-it.com/toplab/{Model.TopLab?.TopLabGuid}";
+    ViewData["OgType"] = "article";
 }
 
 <div class="browse-container">
@@ -25,3 +32,38 @@
     </div>
 </div>
 
+@section Head {
+    @if (Model.TopLab != null)
+    {
+        var topLabUrl = $"https://oli-it.com/toplab/{Model.TopLab.TopLabGuid}";
+        var ldJson = new Dictionary<string, object>
+        {
+            ["@context"] = "https://schema.org",
+            ["@type"] = "Comment",
+            ["text"] = Model.TopLab.TopLab1,
+            ["datePublished"] = Model.TopLab.Datum.ToString("yyyy-MM-dd"),
+            ["url"] = topLabUrl
+        };
+        if (Model.Stamm != null)
+        {
+            ldJson["author"] = new Dictionary<string, string>
+            {
+                ["@type"] = "Person",
+                ["name"] = Model.Stamm.Stamm1,
+                ["url"] = $"https://oli-it.com/stamm/{Model.Stamm.StammGuid}"
+            };
+        }
+        if (Model.PostIt != null)
+        {
+            ldJson["parentItem"] = new Dictionary<string, string>
+            {
+                ["@type"] = "DiscussionForumPosting",
+                ["headline"] = Model.PostIt.Titel ?? "PostIt",
+                ["url"] = $"https://oli-it.com/postit/{Model.PostIt.PostItGuid}"
+            };
+        }
+        <script type="application/ld+json">
+        @Html.Raw(JsonSerializer.Serialize(ldJson, new JsonSerializerOptions { WriteIndented = true }))
+        </script>
+    }
+}
