@@ -31,6 +31,11 @@ Author (S)          Wordspace (NKBZ)          Recipient (A)
                    only when both sides agree (spiegle-x) --> Response (T), reward (kook)
 ```
 
+This diagram covers the most complete OLI-it alphabet
+- SAPCT - message flow
+- NKBZ - word space
+- OgIf - logic
+- kook - reward, reputation, answer
 ---
 
 ## Use Cases
