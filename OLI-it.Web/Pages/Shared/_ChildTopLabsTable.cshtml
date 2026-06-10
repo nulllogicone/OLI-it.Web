@@ -1,17 +1,20 @@
 @model List<OLI_it.Web.Models.TopLab>
 @{
     var context = ViewData["Context"]?.ToString() ?? "stamm"; // "stamm" or "postit"
+    var sourceType = ViewData["SourceType"]?.ToString() ?? context;
+    var sourceGuid = ViewData["SourceGuid"]?.ToString();
+    var fromPostItGuid = ViewData["FromPostItGuid"]?.ToString();
+    var fromAnglerGuid = ViewData["FromAnglerGuid"]?.ToString();
 }
 
 @if (Model?.Any() == true)
 {
     var isStammContext = context == "stamm";
-    var tableClass = isStammContext ? "simple-table stamm-table" : "simple-table";
-    <table class="@tableClass">
+    <table class="simple-table toplab-table">
         <thead>
             <tr>
                 <th>Thumbnail</th>
-                <th>Title</th>
+                <th>TopLab</th>
                 @if (context == "stamm")
                 {
                     <th>PostIt</th>
@@ -22,52 +25,66 @@
                 }
                 <th>Date</th>
                 <th>Reward</th>
-                <th>Image Path</th>
-                @if (!isStammContext)
-                {
-                    <th></th>
-                }
             </tr>
         </thead>
         <tbody>
             @foreach (var toplab in Model)
             {
                 var targetUrl = $"/toplab/{toplab.TopLabGuid}";
-                @if (isStammContext)
+                var effectiveSourceGuid = sourceGuid;
+                if (string.IsNullOrEmpty(effectiveSourceGuid))
                 {
-                    <tr class="trunk-row" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
-                        <td>
-                            @if (!string.IsNullOrEmpty(toplab.Datei))
+                    effectiveSourceGuid = context == "postit" ? toplab.PostItGuid.ToString() : toplab.TopLabGuid.ToString();
+                }
+                var effectiveFromPostItGuid = !string.IsNullOrEmpty(fromPostItGuid)
+                    ? fromPostItGuid
+                    : (context == "postit" ? toplab.PostItGuid.ToString() : null);
+                <tr class="toplab-row" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
+                    <td>
+                        @if (!string.IsNullOrEmpty(toplab.Datei))
+                        {
+                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(toplab.Titel))
+                        {
+                            <strong>@toplab.Titel</strong>
+                        }
+                        @if (!string.IsNullOrEmpty(toplab.TopLab1))
+                        {
+                            @if (!string.IsNullOrWhiteSpace(toplab.Titel))
                             {
-                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
+                                <br />
                             }
-                        </td>
-                        <td>@(toplab.Titel ?? "(no title)")</td>
+                            <span>@toplab.TopLab1</span>
+                        }
+                    </td>
+                    @if (isStammContext)
+                    {
                         <td>@(toplab.PostIt?.Titel ?? "Untitled")</td>
-                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
-                        <td>@toplab.Lohn.ToString("C")</td>
-                        <td>@(toplab.Datei ?? "(none)")</td>
-                    </tr>
-                }
-                else
-                {
-                    <tr>
+                    }
+                    else
+                    {
                         <td>
-                            @if (!string.IsNullOrEmpty(toplab.Datei))
-                            {
-                                @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
-                            }
+                            <a asp-page="/Stamm/Index"
+                               asp-route-id="@toplab.StammGuid"
+                               asp-route-sourceType="@sourceType"
+                               asp-route-sourceGuid="@effectiveSourceGuid"
+                               asp-route-fromPostItGuid="@effectiveFromPostItGuid"
+                               asp-route-fromAnglerGuid="@fromAnglerGuid"
+                               asp-route-fromTopLabGuid="@toplab.TopLabGuid"
+                               class="stamm-link-pill"
+                               onclick="event.stopPropagation();"
+                               onkeydown="event.stopPropagation();">
+                                <span class="stamm-link-icon" aria-hidden="true"></span>
+                                <span class="stamm-link-name">@(toplab.Stamm?.Stamm1 ?? "Unknown")</span>
+                            </a>
                         </td>
-                        <td>@(toplab.Titel ?? "(no title)")</td>
-                        <td>@(toplab.Stamm?.Stamm1 ?? "Unknown")</td>
-                        <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
-                        <td>@toplab.Lohn.ToString("C")</td>
-                        <td>@(toplab.Datei ?? "(none)")</td>
-                        <td>
-                            <a href="/toplab/@toplab.TopLabGuid">view</a>
-                        </td>
-                    </tr>
-                }
+                    }
+                    <td>@toplab.Datum.ToString("yyyy-MM-dd")</td>
+                    <td>@toplab.Lohn.ToString("C")</td>
+                </tr>
             }
         </tbody>
     </table>

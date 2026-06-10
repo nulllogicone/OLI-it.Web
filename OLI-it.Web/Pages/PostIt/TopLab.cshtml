@@ -23,6 +23,9 @@
         @if (Model.TopLabs.Any())
         {
             ViewData["Context"] = "postit";
+            ViewData["SourceType"] = "postit";
+            ViewData["SourceGuid"] = Model.PostIt?.PostItGuid.ToString() ?? "";
+            ViewData["FromPostItGuid"] = Model.PostIt?.PostItGuid.ToString() ?? "";
             @await Html.PartialAsync("_ChildTopLabsTable", Model.TopLabs)
         }
         else
