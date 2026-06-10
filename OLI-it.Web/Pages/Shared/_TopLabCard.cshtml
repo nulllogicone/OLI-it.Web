@@ -15,7 +15,9 @@
             <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
             <div class="card-meta-value">@Model.Lohn.ToString("N")</div>
         </div>
-        <a href="/postit/@Model.PostItGuid" class="close-btn" title="Close to PostIt">&times;</a>
+        <div class="card-actions-top-right">
+            <a href="/postit/@Model.PostItGuid" class="close-btn" title="Close to PostIt">&times;</a>
+        </div>
     </div>
     <div class="entity-card-body">
         <div class="entity-description">
