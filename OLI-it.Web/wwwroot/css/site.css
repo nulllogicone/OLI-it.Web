@@ -1070,6 +1070,7 @@ body.slot-dev::before {
 .trunk-card .entity-description {
   background-color: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(92, 58, 30, 0.18);
+  overflow: hidden;
 }
 
 .trunk-card .entity-link a {
