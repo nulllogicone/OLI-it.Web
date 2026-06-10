@@ -43,11 +43,36 @@ namespace OLI_it.Web.Pages.Angler
             // Load catched PostIts (News)
             CatchedPostIts = await _context.News
                 .Include(n => n.Code)
-                    .ThenInclude(c => c.PostIt)
                 .Where(n => n.AnglerGuid == id.Value)
                 .OrderByDescending(n => n.Datum)
                 .Take(50)
                 .ToListAsync();
+
+            var postItGuids = CatchedPostIts
+                .Where(n => n.Code != null)
+                .Select(n => n.Code!.PostItGuid)
+                .Distinct()
+                .ToList();
+
+            if (postItGuids.Count > 0)
+            {
+                var postItMap = await _context.PostIts
+                    .Where(p => postItGuids.Contains(p.PostItGuid))
+                    .ToDictionaryAsync(p => p.PostItGuid);
+
+                foreach (var news in CatchedPostIts)
+                {
+                    if (news.Code == null)
+                    {
+                        continue;
+                    }
+
+                    if (postItMap.TryGetValue(news.Code.PostItGuid, out var postIt))
+                    {
+                        news.Code.PostIt = postIt;
+                    }
+                }
+            }
 
             ViewData["Sidebar"] = "_SidebarUnified";
 
