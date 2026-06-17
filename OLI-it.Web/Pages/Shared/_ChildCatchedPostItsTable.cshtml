@@ -3,10 +3,10 @@
 @if (Model?.Any() == true)
 {
     <div class="catched-postits-list">
-        @foreach (var news in Model)
+        @foreach (var x in Model)
         {
-            var postIt = news.Code?.PostIt;
-            var postItGuid = news.Code?.PostItGuid;
+            var postIt = x.Code?.PostIt;
+            var postItGuid = x.Code?.PostItGuid;
 
             <article class="entity-card postit-card sticky-note catched-postit-card">
                 @if (!string.IsNullOrEmpty(postIt?.Datei))
@@ -30,7 +30,7 @@
                 }
 
                 <div class="card-meta-box postit-meta-float">
-                    <div class="card-meta-datum">@((news.Zeit ?? postIt?.Datum)?.ToString("dd MMM yyyy") ?? "-")</div>
+                    <div class="card-meta-datum">@((x.Zeit ?? postIt?.Datum)?.ToString("dd MMM yyyy") ?? "-")</div>
                     @if (postIt != null)
                     {
                         <div class="card-meta-value">@postIt.KooK.ToString("N")</div>
@@ -59,18 +59,18 @@
                 }
 
                 <div class="catched-postit-meta">
-                    <span>Code: @(news.Code?.Kommentar ?? "-")</span>
-                    @if (!string.IsNullOrWhiteSpace(news.Status))
+                    <span>Code: @(x.Code?.Kommentar ?? "-")</span>
+                    @if (!string.IsNullOrWhiteSpace(x.Status))
                     {
-                        <span>Status: @news.Status</span>
+                        <span>Status: @x.Status</span>
                     }
-                    @if (news.Zeit.HasValue)
+                    @if (x.Zeit.HasValue)
                     {
-                        <span>Matched: @news.Zeit.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                        <span>Matched: @x.Zeit.Value.ToString("yyyy-MM-dd HH:mm")</span>
                     }
-                    @if (news.Gelesen.HasValue)
+                    @if (x.Gelesen.HasValue)
                     {
-                        <span>Read: @news.Gelesen.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                        <span>Read: @x.Gelesen.Value.ToString("yyyy-MM-dd HH:mm")</span>
                     }
                 </div>
 
