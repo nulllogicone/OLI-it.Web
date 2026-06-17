@@ -1,4 +1,4 @@
-@model List<OLI_it.Web.Models.News>
+@model List<OLI_it.Web.Models.Spiegel>
 
 @if (Model?.Any() == true)
 {
@@ -6,7 +6,7 @@
         @foreach (var news in Model)
         {
             var postIt = news.Code?.PostIt;
-            var postItGuid = news.Code?.PostItGuid ?? postIt?.PostItGuid;
+            var postItGuid = news.Code?.PostItGuid;
 
             <article class="entity-card postit-card sticky-note catched-postit-card">
                 @if (!string.IsNullOrEmpty(postIt?.Datei))
@@ -30,7 +30,7 @@
                 }
 
                 <div class="card-meta-box postit-meta-float">
-                    <div class="card-meta-datum">@((news.Datum ?? postIt?.Datum)?.ToString("dd MMM yyyy") ?? "-")</div>
+                    <div class="card-meta-datum">@((news.Zeit ?? postIt?.Datum)?.ToString("dd MMM yyyy") ?? "-")</div>
                     @if (postIt != null)
                     {
                         <div class="card-meta-value">@postIt.KooK.ToString("N")</div>
@@ -60,17 +60,17 @@
 
                 <div class="catched-postit-meta">
                     <span>Code: @(news.Code?.Kommentar ?? "-")</span>
+                    @if (!string.IsNullOrWhiteSpace(news.Status))
+                    {
+                        <span>Status: @news.Status</span>
+                    }
+                    @if (news.Zeit.HasValue)
+                    {
+                        <span>Matched: @news.Zeit.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                    }
                     @if (news.Gelesen.HasValue)
                     {
                         <span>Read: @news.Gelesen.Value.ToString("yyyy-MM-dd HH:mm")</span>
-                    }
-                    @if (news.Gesehen.HasValue)
-                    {
-                        <span>Seen: @news.Gesehen.Value.ToString("yyyy-MM-dd HH:mm")</span>
-                    }
-                    @if (news.Gemailt.HasValue)
-                    {
-                        <span>Emailed: @news.Gemailt.Value.ToString("yyyy-MM-dd HH:mm")</span>
                     }
                 </div>
 

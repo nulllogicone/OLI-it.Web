@@ -1,4 +1,7 @@
 @model List<OLI_it.Web.Models.Angler>
+@{
+    var anglerCatchCounts = ViewData["AnglerCatchCounts"] as IReadOnlyDictionary<Guid, int>;
+}
 
 @if (Model?.Any() == true)
 {
@@ -14,7 +17,7 @@
         <tbody>
             @foreach (var angler in Model)
             {
-                var catchesCount = angler.News?.Count ?? 0;
+                var catchesCount = (anglerCatchCounts != null && anglerCatchCounts.TryGetValue(angler.AnglerGuid, out var count)) ? count : 0;
                 var targetUrl = $"/angler/{angler.AnglerGuid}";
                 <tr class="trunk-row" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
                     <td>@angler.Angler1</td>

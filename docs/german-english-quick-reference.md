@@ -10,6 +10,7 @@ This is a quick lookup table for developers working with the codebase. For compl
 | `Angler` | Filter Profile | User's criteria to receive messages |
 | `PostIt` | Message | Question, offer, or content |
 | `Code` | Description | Author's complete marking (self + message + recipient) |
+| `Spiegel` | Delivery Match | Links `Code` to `Angler`; defines which recipient receives which PostIt |
 | `TopLab` | Answer/Response | Reply to a received message |
 
 ## Wordspace (Wortraum / NKBZ)
