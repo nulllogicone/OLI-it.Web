@@ -72,6 +72,9 @@ builder.Services.AddScoped<JournalService>();
 // Add Chart Service
 builder.Services.AddScoped<ChartService>();
 
+// Add Angler catch count service
+builder.Services.AddScoped<AnglerCatchCountService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

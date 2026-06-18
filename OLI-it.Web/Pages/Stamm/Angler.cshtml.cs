@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OLI_it.Web.Data;
 using OLI_it.Web.Models;
+using OLI_it.Web.Services;
 
 namespace OLI_it.Web.Pages.Stamm
 {
     public class AnglerModel : PageModel
     {
         private readonly OliItDbContext _context;
+        private readonly AnglerCatchCountService _anglerCatchCountService;
 
-        public AnglerModel(OliItDbContext context)
+        public AnglerModel(OliItDbContext context, AnglerCatchCountService anglerCatchCountService)
         {
             _context = context;
+            _anglerCatchCountService = anglerCatchCountService;
         }
 
         public Models.Stamm? Stamm { get; set; }
@@ -43,17 +46,7 @@ namespace OLI_it.Web.Pages.Stamm
 
             // Load catch counts for Anglers via Spiegel -> Code (distinct PostIts)
             var anglerGuids = Anglers.Select(a => a.AnglerGuid).ToList();
-            var anglerCatchCounts = await _context.Spiegels
-                .Where(s => anglerGuids.Contains(s.AnglerGuid))
-                .Join(
-                    _context.Codes,
-                    spiegel => spiegel.CodeGuid,
-                    code => code.CodeGuid,
-                    (spiegel, code) => new { spiegel.AnglerGuid, code.PostItGuid })
-                .Distinct()
-                .GroupBy(x => x.AnglerGuid)
-                .Select(g => new { AnglerGuid = g.Key, Count = g.Count() })
-                .ToDictionaryAsync(x => x.AnglerGuid, x => x.Count);
+            var anglerCatchCounts = await _anglerCatchCountService.GetCatchCountsByAnglerGuidsAsync(anglerGuids);
 
             ViewData["AnglerCatchCounts"] = anglerCatchCounts;
 
