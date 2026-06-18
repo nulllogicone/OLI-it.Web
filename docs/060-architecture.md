@@ -14,7 +14,7 @@ Status: stub
 | Languages | C# |
 | Front-end | Razor Pages + Bootstrap + vanilla JS (minimal) |
 
-**Important:** The database schema already exists with German table names (Stamm, Angler, PostIt, etc.) and must not be modified. Matching logic is implemented as a stored procedure.
+**Important:** The database schema already exists with German table names (Stamm, Angler, PostIt, etc.) and must not be modified. Matching logic is implemented as stored procedures; see [065-magic-match-logic.md](065-magic-match-logic.md).
 
 ## Project Structure (proposed)
 

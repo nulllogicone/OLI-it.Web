@@ -72,8 +72,8 @@ Load data in C#, perform matching logic in-memory.
 
 ## Open Questions
 
-- [ ] What is the exact name of the stored procedure(s)? *(to be discovered during scaffolding)*
-- [ ] What are the parameters and return types?
+- [ ] Are there additional stored procedures beyond `oli.fischen(@CodeGuid, @AnglerGuid)` and `oli.beissen(@CodeGuid, @AnglerGuid)` that affect matching?
+- [ ] Do any related views/triggers/callers add extra constraints beyond these two procedures?
 - [ ] Does it handle batch matching or single message?
 - [ ] Are there any triggers or scheduled jobs that call it?
 
@@ -81,3 +81,4 @@ Load data in C#, perform matching logic in-memory.
 
 - `010-domain-entities.md` - Matchmaking glossary and rules
 - `020-data-model.md` - Tables involved in matching (Olis, Ilos, get, fit)
+- `065-magic-match-logic.md` - Current SQL behavior and rule flow

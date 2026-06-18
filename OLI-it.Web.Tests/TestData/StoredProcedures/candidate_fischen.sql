@@ -1,0 +1,11 @@
+-- CANDIDATE fischen stored procedure
+-- Replace this comment with a full CREATE OR ALTER PROCEDURE statement.
+-- If this file contains only this comment, the baseline fischen SP will be used for the candidate run.
+--
+-- Example:
+--
+-- CREATE OR ALTER PROCEDURE [oli].[fischen]
+-- AS
+-- BEGIN
+--     -- your improved implementation here
+-- END

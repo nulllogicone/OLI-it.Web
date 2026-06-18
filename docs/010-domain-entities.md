@@ -312,6 +312,8 @@ WordspaceTree ──< WordspaceBranch (hierarchical)
 
 ## Matchmaking Rules (from paper)
 
+Current SQL implementation details are documented in [065-magic-match-logic.md](065-magic-match-logic.md).
+
 | First Value | Second Value | Behavior |
 |-------------|-------------|---------|
 | 3 | 3 | Strict: choose only one element in the structure (e.g. only one course); other side must exactly match |
