@@ -49,7 +49,7 @@ internal static class DatabaseHelper
             WITH
                 MOVE N'{dataFile.Name}' TO N'{mdfPath}',
                 MOVE N'{logFile.Name}' TO N'{ldfPath}',
-                REPLACE, STATS = 0, RECOVERY
+                REPLACE, RECOVERY
             """;
 
         await using var conn = new SqlConnection(MasterConnectionString);
@@ -58,16 +58,21 @@ internal static class DatabaseHelper
         // Pre-flight: check backup version vs LocalDB version
         await CheckBackupCompatibilityAsync(conn, fullBakPath);
 
+        Console.WriteLine($"[DatabaseHelper] Restoring '{fullBakPath}' → [{databaseName}]");
+        Console.WriteLine($"[DatabaseHelper]   data: {dataFile.Name} → {mdfPath}");
+        Console.WriteLine($"[DatabaseHelper]   log : {logFile.Name} → {ldfPath}");
+
         await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 300 };
         try
         {
             await cmd.ExecuteNonQueryAsync();
+            Console.WriteLine($"[DatabaseHelper] Restore succeeded.");
         }
-        catch (SqlException ex)
+        catch (Exception ex)
         {
             throw new InvalidOperationException(
                 $"RESTORE DATABASE failed for backup '{fullBakPath}' → database '{databaseName}'. " +
-                $"mdf='{mdfPath}', ldf='{ldfPath}'. SQL error: {ex.Message}", ex);
+                $"data='{mdfPath}', log='{ldfPath}'. Error ({ex.GetType().Name}): {ex.Message}", ex);
         }
     }
 
