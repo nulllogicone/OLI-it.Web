@@ -52,6 +52,8 @@ The database uses German naming conventions from the original implementation. Th
 
 **Important:** The matchmaking algorithm is implemented as a **stored procedure** in the database. The application invokes this procedure rather than implementing matching logic in C# code. This procedure must continue to work without modification.
 
+See [065-magic-match-logic.md](065-magic-match-logic.md) for the current SQL behavior of `oli.fischen` and `oli.beissen`.
+
 ---
 
 ## Tables (Existing Schema)
@@ -107,11 +109,7 @@ dotnet ef dbcontext scaffold "Server=...;Database=OLI_IT;..." \
 
 - Legacy German names preserved for compatibility
 - Consider adding XML comments or extension methods for English naming in code
-- Stored procedure name(s) for matching: **TBD** (discover during scaffolding
-  DescriptionId INT IDENTITY PK,
-  MessageId     INT NOT NULL UNIQUE FK → Messages
-)
-```
+- Stored procedure names for matching: `oli.fischen` (batch sync) and `oli.beissen` (single pair decision)
 
 ### FilterProfiles
 
