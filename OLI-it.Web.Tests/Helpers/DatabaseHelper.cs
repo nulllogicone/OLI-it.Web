@@ -122,30 +122,31 @@ internal static class DatabaseHelper
     }
 
     /// <summary>
-    /// Executes a stored procedure (no parameters) and returns the elapsed wall-clock time.
-    /// Logs row counts before running and prints progress every 30 seconds.
+    /// Executes a stored procedure and returns the elapsed wall-clock time.
+    /// For <c>fischen</c>, progress is shown with processed item counts and ETA.
     /// </summary>
     public static async Task<TimeSpan> ExecuteStoredProcedureAsync(string connectionString, string procedureName)
     {
-        // Log scale so the user knows how long to expect
-        await LogMatchmakingScaleAsync(connectionString);
+        // fischen supports @CodeGuid/@AnglerGuid filtering, so run it per CodeGuid for real progress/ETA.
+        if (procedureName.EndsWith("fischen", StringComparison.OrdinalIgnoreCase) ||
+            procedureName.EndsWith(".fischen", StringComparison.OrdinalIgnoreCase))
+        {
+            return await ExecuteFischenWithProgressAsync(connectionString, procedureName);
+        }
 
         await using var conn = new SqlConnection(connectionString);
-
-        // Capture any PRINT output from the SP
         conn.InfoMessage += (_, e) => Console.WriteLine($"[SP] {e.Message}");
 
         await conn.OpenAsync();
         await using var cmd = new SqlCommand(procedureName, conn)
         {
             CommandType = CommandType.StoredProcedure,
-            CommandTimeout = 3600 // 1 hour max
+            CommandTimeout = 3600
         };
 
         Console.WriteLine($"[DatabaseHelper] Executing [{procedureName}] ...");
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
-        // Background ticker: print elapsed time every 30 s so the terminal stays alive
         using var cts = new CancellationTokenSource();
         var ticker = Task.Run(async () =>
         {
@@ -175,33 +176,100 @@ internal static class DatabaseHelper
         return sw.Elapsed;
     }
 
-    private static async Task LogMatchmakingScaleAsync(string connectionString)
+    private static async Task<TimeSpan> ExecuteFischenWithProgressAsync(string connectionString, string procedureName)
+    {
+        await using var conn = new SqlConnection(connectionString);
+        conn.InfoMessage += (_, e) => Console.WriteLine($"[SP] {e.Message}");
+        await conn.OpenAsync();
+
+        var scale = await GetMatchmakingScaleAsync(conn);
+        int totalCodes = scale.CodeCount;
+        int anglers = scale.AnglerCount;
+        long totalPairs = (long)totalCodes * anglers;
+
+        Console.WriteLine(
+            $"[DatabaseHelper] Scale: {totalCodes} Code × {anglers} Angler = {totalPairs} pairs to evaluate " +
+            $"({scale.SpiegelBefore} Spiegel rows before run)");
+
+        if (totalCodes == 0)
+        {
+            Console.WriteLine("[DatabaseHelper] No Code rows found, skipping fischen.");
+            return TimeSpan.Zero;
+        }
+
+        var codeGuids = await GetAllCodeGuidsAsync(conn);
+
+        await using var cmd = new SqlCommand(procedureName, conn)
+        {
+            CommandType = CommandType.StoredProcedure,
+            CommandTimeout = 3600
+        };
+        var codeParam = cmd.Parameters.Add("@CodeGuid", SqlDbType.UniqueIdentifier);
+        var anglerParam = cmd.Parameters.Add("@AnglerGuid", SqlDbType.UniqueIdentifier);
+        anglerParam.Value = Guid.Empty; // all Angler for each Code
+
+        Console.WriteLine($"[DatabaseHelper] Executing [{procedureName}] in {totalCodes} Code-guided batches ...");
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var lastLog = TimeSpan.Zero;
+
+        for (int i = 0; i < codeGuids.Count; i++)
+        {
+            codeParam.Value = codeGuids[i];
+            await cmd.ExecuteNonQueryAsync();
+
+            // Time-based progress output (every 30s) + final line
+            int processedCodes = i + 1;
+            if (sw.Elapsed - lastLog < TimeSpan.FromSeconds(30) && processedCodes < totalCodes)
+                continue;
+
+            lastLog = sw.Elapsed;
+            long processedPairs = (long)processedCodes * anglers;
+            double pct = totalPairs > 0 ? (double)processedPairs / totalPairs * 100 : 100;
+            double pairsPerSecond = sw.Elapsed.TotalSeconds > 0 ? processedPairs / sw.Elapsed.TotalSeconds : 0;
+            long remainingPairs = Math.Max(0, totalPairs - processedPairs);
+            TimeSpan eta = pairsPerSecond > 0
+                ? TimeSpan.FromSeconds(remainingPairs / pairsPerSecond)
+                : TimeSpan.Zero;
+
+            Console.WriteLine(
+                $"[DatabaseHelper]   progress: {processedCodes}/{totalCodes} Code " +
+                $"({processedPairs:N0}/{totalPairs:N0} pairs, {pct:F1}%) | " +
+                $"elapsed {sw.Elapsed:mm\\:ss} | eta {eta:mm\\:ss}");
+        }
+
+        sw.Stop();
+        Console.WriteLine($"[DatabaseHelper] [{procedureName}] completed in {sw.Elapsed:mm\\:ss\\.ff}");
+        return sw.Elapsed;
+    }
+
+    private static async Task<(int CodeCount, int AnglerCount, int SpiegelBefore)> GetMatchmakingScaleAsync(SqlConnection conn)
     {
         const string sql = """
             SELECT
-                (SELECT COUNT(*) FROM [oli].[Code])   AS CodeCount,
+                (SELECT COUNT(*) FROM [oli].[Code]) AS CodeCount,
                 (SELECT COUNT(*) FROM [oli].[Angler]) AS AnglerCount,
                 (SELECT COUNT(*) FROM [oli].[Spiegel]) AS SpiegelBefore
             """;
 
-        try
-        {
-            await using var conn = new SqlConnection(connectionString);
-            await conn.OpenAsync();
-            await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
-            await using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
-            {
-                int codes   = reader.GetInt32(0);
-                int anglers = reader.GetInt32(1);
-                int spiegel = reader.GetInt32(2);
-                Console.WriteLine($"[DatabaseHelper] Scale: {codes} Code × {anglers} Angler = {codes * anglers} pairs to evaluate ({spiegel} Spiegel rows before run)");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[DatabaseHelper] Could not read scale: {ex.Message}");
-        }
+        await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
+        await using var reader = await cmd.ExecuteReaderAsync();
+        if (!await reader.ReadAsync())
+            return (0, 0, 0);
+
+        return (reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2));
+    }
+
+    private static async Task<List<Guid>> GetAllCodeGuidsAsync(SqlConnection conn)
+    {
+        const string sql = "SELECT [CodeGuid] FROM [oli].[Code] ORDER BY [CodeGuid]";
+        await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        var codeGuids = new List<Guid>();
+        while (await reader.ReadAsync())
+            codeGuids.Add(reader.GetGuid(0));
+
+        return codeGuids;
     }
 
     /// <summary>

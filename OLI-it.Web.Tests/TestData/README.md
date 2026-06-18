@@ -16,7 +16,8 @@ It is automatically copied to the test output directory at build time and resolv
 ## Runtime notes
 
 - `fischen` performs a full `Code × Angler` scan and can run for several minutes.
-- The tests print progress every 30 seconds while `fischen` is executing.
+- The tests run `fischen` per `CodeGuid` batch and print progress every ~30 seconds:
+  processed Code count, processed pair count, percentage, elapsed time, and ETA.
 - Matchmaking tests are configured to run **serially** (no parallel overlap) to avoid
   contention on the same LocalDB test database.
 
