@@ -271,6 +271,9 @@ ServiceFabricBackup/
 *.bak
 !data/null.bak
 
+# Generated matchmaking HTML reports (created by tests)
+docs/test-results/*.html
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
