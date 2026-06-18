@@ -55,6 +55,9 @@ internal static class DatabaseHelper
         await using var conn = new SqlConnection(MasterConnectionString);
         await conn.OpenAsync();
 
+        // Pre-flight: check backup version vs LocalDB version
+        await CheckBackupCompatibilityAsync(conn, fullBakPath);
+
         await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 300 };
         try
         {
@@ -178,10 +181,51 @@ internal static class DatabaseHelper
 
     private sealed record LogicalFile(string Name, string Type);
 
-    private static async Task<List<string>> GetLogicalFileNamesAsync(string bakPath)
+    private static async Task CheckBackupCompatibilityAsync(SqlConnection conn, string bakPath)
     {
-        var files = await GetLogicalFileListAsync(bakPath);
-        return files.Select(f => f.Name).ToList();
+        // Get LocalDB version
+        await using var verCmd = new SqlCommand("SELECT @@VERSION, SERVERPROPERTY('ProductMajorVersion')", conn);
+        await using var verReader = await verCmd.ExecuteReaderAsync();
+        string localDbVersion = "unknown";
+        int localDbMajor = 0;
+        if (await verReader.ReadAsync())
+        {
+            localDbVersion = verReader.GetString(0).Split('\n')[0].Trim();
+            localDbMajor = verReader.IsDBNull(1) ? 0 : Convert.ToInt32(verReader.GetValue(1));
+        }
+        await verReader.CloseAsync();
+
+        // Get backup version via RESTORE HEADERONLY
+        int backupMajor = 0;
+        string backupSoftware = "unknown";
+        await using var hdrCmd = new SqlCommand(
+            $"RESTORE HEADERONLY FROM DISK = N'{bakPath}'", conn) { CommandTimeout = 60 };
+        await using var hdrReader = await hdrCmd.ExecuteReaderAsync();
+        if (await hdrReader.ReadAsync())
+        {
+            // SoftwareVersionMajor is column index 22 in most SQL Server versions
+            try
+            {
+                int colIdx = hdrReader.GetOrdinal("SoftwareVersionMajor");
+                backupMajor = hdrReader.IsDBNull(colIdx) ? 0 : hdrReader.GetInt32(colIdx);
+            }
+            catch { /* column may not exist on all versions */ }
+            try
+            {
+                int softwareCol = hdrReader.GetOrdinal("ServerName");
+                backupSoftware = hdrReader.IsDBNull(softwareCol) ? "unknown" : hdrReader.GetString(softwareCol);
+            }
+            catch { /* ignore */ }
+        }
+        await hdrReader.CloseAsync();
+
+        if (backupMajor > 0 && localDbMajor > 0 && backupMajor > localDbMajor)
+        {
+            throw new InvalidOperationException(
+                $"SQL Server version mismatch: backup was created with SQL Server major version {backupMajor} " +
+                $"(server: {backupSoftware}) but LocalDB is version {localDbMajor} ({localDbVersion}). " +
+                $"Install SQL Server LocalDB {backupMajor} or higher, or use a compatible backup.");
+        }
     }
 
     private static async Task<string> GetLocalDbDataDirectoryAsync()
