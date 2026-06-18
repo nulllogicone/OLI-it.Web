@@ -242,6 +242,13 @@ internal static class DatabaseHelper
         return sw.Elapsed;
     }
 
+    public static async Task<(int CodeCount, int AnglerCount, int SpiegelBefore)> GetMatchmakingScaleSnapshotAsync(string connectionString)
+    {
+        await using var conn = new SqlConnection(connectionString);
+        await conn.OpenAsync();
+        return await GetMatchmakingScaleAsync(conn);
+    }
+
     private static async Task<(int CodeCount, int AnglerCount, int SpiegelBefore)> GetMatchmakingScaleAsync(SqlConnection conn)
     {
         const string sql = """

@@ -17,6 +17,7 @@ public sealed class MatchmakingTests
 {
     private readonly DatabaseFixture _db;
     private readonly ITestOutputHelper _output;
+    private static SmokeRunSummary? _smokeSummary;
 
     private static readonly string CandidateFischenPath =
         Path.GetFullPath("TestData/StoredProcedures/candidate_fischen.sql");
@@ -95,6 +96,10 @@ public sealed class MatchmakingTests
         {
             _output.WriteLine("=== OUTCOME: IDENTICAL ✓ ===");
         }
+
+        string reportPath = MatchmakingHtmlReportWriter.WriteReport(_smokeSummary, baseline, candidate, diff);
+        _output.WriteLine($"=== HTML REPORT ===");
+        _output.WriteLine(reportPath);
     }
 
     /// <summary>
@@ -115,16 +120,27 @@ public sealed class MatchmakingTests
         _output.WriteLine($"fischen (+ beissen): {result.FischenElapsed.TotalMilliseconds:F0} ms");
         _output.WriteLine($"Spiegel rows: {result.Rows.Count}");
 
+        _smokeSummary = new SmokeRunSummary(
+            result.FischenElapsed,
+            result.Rows.Count,
+            result.CodeCount,
+            result.AnglerCount);
+
         Assert.True(result.Rows.Count > 0,
             "Expected at least one row in oli.Spiegel after running fischen + beissen.");
     }
 
     private async Task<MatchmakingRunResult> RunPipelineAsync(bool applyCandidate)
     {
+        var scale = await DatabaseHelper.GetMatchmakingScaleSnapshotAsync(_db.ConnectionString);
+
+        bool fischenSwapped = false;
+        bool beissenSwapped = false;
+
         if (applyCandidate)
         {
-            bool fischenSwapped = await DatabaseHelper.ApplyCandidateSpAsync(_db.ConnectionString, CandidateFischenPath);
-            bool beissenSwapped = await DatabaseHelper.ApplyCandidateSpAsync(_db.ConnectionString, CandidateBeissenPath);
+            fischenSwapped = await DatabaseHelper.ApplyCandidateSpAsync(_db.ConnectionString, CandidateFischenPath);
+            beissenSwapped = await DatabaseHelper.ApplyCandidateSpAsync(_db.ConnectionString, CandidateBeissenPath);
 
             if (fischenSwapped)  _output.WriteLine("  → candidate_fischen.sql applied");
             if (beissenSwapped)  _output.WriteLine("  → candidate_beissen.sql applied");
@@ -138,7 +154,14 @@ public sealed class MatchmakingTests
 
         var rows = await DatabaseHelper.ReadSpiegelAsync(_db.ConnectionString);
 
-        return new MatchmakingRunResult(rows, fischenElapsed);
+        return new MatchmakingRunResult(
+            rows,
+            fischenElapsed,
+            codeCount: scale.CodeCount,
+            anglerCount: scale.AnglerCount,
+            spiegelBefore: scale.SpiegelBefore,
+            candidateFischenApplied: fischenSwapped,
+            candidateBeissenApplied: beissenSwapped);
     }
 
     private static string FormatSpeedUp(double deltaMs, double baselineMs)

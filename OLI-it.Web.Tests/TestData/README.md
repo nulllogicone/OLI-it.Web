@@ -20,6 +20,9 @@ It is automatically copied to the test output directory at build time and resolv
   processed Code count, processed pair count, percentage, elapsed time, and ETA.
 - Matchmaking tests are configured to run **serially** (no parallel overlap) to avoid
   contention on the same LocalDB test database.
+- After the comparison test finishes, an HTML report is generated automatically:
+  - `docs/test-results/matchmaking-test-report-latest.html`
+  - `docs/test-results/matchmaking-test-report-YYYY-MM-DD-HH-mm-ss.html`
 
 ## Candidate Stored Procedures
 

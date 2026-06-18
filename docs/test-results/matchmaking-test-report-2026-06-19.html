@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OLI-it Matchmaking Test Report — 2026-06-19</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#141b33; --muted:#97a3c2; --text:#e8ecf8;
+      --ok:#3ddc97; --warn:#ffd166; --accent:#66a3ff; --line:#29345d;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 56px}
+    h1{margin:0 0 8px;font-size:30px}
+    h2{margin:0 0 14px;font-size:20px}
+    p,li{color:var(--muted)}
+    .meta{margin-bottom:22px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0 22px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    .k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .v{margin-top:6px;font-size:26px;font-weight:700}
+    .ok{color:var(--ok)}
+    table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left}
+    th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    tr:last-child td{border-bottom:none}
+    .section{margin-top:26px}
+    .pill{display:inline-block;background:#132645;border:1px solid #2a4f8b;color:#a9c9ff;padding:2px 9px;border-radius:999px;font-size:12px}
+    .mono{font-family:Consolas,Menlo,monospace}
+    details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+    summary{cursor:pointer;color:var(--text);font-weight:600}
+    pre{white-space:pre-wrap;color:#cad4ef;background:#0f152b;border:1px solid #202a4f;border-radius:8px;padding:12px;max-height:420px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Matchmaking Test Report</h1>
+    <div class="meta">Issue #42 • Run date: 2026-06-19 • Environment: .NET 10 + LocalDB • Backup: <span class="mono">data/null.bak</span></div>
+
+    <div class="grid">
+      <div class="card"><div class="k">Total tests</div><div class="v">2</div></div>
+      <div class="card"><div class="k">Passed</div><div class="v ok">2</div></div>
+      <div class="card"><div class="k">Failed</div><div class="v">0</div></div>
+      <div class="card"><div class="k">Total duration</div><div class="v">3:00</div></div>
+    </div>
+
+    <div class="section">
+      <h2>Scale and Throughput</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Code rows</td><td>1,554</td></tr>
+          <tr><td>Angler rows</td><td>518</td></tr>
+          <tr><td>Total comparisons per run (Code × Angler)</td><td>804,972 pairs</td></tr>
+          <tr><td>Baseline smoke runtime</td><td>58.36 s (~13,792 pairs/s)</td></tr>
+          <tr><td>Baseline run (comparison test)</td><td>57.15 s (~14,085 pairs/s)</td></tr>
+          <tr><td>Candidate run</td><td>56.50 s (~14,248 pairs/s)</td></tr>
+          <tr><td>Candidate delta</td><td><span class="pill">-653.8 ms (1.1% faster)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Functional Outcome</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Baseline smoke test: Spiegel rows after run</td><td>9,024 (pass)</td></tr>
+          <tr><td>Baseline vs candidate: Spiegel row count</td><td>9,024 vs 9,024</td></tr>
+          <tr><td>Baseline vs candidate: row-level diff</td><td><span class="ok">Identical ✓</span></td></tr>
+          <tr><td>Candidate SP files applied</td><td>No (placeholders unchanged)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Progress Snapshot (from run)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Run</th>
+            <th>@ 30s checkpoint</th>
+            <th>Final</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Smoke baseline</td>
+            <td>785 / 1,554 Code (50.5%), ETA 00:29</td>
+            <td>100.0% in 00:58.36</td>
+          </tr>
+          <tr>
+            <td>Comparison baseline</td>
+            <td>808 / 1,554 Code (52.0%), ETA 00:27</td>
+            <td>100.0% in 00:57.15</td>
+          </tr>
+          <tr>
+            <td>Comparison candidate</td>
+            <td>819 / 1,554 Code (52.7%), ETA 00:26</td>
+            <td>100.0% in 00:56.49</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Conclusion</h2>
+      <ul>
+        <li>Test suite is stable and fully passing.</li>
+        <li>Runtime is now predictable with live progress and ETA.</li>
+        <li>Current candidate behavior is functionally equivalent to baseline.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <details>
+        <summary>Raw test output (condensed)</summary>
+        <pre class="mono">Test Run Successful.
+Total tests: 2
+Passed: 2
+Total time: 3.0203 Minutes
+
+FischenBeissen_BaselineProducesAtLeastOneSpiegelRow:
+- fischen (+ beissen): 58361 ms
+- Spiegel rows: 9024
+
+FischenBeissen_CandidateProducesIdenticalOutcome:
+- Baseline: 57152 ms, Spiegel: 9024 rows
+- Candidate: 56498 ms, Spiegel: 9024 rows
+- Delta: -653.8 ms (1.1% faster)
+- Outcome: IDENTICAL ✓</pre>
+      </details>
+    </div>
+  </div>
+</body>
+</html>

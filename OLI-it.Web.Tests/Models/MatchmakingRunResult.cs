@@ -14,10 +14,29 @@ public sealed class MatchmakingRunResult
     /// <summary>Wall-clock time for the complete <c>fischen</c> call (includes all <c>beissen</c> sub-calls).</summary>
     public TimeSpan FischenElapsed { get; }
 
-    public MatchmakingRunResult(IReadOnlyList<SpiegelRow> rows, TimeSpan fischenElapsed)
+    public int CodeCount { get; }
+    public int AnglerCount { get; }
+    public int SpiegelBefore { get; }
+    public bool CandidateFischenApplied { get; }
+    public bool CandidateBeissenApplied { get; }
+    public long TotalPairs => (long)CodeCount * AnglerCount;
+
+    public MatchmakingRunResult(
+        IReadOnlyList<SpiegelRow> rows,
+        TimeSpan fischenElapsed,
+        int codeCount = 0,
+        int anglerCount = 0,
+        int spiegelBefore = 0,
+        bool candidateFischenApplied = false,
+        bool candidateBeissenApplied = false)
     {
         Rows = rows;
         FischenElapsed = fischenElapsed;
+        CodeCount = codeCount;
+        AnglerCount = anglerCount;
+        SpiegelBefore = spiegelBefore;
+        CandidateFischenApplied = candidateFischenApplied;
+        CandidateBeissenApplied = candidateBeissenApplied;
     }
 
     /// <summary>
@@ -61,4 +80,3 @@ public sealed record SpiegelChange(
     Guid AnglerGuid,
     string? BaselineStatus,
     string? CandidateStatus);
-
