@@ -12,7 +12,8 @@ namespace OLI_it.Web.Tests;
 /// <c>appsettings.Tests.json</c> (Matchmaking:BackupFilePath).
 /// Tests are automatically skipped when the backup file is absent.
 /// </summary>
-public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
+[Collection(MatchmakingCollection.Name)]
+public sealed class MatchmakingTests
 {
     private readonly DatabaseFixture _db;
     private readonly ITestOutputHelper _output;

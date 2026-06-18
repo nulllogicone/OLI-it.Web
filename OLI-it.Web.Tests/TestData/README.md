@@ -13,6 +13,13 @@ It is automatically copied to the test output directory at build time and resolv
 > The `.gitignore` contains `!data/null.bak` to allow this specific file while still
 > excluding other `.bak` files from accidental commit.
 
+## Runtime notes
+
+- `fischen` performs a full `Code × Angler` scan and can run for several minutes.
+- The tests print progress every 30 seconds while `fischen` is executing.
+- Matchmaking tests are configured to run **serially** (no parallel overlap) to avoid
+  contention on the same LocalDB test database.
+
 ## Candidate Stored Procedures
 
 To test a new (candidate) version of `fischen` or `beissen`:
