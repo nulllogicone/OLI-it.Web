@@ -266,6 +266,9 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# SQL Server backup files (do not commit database backups)
+*.bak
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout

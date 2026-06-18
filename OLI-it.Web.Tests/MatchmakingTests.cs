@@ -1,0 +1,153 @@
+using OLI_it.Web.Tests.Fixtures;
+using OLI_it.Web.Tests.Helpers;
+using OLI_it.Web.Tests.Models;
+using Xunit.Abstractions;
+
+namespace OLI_it.Web.Tests;
+
+/// <summary>
+/// Integration tests for the fischen → beissen matchmaking stored procedure pipeline.
+///
+/// Pre-requisite: place a SQL Server backup at the path configured in
+/// <c>appsettings.Tests.json</c> (Matchmaking:BackupFilePath).
+/// Tests are automatically skipped when the backup file is absent.
+/// </summary>
+public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
+{
+    private readonly DatabaseFixture _db;
+    private readonly ITestOutputHelper _output;
+
+    private static readonly string CandidateFischenPath =
+        Path.GetFullPath("TestData/StoredProcedures/candidate_fischen.sql");
+
+    private static readonly string CandidateBeissenPath =
+        Path.GetFullPath("TestData/StoredProcedures/candidate_beissen.sql");
+
+    public MatchmakingTests(DatabaseFixture db, ITestOutputHelper output)
+    {
+        _db = db;
+        _output = output;
+    }
+
+    /// <summary>
+    /// Runs the full matchmaking pipeline twice — once with the baseline SPs from the backup,
+    /// once with any candidate SPs provided in TestData/StoredProcedures/ — then diffs the
+    /// Spiegel outcomes and reports timing.
+    /// </summary>
+    [Fact]
+    public async Task FischenBeissen_CandidateProducesIdenticalOutcome()
+    {
+        if (!_db.IsAvailable)
+        {
+            _output.WriteLine($"SKIPPED: backup file not found at '{_db.BackupFilePath}'. " +
+                "See OLI-it.Web.Tests/TestData/README.md for setup instructions.");
+            return;
+        }
+
+        // ── Baseline run ──────────────────────────────────────────────────────
+        _output.WriteLine("=== BASELINE RUN ===");
+        var baseline = await RunPipelineAsync(applyCandidate: false);
+        _output.WriteLine($"  fischen : {baseline.FischenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"  beissen : {baseline.BeissenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"  Spiegel : {baseline.Rows.Count} rows");
+
+        // Re-provision DB for candidate run
+        await DatabaseHelper.DropDatabaseAsync("OliItMatchmakingTest");
+        await DatabaseHelper.RestoreBackupAsync(_db.BackupFilePath, "OliItMatchmakingTest");
+
+        // ── Candidate run ─────────────────────────────────────────────────────
+        _output.WriteLine("=== CANDIDATE RUN ===");
+        var candidate = await RunPipelineAsync(applyCandidate: true);
+        _output.WriteLine($"  fischen : {candidate.FischenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"  beissen : {candidate.BeissenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"  Spiegel : {candidate.Rows.Count} rows");
+
+        // ── Timing delta ──────────────────────────────────────────────────────
+        double fischenDeltaMs = candidate.FischenElapsed.TotalMilliseconds - baseline.FischenElapsed.TotalMilliseconds;
+        double beissenDeltaMs = candidate.BeissenElapsed.TotalMilliseconds - baseline.BeissenElapsed.TotalMilliseconds;
+        _output.WriteLine("=== TIMING DELTA ===");
+        _output.WriteLine($"  fischen delta : {fischenDeltaMs:+0.#;-0.#;0} ms  ({FormatSpeedUp(fischenDeltaMs, baseline.FischenElapsed.TotalMilliseconds)})");
+        _output.WriteLine($"  beissen delta : {beissenDeltaMs:+0.#;-0.#;0} ms  ({FormatSpeedUp(beissenDeltaMs, baseline.BeissenElapsed.TotalMilliseconds)})");
+
+        // ── Outcome diff ──────────────────────────────────────────────────────
+        var diff = baseline.DiffWith(candidate);
+
+        if (diff.HasDifferences)
+        {
+            _output.WriteLine("=== OUTCOME DIFF ===");
+
+            foreach (var row in diff.Added)
+                _output.WriteLine($"  [ADDED]   Code={row.CodeGuid:N} Angler={row.AnglerGuid:N} Status={row.Status}");
+
+            foreach (var row in diff.Removed)
+                _output.WriteLine($"  [REMOVED] Code={row.CodeGuid:N} Angler={row.AnglerGuid:N} Status={row.Status}");
+
+            foreach (var c in diff.Changed)
+                _output.WriteLine($"  [CHANGED] Code={c.CodeGuid:N} Angler={c.AnglerGuid:N} {c.BaselineStatus} → {c.CandidateStatus}");
+
+            // Fail the test with a summary so the diff is visible in the runner
+            Assert.Fail(
+                $"Candidate outcome differs from baseline: " +
+                $"{diff.Added.Count} added, {diff.Removed.Count} removed, {diff.Changed.Count} changed. " +
+                "See test output for details.");
+        }
+        else
+        {
+            _output.WriteLine("=== OUTCOME: IDENTICAL ✓ ===");
+        }
+    }
+
+    /// <summary>
+    /// Smoke test: verifies that fischen and beissen can be called without error
+    /// and that Spiegel contains at least one row afterwards.
+    /// </summary>
+    [Fact]
+    public async Task FischenBeissen_BaselineProducesAtLeastOneSpiegelRow()
+    {
+        if (!_db.IsAvailable)
+        {
+            _output.WriteLine($"SKIPPED: backup file not found at '{_db.BackupFilePath}'.");
+            return;
+        }
+
+        var result = await RunPipelineAsync(applyCandidate: false);
+
+        _output.WriteLine($"fischen: {result.FischenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"beissen: {result.BeissenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"Spiegel rows: {result.Rows.Count}");
+
+        Assert.True(result.Rows.Count > 0,
+            "Expected at least one row in oli.Spiegel after running fischen + beissen.");
+    }
+
+    private async Task<MatchmakingRunResult> RunPipelineAsync(bool applyCandidate)
+    {
+        if (applyCandidate)
+        {
+            bool fischenSwapped = await DatabaseHelper.ApplyCandidateSpAsync(_db.ConnectionString, CandidateFischenPath);
+            bool beissenSwapped = await DatabaseHelper.ApplyCandidateSpAsync(_db.ConnectionString, CandidateBeissenPath);
+
+            if (fischenSwapped)  _output.WriteLine("  → candidate_fischen.sql applied");
+            if (beissenSwapped)  _output.WriteLine("  → candidate_beissen.sql applied");
+            if (!fischenSwapped && !beissenSwapped)
+                _output.WriteLine("  → no candidate SPs found; using baseline SPs");
+        }
+
+        var fischenElapsed = await DatabaseHelper.ExecuteStoredProcedureAsync(
+            _db.ConnectionString, _db.FischenProcedure);
+
+        var beissenElapsed = await DatabaseHelper.ExecuteStoredProcedureAsync(
+            _db.ConnectionString, _db.BeissenProcedure);
+
+        var rows = await DatabaseHelper.ReadSpiegelAsync(_db.ConnectionString);
+
+        return new MatchmakingRunResult(rows, fischenElapsed, beissenElapsed);
+    }
+
+    private static string FormatSpeedUp(double deltaMs, double baselineMs)
+    {
+        if (baselineMs <= 0) return "n/a";
+        double pct = -deltaMs / baselineMs * 100;
+        return pct >= 0 ? $"{pct:F1}% faster" : $"{-pct:F1}% slower";
+    }
+}

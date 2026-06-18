@@ -14,5 +14,6 @@
     <File Path="docs/99-open-questions.md" />
     <File Path="docs/README.md" />
   </Folder>
+  <Project Path="OLI-it.Web.Tests/OLI-it.Web.Tests.csproj" />
   <Project Path="OLI-it.Web/OLI-it.Web.csproj" />
 </Solution>
