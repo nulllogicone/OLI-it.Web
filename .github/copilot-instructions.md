@@ -81,8 +81,9 @@ Entity details: [`docs/010-domain-entities.md`](../docs/010-domain-entities.md)
 
 ### Razor Pages Pattern
 - Each page has a `.cshtml` (view) and `.cshtml.cs` (PageModel) pair.
-- Shared partials live in `Pages/Shared/` — `_StammCard.cshtml`, `_PostItCard.cshtml`, `_TabsNavigation.cshtml`, etc.
-- Use `ViewComponents/` for reusable UI that needs injected services (e.g., `ImageThumbnailViewComponent`).
+- Shared partials live in `Pages/Shared/` — `_Layout.cshtml`, `_Header.cshtml`, `_Sidebar.cshtml`, `_SidebarUnified.cshtml`, entity cards (`_StammCard`, `_PostItCard`, `_TopLabCard`, `_AnglerCard`, `_CodeCard`), child tables (`_Child*Table`), and `_TabsNavigation.cshtml`.
+- Use `ViewComponents/` for reusable UI that needs injected services: `ImageThumbnailViewComponent` (single image) and `ImageGalleryViewComponent` (multi-image).
+- `ImageThumbnailViewComponent` takes `dateiPath`, `altText`, `width`, `height` — see [`docs/developer-guide.md`](../docs/developer-guide.md) for full usage.
 
 ### Authentication
 - Cookie-based auth via `CookieAuthenticationDefaults`. No ASP.NET Identity tables.
@@ -92,14 +93,23 @@ Entity details: [`docs/010-domain-entities.md`](../docs/010-domain-entities.md)
 ### Services
 - `WortraumCacheService` — singleton; caches `Netz`/`Baum` hierarchies with 1-hour sliding expiration. Call `WarmupCacheAsync()` on startup, `InvalidateCache()` after writes.
 - `AzureBlobStorageService` — singleton; wraps Azure Blob Storage for user image management.
+- `SearchService` — scoped; handles full-text search across PostIt/Stamm/TopLab.
+- `JournalService` — scoped; retrieves journal/activity log data.
+- `ChartService` — scoped; provides data for the Charts page.
 
 ### Configuration & Secrets
 - Local secrets managed via **User Secrets** (ID: `936429e2-4c07-4bde-9c3e-40e1f6531612`).
 - In Azure, connection strings and keys come from **Azure Key Vault** (`oli-it-kv-test`).
 - Never commit secrets or connection strings to source.
 
+**Key config entries** (set in `appsettings.Development.json` or User Secrets):
+| Key | Description |
+|-----|-------------|
+| `ConnectionStrings:OliItDb` | SQL Server connection string |
+| `ImagesRootUrl` | Blob Storage base URL for images (e.g. `https://oliit.blob.core.windows.net/oliupload`) |
+
 ### Architecture Decisions (ADRs)
-Active ADRs in `docs/07-decisions/`:
+Active ADRs in `docs/070-decisions/`:
 - **ADR-0001**: Database-first approach (no code-first migrations)
 - **ADR-0002**: Matchmaking logic lives in SQL stored procedures, not C#
 - **ADR-0003**: German table/column names must be preserved
@@ -131,3 +141,5 @@ Before answering questions about domain, architecture, decisions, or UI, **alway
 | `docs/990-open-questions.md` | Unresolved design and product questions |
 | `docs/ef-scaffolding-guide.md` | How to re-scaffold EF models from the database |
 | `docs/german-english-quick-reference.md` | German ↔ English entity name mapping |
+| `docs/developer-guide.md` | Local setup, secrets config, ViewComponent usage, infra deployment |
+| `docs/features/entity-visual-identity.md` | Visual identity rules for entity display |

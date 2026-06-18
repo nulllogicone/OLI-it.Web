@@ -80,6 +80,7 @@ Acceptance criteria:
 - Only messages satisfying all mutual criteria are shown
 - Delivered messages appear in the user's personal inbox/feed
 - No message is shown twice for the same delivery match
+- SQL rule reference: [065-magic-match-logic.md](065-magic-match-logic.md)
 
 ---
 

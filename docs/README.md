@@ -36,6 +36,7 @@ Last updated: 2026-05-20
 | [040-ui-ia.md](040-ui-ia.md) | Information architecture, screens, navigation | draft |
 | [050-ui-wireframes.md](050-ui-wireframes.md) | Low-fidelity wireframes and interaction notes | stub |
 | [060-architecture.md](060-architecture.md) | Technical architecture, Database-First approach | draft |
+| [065-magic-match-logic.md](065-magic-match-logic.md) | SQL matchmaking behavior (`fischen`/`beissen`) | draft |
 | [070-decisions/](070-decisions/) | Architecture Decision Records (ADRs) | draft |
 | [080-backlog.md](080-backlog.md) | Prioritized MVP slices | stub |
 | [990-open-questions.md](990-open-questions.md) | Unresolved items parking lot | draft |
