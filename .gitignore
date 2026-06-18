@@ -266,6 +266,14 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# SQL Server backup files — large backups should not be committed
+# Exception: data/null.bak is the committed test database for the matchmaking test suite
+*.bak
+!data/null.bak
+
+# Generated matchmaking HTML reports (created by tests)
+docs/test-results/*.html
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
