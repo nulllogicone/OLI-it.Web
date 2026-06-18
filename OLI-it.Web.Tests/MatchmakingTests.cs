@@ -33,6 +33,9 @@ public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
     /// Runs the full matchmaking pipeline twice — once with the baseline SPs from the backup,
     /// once with any candidate SPs provided in TestData/StoredProcedures/ — then diffs the
     /// Spiegel outcomes and reports timing.
+    ///
+    /// Only <c>fischen</c> is invoked directly; it calls <c>beissen</c> internally for every
+    /// Code × Angler pair. Timing therefore covers the complete pipeline in one measurement.
     /// </summary>
     [Fact]
     public async Task FischenBeissen_CandidateProducesIdenticalOutcome()
@@ -47,9 +50,8 @@ public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
         // ── Baseline run ──────────────────────────────────────────────────────
         _output.WriteLine("=== BASELINE RUN ===");
         var baseline = await RunPipelineAsync(applyCandidate: false);
-        _output.WriteLine($"  fischen : {baseline.FischenElapsed.TotalMilliseconds:F0} ms");
-        _output.WriteLine($"  beissen : {baseline.BeissenElapsed.TotalMilliseconds:F0} ms");
-        _output.WriteLine($"  Spiegel : {baseline.Rows.Count} rows");
+        _output.WriteLine($"  fischen (+ beissen): {baseline.FischenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"  Spiegel             : {baseline.Rows.Count} rows");
 
         // Re-provision DB for candidate run
         await DatabaseHelper.DropDatabaseAsync("OliItMatchmakingTest");
@@ -58,16 +60,13 @@ public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
         // ── Candidate run ─────────────────────────────────────────────────────
         _output.WriteLine("=== CANDIDATE RUN ===");
         var candidate = await RunPipelineAsync(applyCandidate: true);
-        _output.WriteLine($"  fischen : {candidate.FischenElapsed.TotalMilliseconds:F0} ms");
-        _output.WriteLine($"  beissen : {candidate.BeissenElapsed.TotalMilliseconds:F0} ms");
-        _output.WriteLine($"  Spiegel : {candidate.Rows.Count} rows");
+        _output.WriteLine($"  fischen (+ beissen): {candidate.FischenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"  Spiegel             : {candidate.Rows.Count} rows");
 
         // ── Timing delta ──────────────────────────────────────────────────────
-        double fischenDeltaMs = candidate.FischenElapsed.TotalMilliseconds - baseline.FischenElapsed.TotalMilliseconds;
-        double beissenDeltaMs = candidate.BeissenElapsed.TotalMilliseconds - baseline.BeissenElapsed.TotalMilliseconds;
+        double deltaMs = candidate.FischenElapsed.TotalMilliseconds - baseline.FischenElapsed.TotalMilliseconds;
         _output.WriteLine("=== TIMING DELTA ===");
-        _output.WriteLine($"  fischen delta : {fischenDeltaMs:+0.#;-0.#;0} ms  ({FormatSpeedUp(fischenDeltaMs, baseline.FischenElapsed.TotalMilliseconds)})");
-        _output.WriteLine($"  beissen delta : {beissenDeltaMs:+0.#;-0.#;0} ms  ({FormatSpeedUp(beissenDeltaMs, baseline.BeissenElapsed.TotalMilliseconds)})");
+        _output.WriteLine($"  total delta: {deltaMs:+0.#;-0.#;0} ms  ({FormatSpeedUp(deltaMs, baseline.FischenElapsed.TotalMilliseconds)})");
 
         // ── Outcome diff ──────────────────────────────────────────────────────
         var diff = baseline.DiffWith(candidate);
@@ -112,8 +111,7 @@ public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
 
         var result = await RunPipelineAsync(applyCandidate: false);
 
-        _output.WriteLine($"fischen: {result.FischenElapsed.TotalMilliseconds:F0} ms");
-        _output.WriteLine($"beissen: {result.BeissenElapsed.TotalMilliseconds:F0} ms");
+        _output.WriteLine($"fischen (+ beissen): {result.FischenElapsed.TotalMilliseconds:F0} ms");
         _output.WriteLine($"Spiegel rows: {result.Rows.Count}");
 
         Assert.True(result.Rows.Count > 0,
@@ -133,15 +131,13 @@ public sealed class MatchmakingTests : IClassFixture<DatabaseFixture>
                 _output.WriteLine("  → no candidate SPs found; using baseline SPs");
         }
 
+        // fischen calls beissen internally for every Code × Angler pair
         var fischenElapsed = await DatabaseHelper.ExecuteStoredProcedureAsync(
             _db.ConnectionString, _db.FischenProcedure);
 
-        var beissenElapsed = await DatabaseHelper.ExecuteStoredProcedureAsync(
-            _db.ConnectionString, _db.BeissenProcedure);
-
         var rows = await DatabaseHelper.ReadSpiegelAsync(_db.ConnectionString);
 
-        return new MatchmakingRunResult(rows, fischenElapsed, beissenElapsed);
+        return new MatchmakingRunResult(rows, fischenElapsed);
     }
 
     private static string FormatSpeedUp(double deltaMs, double baselineMs)

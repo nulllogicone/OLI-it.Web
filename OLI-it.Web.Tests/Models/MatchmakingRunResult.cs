@@ -3,25 +3,21 @@ using OLI_it.Web.Tests.Helpers;
 namespace OLI_it.Web.Tests.Models;
 
 /// <summary>
-/// Captures the full output of one matchmaking pipeline run:
-/// the Spiegel rows after <c>fischen</c> + <c>beissen</c> have executed,
-/// plus the wall-clock time each stored procedure took.
+/// Captures the output of one full matchmaking pipeline run.
+/// <c>fischen</c> is the only SP called directly — it calls <c>beissen</c> internally
+/// for each Code × Angler pair, so <c>FischenElapsed</c> covers the complete pipeline.
 /// </summary>
 public sealed class MatchmakingRunResult
 {
     public IReadOnlyList<SpiegelRow> Rows { get; }
-    public TimeSpan FischenElapsed { get; }
-    public TimeSpan BeissenElapsed { get; }
-    public TimeSpan TotalElapsed => FischenElapsed + BeissenElapsed;
 
-    public MatchmakingRunResult(
-        IReadOnlyList<SpiegelRow> rows,
-        TimeSpan fischenElapsed,
-        TimeSpan beissenElapsed)
+    /// <summary>Wall-clock time for the complete <c>fischen</c> call (includes all <c>beissen</c> sub-calls).</summary>
+    public TimeSpan FischenElapsed { get; }
+
+    public MatchmakingRunResult(IReadOnlyList<SpiegelRow> rows, TimeSpan fischenElapsed)
     {
         Rows = rows;
         FischenElapsed = fischenElapsed;
-        BeissenElapsed = beissenElapsed;
     }
 
     /// <summary>
@@ -35,7 +31,6 @@ public sealed class MatchmakingRunResult
         var added = candidateSet.Except(baselineSet).ToList();
         var removed = baselineSet.Except(candidateSet).ToList();
 
-        // Rows with same key but different Status
         var baselineByKey = Rows.ToDictionary(r => (r.CodeGuid, r.AnglerGuid));
         var changed = new List<SpiegelChange>();
         foreach (var row in candidate.Rows)
@@ -51,9 +46,7 @@ public sealed class MatchmakingRunResult
     }
 }
 
-/// <summary>
-/// Summary of differences between a baseline and candidate Spiegel snapshot.
-/// </summary>
+/// <summary>Summary of differences between a baseline and candidate Spiegel snapshot.</summary>
 public sealed record SpiegelDiff(
     IReadOnlyList<SpiegelRow> Added,
     IReadOnlyList<SpiegelRow> Removed,
@@ -62,11 +55,10 @@ public sealed record SpiegelDiff(
     public bool HasDifferences => Added.Count > 0 || Removed.Count > 0 || Changed.Count > 0;
 }
 
-/// <summary>
-/// A Spiegel row whose Status changed between baseline and candidate.
-/// </summary>
+/// <summary>A Spiegel row whose Status changed between baseline and candidate.</summary>
 public sealed record SpiegelChange(
     Guid CodeGuid,
     Guid AnglerGuid,
     string? BaselineStatus,
     string? CandidateStatus);
+

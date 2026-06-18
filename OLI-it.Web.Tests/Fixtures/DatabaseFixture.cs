@@ -13,7 +13,6 @@ public sealed class DatabaseFixture : IAsyncLifetime
 
     public string ConnectionString { get; private set; } = string.Empty;
     public string FischenProcedure { get; private set; } = string.Empty;
-    public string BeissenProcedure { get; private set; } = string.Empty;
     public string BackupFilePath { get; private set; } = string.Empty;
 
     /// <summary>
@@ -40,10 +39,6 @@ public sealed class DatabaseFixture : IAsyncLifetime
         FischenProcedure = _config["Matchmaking:FischenProcedure"]
             ?? throw new InvalidOperationException(
                 "Matchmaking:FischenProcedure is not set in appsettings.Tests.json.");
-
-        BeissenProcedure = _config["Matchmaking:BeissenProcedure"]
-            ?? throw new InvalidOperationException(
-                "Matchmaking:BeissenProcedure is not set in appsettings.Tests.json.");
 
         var baseCs = _config.GetConnectionString("OliItTestDb")
             ?? throw new InvalidOperationException(
