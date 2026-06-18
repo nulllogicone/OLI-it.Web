@@ -123,21 +123,85 @@ internal static class DatabaseHelper
 
     /// <summary>
     /// Executes a stored procedure (no parameters) and returns the elapsed wall-clock time.
+    /// Logs row counts before running and prints progress every 30 seconds.
     /// </summary>
     public static async Task<TimeSpan> ExecuteStoredProcedureAsync(string connectionString, string procedureName)
     {
+        // Log scale so the user knows how long to expect
+        await LogMatchmakingScaleAsync(connectionString);
+
         await using var conn = new SqlConnection(connectionString);
+
+        // Capture any PRINT output from the SP
+        conn.InfoMessage += (_, e) => Console.WriteLine($"[SP] {e.Message}");
+
         await conn.OpenAsync();
         await using var cmd = new SqlCommand(procedureName, conn)
         {
             CommandType = CommandType.StoredProcedure,
-            CommandTimeout = 600
+            CommandTimeout = 3600 // 1 hour max
         };
 
+        Console.WriteLine($"[DatabaseHelper] Executing [{procedureName}] ...");
         var sw = System.Diagnostics.Stopwatch.StartNew();
-        await cmd.ExecuteNonQueryAsync();
+
+        // Background ticker: print elapsed time every 30 s so the terminal stays alive
+        using var cts = new CancellationTokenSource();
+        var ticker = Task.Run(async () =>
+        {
+            try
+            {
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(30), cts.Token);
+                    Console.WriteLine($"[DatabaseHelper]   ... still running ({sw.Elapsed:mm\\:ss} elapsed)");
+                }
+            }
+            catch (OperationCanceledException) { }
+        });
+
+        try
+        {
+            await cmd.ExecuteNonQueryAsync();
+        }
+        finally
+        {
+            cts.Cancel();
+            await ticker;
+        }
+
         sw.Stop();
+        Console.WriteLine($"[DatabaseHelper] [{procedureName}] completed in {sw.Elapsed:mm\\:ss\\.ff}");
         return sw.Elapsed;
+    }
+
+    private static async Task LogMatchmakingScaleAsync(string connectionString)
+    {
+        const string sql = """
+            SELECT
+                (SELECT COUNT(*) FROM [oli].[Code])   AS CodeCount,
+                (SELECT COUNT(*) FROM [oli].[Angler]) AS AnglerCount,
+                (SELECT COUNT(*) FROM [oli].[Spiegel]) AS SpiegelBefore
+            """;
+
+        try
+        {
+            await using var conn = new SqlConnection(connectionString);
+            await conn.OpenAsync();
+            await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 30 };
+            await using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                int codes   = reader.GetInt32(0);
+                int anglers = reader.GetInt32(1);
+                int spiegel = reader.GetInt32(2);
+                Console.WriteLine($"[DatabaseHelper] Scale: {codes} Code × {anglers} Angler = {codes * anglers} pairs to evaluate ({spiegel} Spiegel rows before run)");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DatabaseHelper] Could not read scale: {ex.Message}");
+        }
     }
 
     /// <summary>
