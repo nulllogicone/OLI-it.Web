@@ -2,19 +2,16 @@
 
 ## Database Backup
 
-Place the OLI-it SQL Server backup file at:
+The test database backup is committed at:
 
 ```
-OLI-it.Web.Tests/TestData/oli-it-backup.bak
+data/null.bak
 ```
 
-The `.bak` file is **not committed to the repository** (it is excluded by `.gitignore`).
+It is automatically copied to the test output directory at build time and resolved relative to the test binary. No manual setup is needed — just build and run.
 
-You can use any recent production or staging backup. The test will restore it to a fresh
-LocalDB database (`OliItMatchmakingTest`) and drop it when finished.
-
-If the backup file is not present, the matchmaking tests are **automatically skipped**
-with a clear message — the build will not fail.
+> The `.gitignore` contains `!data/null.bak` to allow this specific file while still
+> excluding other `.bak` files from accidental commit.
 
 ## Candidate Stored Procedures
 

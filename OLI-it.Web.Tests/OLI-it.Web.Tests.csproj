@@ -32,4 +32,12 @@
     </None>
   </ItemGroup>
 
+  <!-- Copy the committed test database backup to the output directory -->
+  <ItemGroup>
+    <None Include="..\data\null.bak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>data\null.bak</Link>
+    </None>
+  </ItemGroup>
+
 </Project>
