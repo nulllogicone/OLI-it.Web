@@ -20,18 +20,23 @@ internal static class DatabaseHelper
     {
         string fullBakPath = Path.GetFullPath(bakFilePath);
 
+        if (!File.Exists(fullBakPath))
+            throw new FileNotFoundException($"Backup file not found: {fullBakPath}");
+
         await DropDatabaseAsync(databaseName);
 
-        // Discover the logical file names inside the backup
-        var logicalFiles = await GetLogicalFileNamesAsync(fullBakPath);
+        // Discover the logical file names and types inside the backup
+        var logicalFiles = await GetLogicalFileListAsync(fullBakPath);
 
-        string? dataLogical = logicalFiles.FirstOrDefault(f => !f.EndsWith("_log", StringComparison.OrdinalIgnoreCase));
-        string? logLogical = logicalFiles.FirstOrDefault(f => f.EndsWith("_log", StringComparison.OrdinalIgnoreCase));
+        var dataFile = logicalFiles.FirstOrDefault(f => f.Type == "D")
+            ?? throw new InvalidOperationException(
+                $"No data file (Type=D) found in backup '{fullBakPath}'. " +
+                $"Files found: {string.Join(", ", logicalFiles.Select(f => $"{f.Name}({f.Type})"))}");
 
-        if (dataLogical is null || logLogical is null)
-            throw new InvalidOperationException(
-                $"Could not identify data and log logical file names in '{fullBakPath}'. " +
-                $"Found: {string.Join(", ", logicalFiles)}");
+        var logFile = logicalFiles.FirstOrDefault(f => f.Type == "L")
+            ?? throw new InvalidOperationException(
+                $"No log file (Type=L) found in backup '{fullBakPath}'. " +
+                $"Files found: {string.Join(", ", logicalFiles.Select(f => $"{f.Name}({f.Type})"))}");
 
         // Resolve LocalDB default data directory
         string dataDir = await GetLocalDbDataDirectoryAsync();
@@ -42,17 +47,25 @@ internal static class DatabaseHelper
             RESTORE DATABASE [{databaseName}]
             FROM DISK = N'{fullBakPath}'
             WITH
-                MOVE N'{dataLogical}' TO N'{mdfPath}',
-                MOVE N'{logLogical}' TO N'{ldfPath}',
+                MOVE N'{dataFile.Name}' TO N'{mdfPath}',
+                MOVE N'{logFile.Name}' TO N'{ldfPath}',
                 REPLACE, STATS = 0, RECOVERY
             """;
 
         await using var conn = new SqlConnection(MasterConnectionString);
         await conn.OpenAsync();
 
-        // RESTORE requires a single-user context; issue it with sufficient timeout
         await using var cmd = new SqlCommand(sql, conn) { CommandTimeout = 300 };
-        await cmd.ExecuteNonQueryAsync();
+        try
+        {
+            await cmd.ExecuteNonQueryAsync();
+        }
+        catch (SqlException ex)
+        {
+            throw new InvalidOperationException(
+                $"RESTORE DATABASE failed for backup '{fullBakPath}' → database '{databaseName}'. " +
+                $"mdf='{mdfPath}', ldf='{ldfPath}'. SQL error: {ex.Message}", ex);
+        }
     }
 
     /// <summary>
@@ -143,10 +156,10 @@ internal static class DatabaseHelper
         return rows;
     }
 
-    private static async Task<List<string>> GetLogicalFileNamesAsync(string bakPath)
+    private static async Task<List<LogicalFile>> GetLogicalFileListAsync(string bakPath)
     {
         string sql = $"RESTORE FILELISTONLY FROM DISK = N'{bakPath}'";
-        var names = new List<string>();
+        var files = new List<LogicalFile>();
 
         await using var conn = new SqlConnection(MasterConnectionString);
         await conn.OpenAsync();
@@ -154,9 +167,21 @@ internal static class DatabaseHelper
         await using var reader = await cmd.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
-            names.Add(reader.GetString(reader.GetOrdinal("LogicalName")));
+        {
+            string name = reader.GetString(reader.GetOrdinal("LogicalName"));
+            string type = reader.GetString(reader.GetOrdinal("Type")).Trim();
+            files.Add(new LogicalFile(name, type));
+        }
 
-        return names;
+        return files;
+    }
+
+    private sealed record LogicalFile(string Name, string Type);
+
+    private static async Task<List<string>> GetLogicalFileNamesAsync(string bakPath)
+    {
+        var files = await GetLogicalFileListAsync(bakPath);
+        return files.Select(f => f.Name).ToList();
     }
 
     private static async Task<string> GetLocalDbDataDirectoryAsync()
@@ -166,6 +191,7 @@ internal static class DatabaseHelper
         await conn.OpenAsync();
         await using var cmd = new SqlCommand(sql, conn);
         var result = await cmd.ExecuteScalarAsync();
-        return result?.ToString()?.TrimEnd('\\') ?? Path.GetTempPath();
+        string path = result?.ToString() ?? Path.GetTempPath();
+        return path.TrimEnd('\\', '/');
     }
 }
