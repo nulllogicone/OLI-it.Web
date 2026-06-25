@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Documentation Reading Guide - OLI-it.Web</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script type="application/json" id="doc-metadata">
+        {
+            "doc_audience": "human",
+            "doc_focus": "reading-guide",
+            "context_tags": ["docs-map", "reading-order", "technical", "philosophy"],
+            "agent_load_hint": "load when user asks which docs to read first or by topic",
+            "source_docs": [
+                "docs/README.md",
+                "docs/000-motivation.md",
+                "docs/001-vision.md",
+                "docs/010-domain-entities.md",
+                "docs/020-data-model.md",
+                "docs/030-use-cases.md",
+                "docs/060-architecture.md",
+                "docs/065-magic-match-logic.md",
+                "docs/080-backlog.md",
+                "docs/990-open-questions.md"
+            ],
+            "last_updated": "2026-06-25"
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Documentation Reading Guide</h1>
+            <p>Choose a reading path by intent: product, technical, or data/domain truth.</p>
+        </header>
+
+        <nav class="nav">
+            <a href="index.html">Overview home</a>
+            <a href="project-at-a-glance.html">At a glance</a>
+            <a href="progress-and-next-steps.html">Progress</a>
+            <a href="technical-architecture-and-stack.html">Technical architecture</a>
+        </nav>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Best first reads</h3>
+                <ol>
+                    <li><a href="../000-motivation.md">000-motivation.md</a></li>
+                    <li><a href="../001-vision.md">001-vision.md</a></li>
+                    <li><a href="../080-backlog.md">080-backlog.md</a></li>
+                    <li><a href="../990-open-questions.md">990-open-questions.md</a></li>
+                </ol>
+            </article>
+            <article class="card">
+                <h3>Technical deep dive</h3>
+                <ul>
+                    <li><a href="technical-architecture-and-stack.html">technical-architecture-and-stack.html</a></li>
+                    <li><a href="matchmaking-engine-deep-dive.html">matchmaking-engine-deep-dive.html</a></li>
+                    <li><a href="../060-architecture.md">060-architecture.md</a></li>
+                    <li><a href="../065-magic-match-logic.md">065-magic-match-logic.md</a></li>
+                    <li><a href="../developer-guide.md">developer-guide.md</a></li>
+                    <li><a href="../ef-scaffolding-guide.md">ef-scaffolding-guide.md</a></li>
+                </ul>
+            </article>
+            <article class="card">
+                <h3>Domain and data truth</h3>
+                <ul>
+                    <li><a href="../010-domain-entities.md">010-domain-entities.md</a></li>
+                    <li><a href="../020-data-model.md">020-data-model.md</a></li>
+                    <li><a href="../german-english-quick-reference.md">german-english-quick-reference.md</a></li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="card">
+            <h2>15-minute loop</h2>
+            <button class="toggle" data-toggle-target="loop">Show/hide quick reading loop</button>
+            <div class="toggle-content" id="loop">
+                <ol>
+                    <li>Read <a href="project-at-a-glance.html">project-at-a-glance.html</a>.</li>
+                    <li>Read <a href="progress-and-next-steps.html">progress-and-next-steps.html</a>.</li>
+                    <li>Scan in-progress + next items in <a href="../080-backlog.md">080-backlog.md</a>.</li>
+                    <li>Check unresolved points in <a href="../990-open-questions.md">990-open-questions.md</a>.</li>
+                </ol>
+            </div>
+        </section>
+
+        <p class="footer">Last updated: 2026-06-25</p>
+    </div>
+    <script src="assets/app.js"></script>
+</body>
+</html>

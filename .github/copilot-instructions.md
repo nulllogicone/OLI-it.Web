@@ -119,6 +119,23 @@ Active ADRs in `docs/070-decisions/`:
 - Merge to `main` + manual approval → deploy to **production slot**.
 - Infrastructure changes deploy via `infra-main-bicep.yml` (Bicep, also approval-gated for prod).
 
+## Human Docs Refresh Mode (HTML-only with embedded metadata)
+
+When working on documentation:
+
+- Keep canonical deep technical docs in `docs/*.md` as-is.
+- Maintain curated human-overview content directly in `docs/human-overview/*.html` (no paired markdown sources in this folder).
+- Each human-overview HTML page must embed metadata in a `doc-metadata` JSON block:
+  - `doc_audience`
+  - `doc_focus`
+  - `context_tags`
+  - `agent_load_hint`
+  - `source_docs`
+  - `last_updated`
+- Preserve source traceability by keeping `source_docs` populated with canonical `docs/*.md` references.
+- Keep shared styling in `docs/human-overview/assets/style.css`.
+- Keep behavior in `docs/human-overview/assets/app.js`.
+
 ## Docs Folder — Always Consider
 
 Before answering questions about domain, architecture, decisions, or UI, **always consider the relevant files in `docs/`**. Consult them when context is needed; do not rely on memory alone.
@@ -143,3 +160,4 @@ Before answering questions about domain, architecture, decisions, or UI, **alway
 | `docs/german-english-quick-reference.md` | German ↔ English entity name mapping |
 | `docs/developer-guide.md` | Local setup, secrets config, ViewComponent usage, infra deployment |
 | `docs/features/entity-visual-identity.md` | Visual identity rules for entity display |
+| `docs/human-overview/README.html` | Human-overview workflow, HTML-only model, and metadata convention |

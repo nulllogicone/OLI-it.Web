@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Progress and Next Steps - OLI-it.Web</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script type="application/json" id="doc-metadata">
+        {
+            "doc_audience": "human",
+            "doc_focus": "progress",
+            "context_tags": ["status", "backlog", "mvp", "risks", "decisions"],
+            "agent_load_hint": "load when user asks what is done, in progress, or next",
+            "source_docs": [
+                "docs/080-backlog.md",
+                "docs/990-open-questions.md",
+                "docs/070-decisions/ADR-0001-database-first-approach.md",
+                "docs/070-decisions/ADR-0002-stored-procedure-matchmaking.md",
+                "docs/070-decisions/ADR-0003-german-table-names.md"
+            ],
+            "last_updated": "2026-06-25"
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Progress and Next Steps</h1>
+            <p>Status overview sourced from backlog, open questions, and ADR guardrails.</p>
+        </header>
+
+        <nav class="nav">
+            <a href="index.html">Overview home</a>
+            <a href="project-at-a-glance.html">At a glance</a>
+            <a href="documentation-reading-guide.html">Reading guide</a>
+        </nav>
+
+        <div class="filters">
+            <button class="button" data-filter="all">All</button>
+            <button class="button" data-filter="done">Completed</button>
+            <button class="button" data-filter="active">In progress</button>
+            <button class="button" data-filter="next">Next</button>
+            <button class="button" data-filter="risk">Attention</button>
+        </div>
+
+        <section class="grid">
+            <article class="card" data-card="done">
+                <h3>Completed highlights</h3>
+                <p><span class="badge ok">BL-001</span><span class="badge ok">BL-002</span><span class="badge ok">BL-012</span><span class="badge ok">BL-107</span><span class="badge ok">BL-108</span></p>
+            </article>
+            <article class="card" data-card="active">
+                <h3>In progress</h3>
+                <p><span class="badge warn">BL-003</span><span class="badge warn">BL-106</span></p>
+            </article>
+            <article class="card" data-card="next">
+                <h3>Recommended next sequence</h3>
+                <ol>
+                    <li>BL-004 Wordspace admin CRUD</li>
+                    <li>BL-005 Wordspace Navigator</li>
+                    <li>BL-006 Message authoring</li>
+                    <li>BL-007 Filter profile flow</li>
+                    <li>BL-008 Matchmaking wiring</li>
+                    <li>BL-009 Inbox delivery view</li>
+                </ol>
+            </article>
+            <article class="card" data-card="risk">
+                <h3>Attention points</h3>
+                <p><span class="badge risk">BL-109</span> Password hashing modernization pending</p>
+                <p><span class="badge risk">BL-110</span> Account lockout policy pending</p>
+                <p><span class="badge risk">OQ-015</span> Wordspace Navigator implementation choice still open</p>
+            </article>
+        </section>
+
+        <section class="card">
+            <h2>Decision guardrails</h2>
+            <button class="toggle" data-toggle-target="guardrails">Show/hide immutable architecture decisions</button>
+            <div class="toggle-content" id="guardrails">
+                <ul>
+                    <li>ADR-0001: Database-first EF Core</li>
+                    <li>ADR-0002: Matchmaking in SQL stored procedures</li>
+                    <li>ADR-0003: Preserve German schema names</li>
+                </ul>
+            </div>
+        </section>
+
+        <p class="footer">Last updated: 2026-06-25</p>
+    </div>
+    <script src="assets/app.js"></script>
+</body>
+</html>

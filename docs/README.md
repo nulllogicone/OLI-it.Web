@@ -11,6 +11,12 @@ Last updated: 2026-05-20
 - **German→English mapping:** See [german-english-quick-reference.md](german-english-quick-reference.md) for database entity names.
 - **Delivery note:** broad page-content localization rollout is currently deferred until core feature parity progresses further.
 
+## Human-friendly overview docs
+
+- For fast owner-level reading, open [human-overview/index.html](human-overview/index.html).
+- Human-overview workflow and metadata conventions are documented in [human-overview/README.html](human-overview/README.html).
+- Existing deep technical markdown docs remain unchanged and are still the source specification.
+
 ## Infrastructure Deployment Notes
 
 - Infra template: `infra/main.bicep`
@@ -27,6 +33,7 @@ Last updated: 2026-05-20
 | File | Purpose | Status |
 |------|---------|--------|
 | [german-english-quick-reference.md](german-english-quick-reference.md) | Quick lookup: German↔English table names | draft |
+| [human-overview/](human-overview/README.html) | Curated human-readable HTML overview pages with embedded metadata | draft |
 | [ef-scaffolding-guide.md](ef-scaffolding-guide.md) | How to scaffold existing database with EF Core | draft |
 | [000-motivation.md](000-motivation.md) | Why OLI-it.Web is being built, core drivers | draft |
 | [001-vision.md](001-vision.md) | Product intent, goals, success criteria | draft |

@@ -1,0 +1,154 @@
+:root {
+    --bg: #0b1020;
+    --panel: #151b2f;
+    --panel-2: #1b2440;
+    --text: #eaf0ff;
+    --muted: #a8b3d1;
+    --accent: #6ea8fe;
+    --accent-2: #7ee787;
+    --danger: #ff7b72;
+    --border: #2f3a63;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at top, #1a2140 0, var(--bg) 50%);
+    color: var(--text);
+    line-height: 1.55;
+}
+
+.container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.hero {
+    background: linear-gradient(135deg, #22315f 0%, #141b30 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    margin: 0 0 8px;
+    font-size: 1.9rem;
+}
+
+.hero p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 20px;
+}
+
+.nav a,
+.button {
+    text-decoration: none;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+}
+
+.nav a:hover,
+.button:hover {
+    border-color: var(--accent);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.card h2,
+.card h3 {
+    margin-top: 0;
+}
+
+.meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    margin-right: 6px;
+    font-size: 0.8rem;
+}
+
+.ok {
+    border-color: #2b7a45;
+    color: var(--accent-2);
+}
+
+.warn {
+    border-color: #7a6a2b;
+    color: #ffd866;
+}
+
+.risk {
+    border-color: #7a2b2b;
+    color: var(--danger);
+}
+
+.toggle {
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 6px 0;
+}
+
+.toggle-content {
+    display: none;
+    padding: 8px 8px 8px 14px;
+    border-left: 2px solid var(--border);
+    margin-left: 4px;
+}
+
+.toggle-content.open {
+    display: block;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.footer {
+    margin-top: 24px;
+    color: var(--muted);
+    font-size: 0.86rem;
+}

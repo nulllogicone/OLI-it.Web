@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matchmaking Engine Deep Dive - OLI-it.Web</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script type="application/json" id="doc-metadata">
+        {
+            "doc_audience": "human",
+            "doc_focus": "technical-deep-dive",
+            "context_tags": ["matchmaking", "sql", "fischen", "beissen", "delivery"],
+            "agent_load_hint": "load when user asks how soulmate matching decisions are computed and persisted",
+            "source_docs": [
+                "docs/065-magic-match-logic.md",
+                "docs/020-data-model.md",
+                "docs/070-decisions/ADR-0002-stored-procedure-matchmaking.md"
+            ],
+            "last_updated": "2026-06-25"
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Matchmaking Engine Deep Dive</h1>
+            <p>The technical core of OLI-it's soulmate matching: deterministic SQL decisions and synchronized delivery pairs.</p>
+        </header>
+
+        <nav class="nav">
+            <a href="index.html">Overview home</a>
+            <a href="project-at-a-glance.html">At a glance</a>
+            <a href="technical-architecture-and-stack.html">Architecture stack</a>
+        </nav>
+
+        <section class="card">
+            <h2>What the engine does</h2>
+            <p>It evaluates whether <code>Code</code> (sender intent) and <code>Angler</code> (recipient intent) are mutually compatible, then stores valid pairs in <code>Spiegel</code>.</p>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Core procedures</h3>
+                <ul>
+                    <li><code>oli.beissen</code>: single pair match/no-match decision</li>
+                    <li><code>oli.fischen</code>: set orchestration + Spiegel synchronization</li>
+                </ul>
+            </article>
+            <article class="card">
+                <h3>Decision flow</h3>
+                <ol>
+                    <li>Require markings on both sides.</li>
+                    <li>Apply strict rules (<code>3</code>) both directions.</li>
+                    <li>Apply flexible-but-required rules (<code>2</code>, threshold &gt;= 2) both directions.</li>
+                    <li>Accept only if both sides satisfy each other's requirements.</li>
+                </ol>
+            </article>
+            <article class="card">
+                <h3>Persistence contract</h3>
+                <p><span class="badge ok">0</span> match => row exists in <code>Spiegel</code></p>
+                <p><span class="badge risk">-1</span> no match => row removed from <code>Spiegel</code></p>
+            </article>
+        </section>
+
+        <section class="card">
+            <h2>Engineering boundary</h2>
+            <p>Do not move matchmaking logic into C#. Behavior changes should be treated as SQL procedure and ADR-level changes.</p>
+        </section>
+
+        <p class="footer">Last updated: 2026-06-25</p>
+    </div>
+</body>
+</html>

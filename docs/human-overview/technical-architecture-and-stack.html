@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Technical Architecture and Stack - OLI-it.Web</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script type="application/json" id="doc-metadata">
+        {
+            "doc_audience": "human",
+            "doc_focus": "technical-deep-dive",
+            "context_tags": ["architecture", "stack", "constraints", "deployment"],
+            "agent_load_hint": "load when user asks how the system is built and where to change code safely",
+            "source_docs": [
+                "docs/060-architecture.md",
+                "docs/developer-guide.md",
+                "docs/070-decisions/ADR-0001-database-first-approach.md",
+                "docs/070-decisions/ADR-0002-stored-procedure-matchmaking.md",
+                "docs/070-decisions/ADR-0003-german-table-names.md"
+            ],
+            "last_updated": "2026-06-25"
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Technical Architecture and Stack</h1>
+            <p>How OLI-it.Web is built, what cannot change, and where contributors should plug in safely.</p>
+        </header>
+
+        <nav class="nav">
+            <a href="index.html">Overview home</a>
+            <a href="project-at-a-glance.html">At a glance</a>
+            <a href="matchmaking-engine-deep-dive.html">Matchmaking deep dive</a>
+        </nav>
+
+        <section class="card">
+            <h2>Executive summary</h2>
+            <p>Razor Pages on .NET 10, EF Core database-first over an existing SQL schema, and SQL-native matchmaking logic kept in stored procedures.</p>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Layer map</h3>
+                <ul>
+                    <li>UI: <code>Pages/</code></li>
+                    <li>Business logic: <code>Services/</code></li>
+                    <li>Data access: <code>Data/</code> + <code>Models/</code></li>
+                    <li>API endpoints: <code>Endpoints/</code></li>
+                    <li>Azure infra: <code>infra/</code></li>
+                </ul>
+            </article>
+            <article class="card">
+                <h3>Non-negotiable constraints</h3>
+                <ul>
+                    <li><span class="badge risk">ADR-0001</span> Database-first schema ownership</li>
+                    <li><span class="badge risk">ADR-0002</span> Matchmaking stays in SQL stored procedures</li>
+                    <li><span class="badge risk">ADR-0003</span> German schema naming preserved</li>
+                </ul>
+            </article>
+            <article class="card">
+                <h3>Contributor guardrails</h3>
+                <ul>
+                    <li>Follow <strong>Pages -&gt; Services -&gt; Data</strong>.</li>
+                    <li>Do not hand-edit scaffolded entities.</li>
+                    <li>Keep domain naming exact (`Stamm`, `PostIt`, `TopLab`, ...).</li>
+                    <li>Treat ADRs as hard boundaries for design changes.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="card">
+            <h2>Next technical read</h2>
+            <p>Continue with <a href="matchmaking-engine-deep-dive.html">Matchmaking Engine Deep Dive</a> for the exact `fischen` / `beissen` decision flow.</p>
+        </section>
+
+        <p class="footer">Last updated: 2026-06-25</p>
+    </div>
+</body>
+</html>

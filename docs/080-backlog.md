@@ -42,6 +42,7 @@ Status: draft
 | BL-111 | StammCard → StammStatisticsOverview link | Add a link in the meta-stamm-info box (top-right of StammCard) to a new `StammStatisticsOverview` page that renders charts from recent Stamm activity (journal volume, answer rates, credit flow, etc.) | not started |
 | BL-112 | PostItViewer — bare URI content page | A minimal page that fetches and renders a URI's content in its native format (plain text, HTML, Markdown, etc.) with zero chrome: no menu, header, nav, or border. Intended for embedding Gists, blog snippets, and standalone statements as PostIt content. | not started |
 | BL-114 | DocFx docs site + GitHub Pages publishing | Set up DocFx to build project docs and publish them to GitHub Pages as a public documentation portal. | not started |
+| BL-115 | Human-overview illustrations governance | Create and track an issue to add curated HTML illustrations (pitch + technical diagrams) as persistent assets in `docs/human-overview/assets/illustrations/`, explicitly reused across updates and not re-generated each refresh. | not started |
 
 ## Change Log
 
@@ -52,6 +53,7 @@ Status: draft
 - 2026-04-08: Added BL-111 - StammStatisticsOverview page linked from StammCard meta-info box (spontaneous idea).
 - 2026-04-08: Added BL-112 - PostItViewer bare URI content page (spontaneous idea).
 - 2026-04-08: Added BL-114 - DocFx + GitHub Pages follow-up (deferred).
+- 2026-06-25: Added BL-115 - Track issue creation for persistent human-overview illustration assets (no auto-regeneration on each refresh).
 - 2026-04-08: Updated BL-106 - Marked in progress; documented rewritten nulllogicone.net API surface (JSON/XML/RDF) and linked public repository.
 - 2026-04-08: Completed BL-017 - RSS feed removed from scope (not needed anymore).
 - 2026-05-17: Completed BL-012 - Journal page implemented; timeline feed with type filters, count selector (1–200 rows), public access, and reverse-chronological ordering. Shows all entry types (messages, authors, answers, recipients).

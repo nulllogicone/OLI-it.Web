@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project at a Glance - OLI-it.Web</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script type="application/json" id="doc-metadata">
+        {
+            "doc_audience": "human",
+            "doc_focus": "overview",
+            "context_tags": ["vision", "pitch", "protocol", "glossary"],
+            "agent_load_hint": "load when user asks for concise project understanding",
+            "source_docs": [
+                "docs/000-motivation.md",
+                "docs/001-vision.md",
+                "docs/060-architecture.md",
+                "docs/german-english-quick-reference.md"
+            ],
+            "last_updated": "2026-06-25"
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Project at a Glance</h1>
+            <p>Fast orientation for OLI-it.Web in under five minutes.</p>
+        </header>
+
+        <nav class="nav">
+            <a href="index.html">Overview home</a>
+            <a href="progress-and-next-steps.html">Progress</a>
+            <a href="documentation-reading-guide.html">Reading guide</a>
+        </nav>
+
+        <section class="card">
+            <h2>One-sentence summary</h2>
+            <p>OLI-it.Web is a modern rebuild of OLI-it: a soulmate-style semantic matchmaking system that connects people by intent and fit, not popularity.</p>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Why this exists</h3>
+                <ul>
+                    <li>Turn the protocol into an elevator pitch: "find meaningful matches through semantic intent, not social noise."</li>
+                    <li>Preserve proven SQL matchmaking logic while rebuilding the platform for clarity, maintainability, and future evolution.</li>
+                </ul>
+            </article>
+            <article class="card">
+                <h3>Protocol flow</h3>
+                <ol>
+                    <li>Stamm creates PostIt.</li>
+                    <li>Angler filters define recipient intent.</li>
+                    <li>SQL matching decides valid pairs.</li>
+                    <li>TopLab answers continue the loop.</li>
+                </ol>
+            </article>
+            <article class="card">
+                <h3>Architecture pillars</h3>
+                <ul>
+                    <li>Database-first EF Core</li>
+                    <li>Stored procedure matchmaking</li>
+                    <li>German schema names preserved</li>
+                    <li>.NET 10 Razor Pages modernization</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="card">
+            <h2>Quick glossary</h2>
+            <p><span class="badge">Stamm</span><span class="badge">PostIt</span><span class="badge">Angler</span><span class="badge">TopLab</span></p>
+            <p class="meta">Full mapping: <a href="../german-english-quick-reference.md">german-english-quick-reference.md</a></p>
+        </section>
+
+        <p class="footer">Last updated: 2026-06-25</p>
+    </div>
+</body>
+</html>
