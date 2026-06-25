@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script type="application/json" id="doc-metadata">
+        {
+            "doc_audience": "human",
+            "doc_focus": "{{doc_focus}}",
+            "context_tags": {{context_tags_json}},
+            "agent_load_hint": "{{agent_load_hint}}",
+            "source_docs": {{source_docs_json}},
+            "last_updated": "{{last_updated}}"
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>{{title}}</h1>
+            <p>{{subtitle}}</p>
+        </header>
+
+        <nav class="nav">
+            <!-- Build from human-output.config.yml -->
+            {{navigation_links}}
+        </nav>
+
+        <section class="card">
+            <h2>What's changed</h2>
+            <ul>
+                {{update_highlights}}
+            </ul>
+        </section>
+
+        {{content_sections}}
+
+        <p class="footer">Last updated: {{last_updated}}</p>
+    </div>
+    <script src="assets/app.js"></script>
+</body>
+</html>

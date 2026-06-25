@@ -16,6 +16,9 @@ Last updated: 2026-05-20
 - For fast owner-level reading, open [human-overview/index.html](human-overview/index.html).
 - Human-overview workflow and metadata conventions are documented in [human-overview/README.html](human-overview/README.html).
 - Existing deep technical markdown docs remain unchanged and are still the source specification.
+- Local preview for rendered markdown links:
+  - Start a local server from repository root: `python -m http.server 8080`
+  - Open: `http://localhost:8080/docs/human-overview/index.html`
 
 ## Infrastructure Deployment Notes
 

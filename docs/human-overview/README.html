@@ -9,8 +9,8 @@
         {
             "doc_audience": "human",
             "doc_focus": "workflow",
-            "context_tags": ["docs-process", "html-only", "metadata", "traceability"],
-            "agent_load_hint": "load when updating human-overview content or process conventions",
+            "context_tags": ["docs-process", "markdown-source", "generated-html", "metadata", "traceability"],
+            "agent_load_hint": "load when generating or updating human-overview html from canonical docs markdown",
             "source_docs": [
                 "docs/README.md",
                 "docs/000-motivation.md",
@@ -26,7 +26,7 @@
     <div class="container">
         <header class="hero">
             <h1>Human Overview Docs Workflow</h1>
-            <p>Curated docs for fast human reading, now maintained as HTML-only pages with embedded metadata.</p>
+            <p>Curated docs for fast human reading, generated from canonical markdown with stable look-and-feel and embedded metadata.</p>
         </header>
 
         <nav class="nav">
@@ -40,14 +40,14 @@
             <h2>Why this folder exists</h2>
             <ul>
                 <li>Provide short, high-signal reading paths for day-to-day project understanding.</li>
-                <li>Keep HTML pages as the direct editable artifacts for human-facing overview content.</li>
+                <li>Keep <code>docs/*.md</code> as source of truth and generate human-facing HTML from that source.</li>
                 <li>Preserve metadata and source traceability within each HTML page.</li>
             </ul>
         </section>
 
         <section class="card">
-            <h2>HTML-only metadata convention</h2>
-            <p>Each page embeds a JSON metadata block in <code>&lt;script type="application/json" id="doc-metadata"&gt;</code> with:</p>
+            <h2>Generation + metadata convention</h2>
+            <p>Generation behavior is configured in <code>human-output.config.yml</code>. Each page embeds a JSON metadata block in <code>&lt;script type="application/json" id="doc-metadata"&gt;</code> with:</p>
             <p><span class="badge">doc_audience</span><span class="badge">doc_focus</span><span class="badge">context_tags</span><span class="badge">agent_load_hint</span><span class="badge">source_docs</span><span class="badge">last_updated</span></p>
         </section>
 
@@ -60,6 +60,7 @@
                 <li><code>documentation-reading-guide.html</code></li>
                 <li><code>technical-architecture-and-stack.html</code></li>
                 <li><code>matchmaking-engine-deep-dive.html</code></li>
+                <li><code>human-output.config.yml</code> (generation config)</li>
                 <li><code>assets/style.css</code>, <code>assets/app.js</code></li>
             </ul>
         </section>
@@ -72,14 +73,24 @@
         <section class="card">
             <h2>Session workflow (recommended)</h2>
             <ol>
-                <li>Update the relevant <code>docs/human-overview/*.html</code> pages directly.</li>
+                <li>Update canonical content in <code>docs/*.md</code>.</li>
+                <li>Read <code>docs/human-overview/human-output.config.yml</code> and regenerate configured <code>*.html</code> pages.</li>
                 <li>Keep <code>doc-metadata</code> JSON accurate for focus, tags, load hint, and source traceability.</li>
-                <li>Maintain links to canonical deep docs in <code>docs/*.md</code>.</li>
-                <li>Update visible "Last updated" labels and metadata date when content meaning changes.</li>
+                <li>Add a short visible "What's changed" section for refreshes that change meaning.</li>
+            </ol>
+        </section>
+
+        <section class="card">
+            <h2>Local preview</h2>
+            <p>The markdown viewer needs HTTP mode (not <code>file://</code>).</p>
+            <ol>
+                <li>From repo root, run: <code>python -m http.server 8080</code></li>
+                <li>Open: <code>http://localhost:8080/docs/human-overview/index.html</code></li>
             </ol>
         </section>
 
         <p class="footer">Last updated: 2026-06-25</p>
     </div>
+    <script src="assets/app.js"></script>
 </body>
 </html>

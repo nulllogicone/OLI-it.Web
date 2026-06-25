@@ -152,3 +152,49 @@ body {
     color: var(--muted);
     font-size: 0.86rem;
 }
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+    margin-top: 1.2em;
+}
+
+.markdown-content p,
+.markdown-content li {
+    color: var(--text);
+}
+
+.markdown-content pre {
+    background: #0f162c;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+}
+
+.markdown-content code {
+    background: #0f162c;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 4px;
+}
+
+.markdown-content blockquote {
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-left: 3px solid var(--accent);
+    background: #111a32;
+    color: var(--muted);
+}
+
+.markdown-content a {
+    color: var(--accent);
+}
+
+.error-text {
+    color: var(--danger);
+    font-weight: 600;
+}

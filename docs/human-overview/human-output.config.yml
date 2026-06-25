@@ -1,0 +1,91 @@
+version: 1
+
+source_of_truth:
+  canonical_markdown_globs:
+    - "docs/*.md"
+    - "docs/**/*.md"
+  exclude_globs:
+    - "docs/human-overview/**"
+
+human_output:
+  folder: "docs/human-overview"
+  shared_assets:
+    css: "docs/human-overview/assets/style.css"
+    js: "docs/human-overview/assets/app.js"
+  metadata_defaults:
+    doc_audience: "human"
+    context_tags:
+      - "human-overview"
+      - "generated-from-markdown"
+  required_metadata_keys:
+    - "doc_audience"
+    - "doc_focus"
+    - "context_tags"
+    - "agent_load_hint"
+    - "source_docs"
+    - "last_updated"
+  include_update_highlights: true
+
+navigation:
+  - title: "Overview home"
+    href: "index.html"
+  - title: "Project at a glance"
+    href: "project-at-a-glance.html"
+  - title: "Progress and next steps"
+    href: "progress-and-next-steps.html"
+  - title: "Documentation reading guide"
+    href: "documentation-reading-guide.html"
+  - title: "Technical architecture"
+    href: "technical-architecture-and-stack.html"
+  - title: "Matchmaking deep dive"
+    href: "matchmaking-engine-deep-dive.html"
+  - title: "Back to docs index (markdown)"
+    href: "../README.md"
+
+pages:
+  - output: "index.html"
+    title: "OLI-it.Web Human Overview"
+    doc_focus: "overview-index"
+    source_docs:
+      - "docs/README.md"
+      - "docs/000-motivation.md"
+      - "docs/001-vision.md"
+      - "docs/060-architecture.md"
+      - "docs/080-backlog.md"
+  - output: "project-at-a-glance.html"
+    title: "Project at a Glance"
+    doc_focus: "high-level-overview"
+    source_docs:
+      - "docs/README.md"
+      - "docs/000-motivation.md"
+      - "docs/001-vision.md"
+      - "docs/030-use-cases.md"
+  - output: "progress-and-next-steps.html"
+    title: "Progress and Next Steps"
+    doc_focus: "status-and-roadmap"
+    source_docs:
+      - "docs/080-backlog.md"
+      - "docs/990-open-questions.md"
+      - "docs/developer-guide.md"
+  - output: "documentation-reading-guide.html"
+    title: "Documentation Reading Guide"
+    doc_focus: "reading-paths"
+    source_docs:
+      - "docs/README.md"
+      - "docs/010-domain-entities.md"
+      - "docs/020-data-model.md"
+      - "docs/060-architecture.md"
+  - output: "technical-architecture-and-stack.html"
+    title: "Technical Architecture and Stack"
+    doc_focus: "architecture"
+    source_docs:
+      - "docs/060-architecture.md"
+      - "docs/020-data-model.md"
+      - "docs/ef-scaffolding-guide.md"
+  - output: "matchmaking-engine-deep-dive.html"
+    title: "Matchmaking Engine Deep Dive"
+    doc_focus: "matchmaking-logic"
+    source_docs:
+      - "docs/065-magic-match-logic.md"
+      - "docs/030-use-cases.md"
+      - "docs/070-decisions/ADR-0002-stored-procedure-matchmaking.md"

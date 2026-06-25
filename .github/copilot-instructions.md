@@ -119,22 +119,25 @@ Active ADRs in `docs/070-decisions/`:
 - Merge to `main` + manual approval → deploy to **production slot**.
 - Infrastructure changes deploy via `infra-main-bicep.yml` (Bicep, also approval-gated for prod).
 
-## Human Docs Refresh Mode (HTML-only with embedded metadata)
+## Human Docs Refresh Mode (Markdown source + AI-generated HTML output)
 
 When working on documentation:
 
-- Keep canonical deep technical docs in `docs/*.md` as-is.
-- Maintain curated human-overview content directly in `docs/human-overview/*.html` (no paired markdown sources in this folder).
-- Each human-overview HTML page must embed metadata in a `doc-metadata` JSON block:
+- Treat `docs/*.md` as canonical source content.
+- Generate and refresh `docs/human-overview/*.html` from canonical markdown during documentation sessions.
+- Always read `docs/human-overview/human-output.config.yml` before generating HTML.
+- Keep shared look-and-feel and behavior in:
+  - `docs/human-overview/assets/style.css`
+  - `docs/human-overview/assets/app.js`
+- Each generated human-overview HTML page must embed metadata in a `doc-metadata` JSON block:
   - `doc_audience`
   - `doc_focus`
   - `context_tags`
   - `agent_load_hint`
   - `source_docs`
   - `last_updated`
-- Preserve source traceability by keeping `source_docs` populated with canonical `docs/*.md` references.
-- Keep shared styling in `docs/human-overview/assets/style.css`.
-- Keep behavior in `docs/human-overview/assets/app.js`.
+- Preserve source traceability by keeping `source_docs` populated with canonical `docs/*.md` references only.
+- Include a visible "What's changed" or "Highlights" section in updated human pages when source content changes.
 
 ## Docs Folder — Always Consider
 
