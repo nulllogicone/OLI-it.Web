@@ -41,6 +41,22 @@ namespace OLI_it.Web.Pages.Stamm
                 .OrderByDescending(a => a.Datum)
                 .ToListAsync();
 
+            // Load catch counts for Anglers via Spiegel -> Code (distinct PostIts)
+            var anglerGuids = Anglers.Select(a => a.AnglerGuid).ToList();
+            var anglerCatchCounts = await _context.Spiegels
+                .Where(s => anglerGuids.Contains(s.AnglerGuid))
+                .Join(
+                    _context.Codes,
+                    spiegel => spiegel.CodeGuid,
+                    code => code.CodeGuid,
+                    (spiegel, code) => new { spiegel.AnglerGuid, code.PostItGuid })
+                .Distinct()
+                .GroupBy(x => x.AnglerGuid)
+                .Select(g => new { AnglerGuid = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.AnglerGuid, x => x.Count);
+
+            ViewData["AnglerCatchCounts"] = anglerCatchCounts;
+
             ViewData["Sidebar"] = "_SidebarUnified";
             
             return Page();

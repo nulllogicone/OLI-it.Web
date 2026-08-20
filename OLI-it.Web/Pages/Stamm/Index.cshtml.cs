@@ -54,13 +54,21 @@ namespace OLI_it.Web.Pages.Stamm
                 .Take(20)
                 .ToListAsync();
 
-            // Load counts for Anglers (News = matched PostIts)
-            foreach (var anglerItem in StammAnglers)
-            {
-                anglerItem.News = await _context.News
-                    .Where(n => n.AnglerGuid == anglerItem.AnglerGuid)
-                    .ToListAsync();
-            }
+            // Load catch counts for Anglers via Spiegel -> Code (distinct PostIts)
+            var anglerGuids = StammAnglers.Select(a => a.AnglerGuid).ToList();
+            var anglerCatchCounts = await _context.Spiegels
+                .Where(s => anglerGuids.Contains(s.AnglerGuid))
+                .Join(
+                    _context.Codes,
+                    spiegel => spiegel.CodeGuid,
+                    code => code.CodeGuid,
+                    (spiegel, code) => new { spiegel.AnglerGuid, code.PostItGuid })
+                .Distinct()
+                .GroupBy(x => x.AnglerGuid)
+                .Select(g => new { AnglerGuid = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.AnglerGuid, x => x.Count);
+
+            ViewData["AnglerCatchCounts"] = anglerCatchCounts;
 
             // Load Stamm's TopLabs
             StammTopLabs = await _context.TopLabs
