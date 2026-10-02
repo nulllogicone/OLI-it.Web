@@ -1,7 +1,7 @@
 # Project documentation and work planning
 
 - Keep internal project knowledge, architecture decisions, domain explanations, and the long-term overview in version-controlled Markdown files in this repository.
-- Start with `docs/transition-overview.md` and `docs/README.md` for project context. Record architecture decisions in `docs/070-decisions/`.
+- Start with `docs/000-motivation.md` and `docs/README.md` for project context. Record architecture decisions in `docs/070-decisions/`.
 - Use GitHub issues for public feedback, work planning, priorities, acceptance criteria, and progress: https://github.com/nulllogicone/OLI-it.Web/issues.
 - Link documentation and issues to each other when relevant. Avoid duplicating the issue backlog in Markdown; documentation should explain the system and durable decisions.
 - Carry durable conclusions from chats into the appropriate documentation. Keep documented status consistent with verified implementation and validation results.
