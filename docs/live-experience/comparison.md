@@ -8,10 +8,10 @@ Use **verified**, **partial**, **blocked**, or **not tested** with evidence. Dis
 | User intent | Legacy evidence | Modern evidence | Conclusion |
 |---|---|---|---|
 | Open public home | Verified | Verified | Both reachable |
-| Sign in | Blocked: redirected profile returned 502 | Verified: profile plus Logout | Legacy authenticated comparison pending |
+| Sign in | Verified on later retry: profile plus log out; initial attempt returned 502 | Verified: profile plus Logout | Both sign-ins established; earlier legacy error cause unknown |
 | Understand the product through an example | Random message/answer visible | No equivalent on observed home | Design question; not yet an accepted requirement |
 | Create Stamm | Not tested | Not tested | Pending |
-| Create PostIt and Code | Not tested | Not tested | Pending |
+| Create PostIt and Code | Verified: message saved and default Code created; semantic marking not tested | Blocked: no creation control observed; local editor only updates existing messages | [Message creation session](sessions/2026-10-03-message-creation.md); modern creation gap |
 | Manage Angler and inspect delivery | Not tested | Not tested | Pending |
 | Answer using TopLab | Not tested | Not tested | Pending |
 | Navigate/maintain NKBZ | Not tested | Home navigation link observed; not tested | Pending |

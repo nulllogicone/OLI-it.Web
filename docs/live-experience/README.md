@@ -16,7 +16,7 @@ Working branch: `codex/live-experience-journey`. Keep this exploration local unt
 | Legacy .NET Framework 4.8 (owner description) | https://oliweb-test.azurewebsites.net/ | Azure DevOps OLI-it repository |
 | Modern Razor Pages | https://oliitrazorweb-test.azurewebsites.net/ | This GitHub repository |
 
-The owner authorizes exploration using the supplied test account. Registration, PostIt creation and TopLab creation are proposed subsequent walkthroughs. They have not been performed in this baseline session. Database isolation, outbound notification behavior and deployed revisions are not yet verified; establish those details before interpreting cross-application writes or delivery effects.
+The owner authorizes exploration using the supplied test account and explicitly confirms both test applications share the same database. A legacy PostIt has been created and read in the modern UI; modern creation is blocked by a feature gap. Registration and TopLab creation remain untested. Outbound notification behavior and deployed revisions are not yet verified.
 
 ## How we work
 
@@ -44,6 +44,7 @@ These are investigation topics, not verified feature claims or a duplicate imple
 ## Evidence and findings
 
 - [2026-10-03: access baseline](sessions/2026-10-03-access.md)
+- [2026-10-03: message creation](sessions/2026-10-03-message-creation.md)
 - [Comparison matrix](comparison.md)
 - [Paper and implementation references](references.md)
 - Screenshots: `evidence/YYYY-MM-DD/`, linked from session notes. Capture only what is needed to establish a finding.
