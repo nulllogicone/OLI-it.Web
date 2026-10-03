@@ -1,15 +1,16 @@
 # Send-message implementation plan
 
-Updated: 2026-10-03
-Status: proposed; implementation not started
+Updated: 2026-10-04
+Status: create/update only implemented locally; description and sending deferred
 Branch: codex/send-message
+Story: [GitHub issue #48](https://github.com/nulllogicone/OLI-it.Web/issues/48)
 Base inspected: 3899766
 
 ## Outcome
 
 A signed-in author can create a PostIt in modern OLI-it.Web, describe author/content/desired recipient in the existing Wortraum, and send it through the existing mutual matching procedures. Preserve the existing database schema and protocol semantics.
 
-Deliver in reviewable increments. Compose-and-save is useful independently, but do not claim delivery is implemented until marking, matching and visible results work.
+Current authorized scope (2026-10-04): create or update PostIt content only. The description/sending experiment has been removed. The future increments below remain planning material and require revisiting NKBZ/OgIf semantics with the owner.
 
 ## Verified baseline
 
@@ -74,8 +75,26 @@ Before using CI as a verification gate:
 4. After local checks and user-requested commit/push, push `codex/send-message` or manually dispatch its ref. Verify build and deploy-test, then perform live acceptance at https://oliitrazorweb-test.azurewebsites.net/.
 5. Restore a known-good version through the same test deployment workflow if needed. Treat test-data cleanup separately from deployment rollback.
 
-No code, workflow, database or remote deployment was changed during planning. This plan remains local and uncommitted; pushing documentation alone currently also triggers test deployment.
+No code, workflow, database or remote deployment was changed during planning. The plan is committed locally; pushing documentation alone currently also triggers test deployment.
 
 ## Next implementation task
 
-Inspect `oli.zahlen`, initialization triggers/defaults, automatic ShortCuts and related event behavior in an isolated database; then implement increment 1 with meaningful persistence tests. Continue marking and sending as separate increments on this branch. Record resolved semantics in existing domain docs and accepted design decisions in `docs/070-decisions/`.
+Review the locally implemented create/update PostIt views. Description and sending are deferred at the owner's request: intrinsic NKBZ and OgIf logic must be understood before implementing those flows. Verify deployed SQL and any legacy notification/event behavior before test-slot acceptance. Record resolved semantics in existing domain docs and accepted design decisions in `docs/070-decisions/`.
+
+## Increment 1 implementation evidence — 2026-10-03
+
+- Added authenticated `/postit/create`, signed-in navigation and an own-list action. This increment uses legacy default value/deadline and optional URL; custom values, deadline selection and images remain follow-up work.
+- Atomic creation uses `oli.zahlen` inside an outer transaction, plus initial PostIt/Wurzeln/Code/PostItKonto records and automatic ShortCuts. Protected author-bound submission tickets and a transaction-owned SQL application lock prevent retry charges across app instances.
+- A restored LocalDB copy confirms `oli.zahlen` participates in a transaction and owns both transfer ledger rows and balance/deadline updates. No triggers exist on the inspected creation tables in this backup; deployed database revision is still unverified.
+- Plain text is HTML-encoded for legacy/varchar compatibility, decoded as a string in modern cards/lists/editing, then safely escaped by Razor. Encoded length limits are validated. No arbitrary HTML rendering was added.
+- Release build passed. All 10 focused tests passed (none skipped). SQL integration tests passed for creation/accounting, concurrent retries, rollback after inserts, validation and automatic ShortCuts; ticket and handler authorization tests cover tampering and ownership.
+- Local browser walkthrough created `Journey-20261003 — Modern UI (local)` against the isolated copy. It shows one Code, 1.01 message credit, 1 KooK author transfer and a 10-day deadline. Quotes, ampersands, literal script-like text and emoji survive creation and edit/save.
+- The workflow now runs the focused creation test class in Release and triggers on test-project/backup changes. The broader all-pairs matchmaking benchmark is not run by this feature's deployment gate.
+- Saving opens the PostIt detail view; the existing authorized Edit PostIt view updates its content. No description editor or sending action is included. Adjustable postage/deadline and shared-slot acceptance remain incomplete.
+- Browser validation additionally confirmed encoded-length errors preserve entered fields, cancellation creates no validation-check record, and signed-out creation redirects to the login page.
+
+## Scope correction — 2026-10-04
+
+Removed the experimental Code editor, marking/matching service, send handlers, recipient-feed/count changes and associated tests. Creation keeps the verified legacy initialization/accounting contract and redirects to PostIt detail. Existing content editing and safe plain-text rendering remain. No matching procedures, semantic markings or scan flags are changed by content updates in this feature.
+
+Validation after scope correction: 11 creation/content-update tests passed (none skipped). The update test verifies encoded-text round trips while preserving accounting, existing Ringe and Code scan state. Local preview opens the create view. Changes remain uncommitted and undeployed.
