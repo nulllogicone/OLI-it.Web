@@ -24,6 +24,8 @@ Last updated: 2026-05-20
 
 ## Files
 
+Live application exploration: [Live experience journey](live-experience/README.md) records side-by-side test-slot walkthroughs, evidence and research references. Initial access baseline: 2026-10-03; feature parity remains unverified.
+
 | File | Purpose | Status |
 |------|---------|--------|
 | [german-english-quick-reference.md](german-english-quick-reference.md) | Quick lookup: German↔English table names | draft |
