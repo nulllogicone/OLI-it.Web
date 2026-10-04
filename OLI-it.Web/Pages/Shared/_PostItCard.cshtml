@@ -27,11 +27,11 @@
         <div class="card-meta-value">@Model.Hits <small>hits</small></div>
     </div>
 
-    <h3 class="postit-title">@(Model.Titel ?? "Untitled")</h3>
+    <h3 class="postit-title">@(OLI_it.Web.Services.PostItText.Title(Model.Titel ?? "Untitled"))</h3>
 
     <div class="postit-body">
         <div class="entity-description">
-            @Model.PostIt1
+            @OLI_it.Web.Services.PostItText.Body(Model.PostIt1, Model.Typ)
         </div>
         @if (!string.IsNullOrEmpty(Model.Url))
         {
@@ -43,4 +43,3 @@
 
     <div class="postit-clearfix"></div>
 </div>
-

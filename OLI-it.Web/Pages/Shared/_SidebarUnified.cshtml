@@ -26,6 +26,10 @@
 
 <nav class="sidebar-menu">
     <ul class="menu-list">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <li class="menu-item"><a href="/postit/create" class="@(currentPage == "/PostIt/Create" ? "active" : "")">New message</a></li>
+        }
         @* Stamm-level menu - always shown when there's a Stamm *@
         @if (!string.IsNullOrEmpty(stammGuid))
         {
