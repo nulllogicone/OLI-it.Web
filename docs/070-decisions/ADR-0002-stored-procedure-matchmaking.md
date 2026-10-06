@@ -44,19 +44,6 @@ The application will **invoke the existing stored procedure** for all matchmakin
 - Add logging/tracing around stored procedure calls for debugging
 - Consider creating a service layer abstraction (`IMatchmakingService`) so implementation could theoretically be swapped
 
-## Implementation Notes
-
-```csharp
-// Example invocation in MatchmakingService.cs
-public async Task<IEnumerable<Match>> FindMatchesAsync(int messageId)
-{
-    var matches = await _context.Matches
-        .FromSqlInterpolated($"EXEC sp_FindMatches {messageId}")
-        .ToListAsync();
-    
-    return matches;
-}
-```
 
 ## Alternatives Considered
 
@@ -70,12 +57,20 @@ Load data in C#, perform matching logic in-memory.
 
 **Rejected because:** Performance concerns with large datasets; loses database optimizations; more complex than calling stored procedure.
 
+## Matchmaking Operations
+
+- `oli.beissen(@CodeGuid, @AnglerGuid)` evaluates one Code/Angler pair and returns whether they match.
+- `oli.fischen(@CodeGuid, @AnglerGuid)` calls `beissen` and updates `Spiegel` by inserting matching pairs and deleting non-matching pairs.
+- `fischen` supports a single pair, one Code against all Angler records, one Angler against all Code records, or a full Code-by-Angler match run. A `00000` GUID indicates that side should include all records; when neither side is specified, it runs the full NxM match.
+- These are the only stored procedures known to affect matching in `Spiegel`.
+- After a Code or Angler is updated in the UI, the user can click a button to invoke the procedure. An asynchronous path is also implemented: the application queues a message containing `CodeGuid` and `AnglerGuid`, and an Azure Function processes it and calls the procedure.
+- No additional constraints from related views, triggers, or callers are known. This has not been independently verified against the database objects.
+- No database trigger or scheduled job was identified in the discussion; the described invocation paths are initiated by the application UI or queue-triggered Azure Function.
+
 ## Open Questions
 
-- [ ] Are there additional stored procedures beyond `oli.fischen(@CodeGuid, @AnglerGuid)` and `oli.beissen(@CodeGuid, @AnglerGuid)` that affect matching?
-- [ ] Do any related views/triggers/callers add extra constraints beyond these two procedures?
-- [ ] Does it handle batch matching or single message?
-- [ ] Are there any triggers or scheduled jobs that call it?
+- [ ] Verify whether related views, database triggers, or other callers add matching constraints beyond `fischen` and `beissen`.
+- [ ] Verify whether any database triggers or scheduled jobs invoke either procedure.
 
 ## References
 

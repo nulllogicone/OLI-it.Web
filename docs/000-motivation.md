@@ -82,7 +82,7 @@ The related chat **Create Oli It Project**, listed outside the project, was also
 ## Documentation reconciliation needed
 
 - Root README links use names such as `00-vision.md`, `01-domain-entities.md`, `07-decisions/`, and `08-backlog.md`; the local files use `001-vision.md`, `010-domain-entities.md`, `070-decisions/`, and `080-backlog.md`.
-- Older `ADR-initial.md` proposals conflict with later recorded choices, including unchanged database/schema, eager matchmaking, and custom session/cookie authentication.
+- The unfinished, conflicting proposals formerly in `070-decisions/ADR-initial.md` were removed; accepted decisions are recorded in the numbered ADRs.
 - Vision, backlog and open questions differ on RSS scope. The backlog records RSS as completed because it was removed from scope, while the vision still lists it as required.
 - Backlog status may lag implementation; it must be verified against code and behavior.
 - Wortraum README performance figures and production-readiness statements are documentation claims, not measurements verified in this review.
