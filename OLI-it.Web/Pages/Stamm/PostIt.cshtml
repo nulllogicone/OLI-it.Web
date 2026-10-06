@@ -14,6 +14,10 @@
 
     <div class="content-section">
         <h3>PostIts (Messages)</h3>
+        @if (User.Identity?.IsAuthenticated == true && User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == Model.Stamm?.StammGuid.ToString())
+        {
+            <p><a href="/postit/create" class="btn btn-primary">New message</a></p>
+        }
         @if (Model.PostIts.Any())
         {
             ViewData["StammGuid"] = Model.Stamm?.StammGuid.ToString() ?? "";

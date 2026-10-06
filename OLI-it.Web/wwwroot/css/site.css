@@ -2176,3 +2176,7 @@ body.slot-dev::before {
     grid-template-columns: 1fr;
   }
 }
+
+/* Preserve the author's plain-text message layout without rendering markup. */
+.postit-card .entity-description { white-space: pre-wrap; overflow-wrap: anywhere; }
+.postit-form { max-width: 48rem; }
