@@ -1,7 +1,11 @@
 # Data Model
 
-Last updated: 2026-10-06
+Last updated: 2026-10-07
 Status: draft
+
+## Purpose
+
+This document owns the existing SQL/EF naming map, generated-model usage, and database compatibility constraints. The [domain model](010-domain-entities.md) defines conceptual entities and relationships; the [philosophy](philosophy.md) explains protocol principles rather than this implementation's schema.
 
 ## Approach
 
@@ -10,7 +14,7 @@ Status: draft
 - SQL Server
 - German table names from original implementation
 - Matching logic implemented as stored procedure
-- Domain model in `010-domain-entities.md` provides conceptual mapping
+- [Domain model](010-domain-entities.md) provides conceptual definitions
 
 ---
 
