@@ -1,13 +1,17 @@
 # OLI-it — Motivation and transition overview
 
-Updated: 2026-10-02
+Updated: 2026-10-07
 Status: draft; initial orientation, not a verified feature audit
 
 ## Purpose and ownership
 
-Migrate the legacy OliWeb end-user application to the modern public UI while preserving its protocol, data, and meaningful user-facing behavior. The existing OliWeb is the behavioral reference. KatWeb is a separate legacy administration application and is not part of this repository's migration scope. OLI-it is an open protocol for exchanging meaning, not just data.
+This document owns the migration rationale, cross-repository transition context, evidence boundaries, and proposed delivery sequence. The [application vision](001-vision.md) defines intended outcomes; the [protocol philosophy](philosophy.md) explains the underlying principles.
+
+Migrate the legacy OliWeb end-user application to the modern public UI while preserving its protocol, data, and meaningful user-facing behavior. The existing OliWeb is the behavioral reference. KatWeb is a separate legacy administration application and is not part of this repository's migration scope.
 
 ## Development goals
+
+The migration addresses the legacy WebForms stack's age, difficulty of extension and maintenance, limited access to modern .NET tooling, and dated, non-mobile-aware UX. These are the project's modernization motivations, not findings from a completed feature audit.
 
 - Complete the modern ASP.NET Core Razor Pages end-user UI.
 - Support the user-facing SAPCT message flow. KatWeb administration of NKBZ Wortraum, reward payouts, and notification emails is out of scope.
@@ -41,9 +45,9 @@ Local workspaces observed:
 
 ## Protocol and compatibility constraints
 
-- Preserve the three root pillars: **from whom – about what – to whom**. Add agent types/skills/purpose below them.
-- SAPCT describes message flow: Stamm, Angler, PostIt, Code, TopLab. NKBZ describes Wortraum: Netz, Knoten, Baum, Zweig. OgIf and KooK add logic and reward semantics.
-- Existing modern documentation specifies reuse of the SQL database/schema and matchmaking procedures. Treat this as the initial compatibility baseline; any schema or behavior change needs an explicit decision.
+- Preserve the [three pillars](philosophy.md#the-three-pillars) and [extend downward](philosophy.md#evolution-without-breaking-the-past), including for agent descriptions.
+- Preserve the [SAPCT NKBZ domain model](010-domain-entities.md) across the migration.
+- Reuse the [existing SQL schema](020-data-model.md#approach) and [matchmaking procedures](065-magic-match-logic.md). Treat this as the initial compatibility baseline; any schema or behavior change needs an explicit decision.
 - Retain Razor Pages as the current implementation baseline. The SPA issue is an experiment proposal, not an accepted replacement decision.
 - Broad UI localization is currently deferred in the modern README. Vocabulary translation and child-record maintenance are KatWeb administration concerns, not requirements for this end-user migration.
 

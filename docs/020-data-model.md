@@ -1,7 +1,11 @@
 # Data Model
 
-Last updated: 2026-10-06
+Last updated: 2026-10-07
 Status: draft
+
+## Purpose
+
+This document owns the existing SQL/EF naming map, generated-model usage, and database compatibility constraints. The [domain model](010-domain-entities.md) defines conceptual entities and relationships; the [philosophy](philosophy.md) explains protocol principles rather than this implementation's schema.
 
 ## Approach
 
@@ -10,7 +14,7 @@ Status: draft
 - SQL Server
 - German table names from original implementation
 - Matching logic implemented as stored procedure
-- Domain model in `010-domain-entities.md` provides conceptual mapping
+- [Domain model](010-domain-entities.md) provides conceptual definitions
 
 ---
 
@@ -78,35 +82,6 @@ var nodesInNet = await context.Knotens
 **Important:** The matchmaking algorithm is implemented as a **stored procedure** in the database. The application invokes this procedure rather than implementing matching logic in C# code. This procedure must continue to work without modification.
 
 See [065-magic-match-logic.md](065-magic-match-logic.md) for the current SQL behavior of `oli.fischen` and `oli.beissen`.
-
----
-
-## Tables (Existing Schema)
-
-### Stamm (Users)
-
-**Note:** Exact schema will be discovered via EF Core scaffolding from the existing database. Below is the conceptual structure based on known entities.
-
-```sql
--- Kreislauf (Message Flow)
-Stamm (...)         -- User/Author
-Angler (...)        -- Filter Profile
-PostIt (...)        -- Message
-Code (...)          -- Description (author+message+recipient marking)
-TopLab (...)        -- Response/Answer
-
--- Wortraum (Wordspace)
-Netz (...)          -- Net
-Knoten (...)        -- Node
-Baum (...)          -- Tree
-Zweig (...)         -- Branch
-
--- Logic (Matching)
-Olis (...)          -- Message markings
-get (...)           -- Receiver thresholds
-Ilos (...)          -- Filter markings
-fit (...)           -- Sender thresholds
-```
 
 ---
 

@@ -1,5 +1,12 @@
 # OLI-it Philosophy
 
+Last updated: 2026-10-07
+Status: draft; protocol principles, not an implementation audit
+
+## Purpose
+
+This document owns the protocol's guiding principles, independent of any application or technology. The [migration overview](000-motivation.md) describes this repository's transition, the [application vision](001-vision.md) describes its intended outcomes, and the [domain model](010-domain-entities.md) defines its conceptual entities.
+
 ## What OLI-it is
 
 **OLI-it is an open protocol for exchanging meaning, not just data.**
@@ -146,7 +153,7 @@ The protocol should enable ecosystems rather than attempt to become the ecosyste
 
 The early OLI-it concepts already contained this basic idea.
 
-Models involving concepts such as **Stamm**, **Angler**, **PostIt**, **Code** and **TopLab** described a loop in which information was semantically represented, matched and returned to an interested participant.
+The [SAPCT entities](010-domain-entities.md) described a loop in which information was semantically represented, matched and returned to an interested participant.
 
 Later implementations and terminology may look very different.
 

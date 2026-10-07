@@ -1,32 +1,24 @@
-# Vision
+# OLI-it.Web Application Vision
 
-Last updated: 2026-03-26
+Last updated: 2026-10-07
 Status: draft
+
+## Purpose
+
+This document owns the application's intended outcomes, success criteria, and phased feature goals. OLI-it.Web is an implementation of the protocol, not the protocol itself; its foundational principles live in the [philosophy](philosophy.md).
+
+The phase lists below retain the original draft goals, not verified delivery status. For current migration boundaries and known scope disagreements, see the [transition overview](000-motivation.md).
 
 ## Background
 
-OLI-it (0L1) is an open messaging protocol and platform conceived and built by Frederic Luchting.
-The core idea: connect any sender with any recipient by matching semantic descriptions against filter profiles in a hierarchical wordspace — without requiring prior acquaintance between parties.
+OLI-it (0L1) is an open messaging protocol conceived by Frederic Luchting. It connects participants through [mutual relevance](philosophy.md#matching-rather-than-broadcasting), without requiring prior acquaintance.
 
 The application has been running since 1994 and is live at https://www.oli-it.com.
 The current implementation is ASP.NET WebForms. This project is a full rewrite to modern .NET (ASP.NET Core Razor Pages + Entity Framework Core + SQL Server).
 
-## What is 0L1?
+The [migration rationale](000-motivation.md#development-goals) explains why this application is being modernized. The [use cases](030-use-cases.md) describe its user-facing workflows.
 
-A generic open messaging protocol in which:
-- A **sender (author)** describes themselves, the message content, and the desired recipient properties using marked nodes in a hierarchical semantic wordspace.
-- A **recipient** specifies one or more filter profiles with complementary descriptions.
-- The **matchmaking algorithm** delivers a message only when all mutual requirements of both sides are fulfilled — ensuring a very high hit quality.
-
-Use cases span any domain: Q&A, classified ads, partner search (personal/professional), news, commerce, and more.
-
-## Problem Statement
-
-The legacy WebForms implementation is fully functional but:
-- Built on an outdated framework (ASP.NET WebForms)
-- Difficult to extend, test, and maintain
-- Cannot easily benefit from modern .NET ecosystem improvements
-- UX is dated and not mobile-aware
+Potential domains include Q&A, classified ads, personal or professional partner search, news, and commerce.
 
 ## Product Goal
 
@@ -80,7 +72,7 @@ Deliver a modernized equivalent of the existing live application on ASP.NET Core
 
 ## Agent-Driven Development
 
-See [`000-motivation.md`](000-motivation.md) for the specific motivation behind the technology choice — in particular why agent (Copilot / open-claw) operability was a driving factor.
+See [agent operability](000-motivation.md#development-goals) for the migration's human- and agent-facing usability goals.
 
 ## Key Reference Material
 
@@ -90,4 +82,5 @@ See [`000-motivation.md`](000-motivation.md) for the specific motivation behind 
 
 ## Change Log
 
+- 2026-10-07: Clarified application ownership and linked protocol principles and migration rationale instead of repeating them; retained draft feature goals.
 - 2026-03-26: Initial draft from paper analysis and live site review.
