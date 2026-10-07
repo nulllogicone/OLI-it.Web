@@ -30,6 +30,7 @@ The database uses German naming conventions from the original implementation. Th
 | **Angler** | Filter Profile | Criteria to receive messages |
 | **PostIt** | Message | Question, offer, or other content |
 | **Code** | Description | Marks author + message + recipient |
+| **Spiegel** | Delivery Match | Maps Code entries to recipient Anglers (defines message recipients) |
 | **TopLab** | Response/Answer | Reply to a PostIt |
 
 ### Wortraum (Wordspace / NKBZ)
@@ -81,7 +82,38 @@ var nodesInNet = await context.Knotens
 
 **Important:** The matchmaking algorithm is implemented as a **stored procedure** in the database. The application invokes this procedure rather than implementing matching logic in C# code. This procedure must continue to work without modification.
 
+Match results / recipient assignments are persisted in **`Spiegel`** (joining `Code` and `Angler`), which defines which PostIts are delivered to which recipients.
 See [065-magic-match-logic.md](065-magic-match-logic.md) for the current SQL behavior of `oli.fischen` and `oli.beissen`.
+
+---
+
+## Tables (Existing Schema)
+
+### Stamm (Users)
+
+**Note:** Exact schema will be discovered via EF Core scaffolding from the existing database. Below is the conceptual structure based on known entities.
+
+```sql
+-- Kreislauf (Message Flow)
+Stamm (...)         -- User/Author
+Angler (...)        -- Filter Profile
+PostIt (...)        -- Message
+Code (...)          -- Description (author+message+recipient marking)
+Spiegel (...)       -- Delivery match (Code -> Angler recipient assignment)
+TopLab (...)        -- Response/Answer
+
+-- Wortraum (Wordspace)
+Netz (...)          -- Net
+Knoten (...)        -- Node
+Baum (...)          -- Tree
+Zweig (...)         -- Branch
+
+-- Logic (Matching)
+Olis (...)          -- Message markings
+get (...)           -- Receiver thresholds
+Ilos (...)          -- Filter markings
+fit (...)           -- Sender thresholds
+```
 
 ---
 

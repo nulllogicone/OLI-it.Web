@@ -1,39 +1,83 @@
-@model List<OLI_it.Web.Models.News>
+@model List<OLI_it.Web.Models.Spiegel>
 
 @if (Model?.Any() == true)
 {
-    <table class="simple-table">
-        <thead>
-            <tr>
-                <th>PostIt</th>
-                <th>Code</th>
-                <th>Matched Date</th>
-                <th>Read</th>
-                <th>Seen</th>
-                <th>Emailed</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var news in Model)
-            {
-                <tr>
-                    <td>@(news.Code?.PostIt?.Titel ?? "Unknown")</td>
-                    <td>@(news.Code?.Kommentar ?? "-")</td>
-                    <td>@(news.Datum?.ToString("yyyy-MM-dd") ?? "-")</td>
-                    <td>@(news.Gelesen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                    <td>@(news.Gesehen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                    <td>@(news.Gemailt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                    <td>
-                        @if (news.Code?.PostItGuid != null)
-                        {
-                            <a href="/postit/@news.Code.PostItGuid">view</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="catched-postits-list">
+        @foreach (var x in Model)
+        {
+            var postIt = x.Code?.PostIt;
+            var postItGuid = x.Code?.PostItGuid;
+
+            <article class="entity-card postit-card sticky-note catched-postit-card">
+                @if (!string.IsNullOrEmpty(postIt?.Datei))
+                {
+                    @if (postItGuid.HasValue)
+                    {
+                        <a href="/postit/@postItGuid" class="postit-thumb-float">
+                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postIt.Datei, altText = $"PostIt {postIt.Titel ?? "Untitled"} Image", width = 72, height = 72 })
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="postit-thumb-float">
+                            @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = postIt.Datei, altText = $"PostIt {postIt.Titel ?? "Untitled"} Image", width = 72, height = 72 })
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="postit-thumb-float postit-thumb-placeholder" aria-hidden="true"></div>
+                }
+
+                <div class="card-meta-box postit-meta-float">
+                    <div class="card-meta-datum">@((x.Zeit ?? postIt?.Datum)?.ToString("dd MMM yyyy") ?? "-")</div>
+                    @if (postIt != null)
+                    {
+                        <div class="card-meta-value">@postIt.KooK.ToString("N")</div>
+                        <div class="card-meta-value">@postIt.Hits <small>hits</small></div>
+                    }
+                </div>
+
+                <h3 class="postit-title">
+                    @if (postItGuid.HasValue)
+                    {
+                        <a href="/postit/@postItGuid">@(postIt?.Titel ?? "Unknown")</a>
+                    }
+                    else
+                    {
+                        @(postIt?.Titel ?? "Unknown")
+                    }
+                </h3>
+
+                @if (!string.IsNullOrEmpty(postIt?.PostIt1))
+                {
+                    <div class="postit-body">
+                        <div class="entity-description">
+                            @postIt.PostIt1
+                        </div>
+                    </div>
+                }
+
+                <div class="catched-postit-meta">
+                    <span>Code: @(x.Code?.Kommentar ?? "-")</span>
+                    @if (!string.IsNullOrWhiteSpace(x.Status))
+                    {
+                        <span>Status: @x.Status</span>
+                    }
+                    @if (x.Zeit.HasValue)
+                    {
+                        <span>Matched: @x.Zeit.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                    }
+                    @if (x.Gelesen.HasValue)
+                    {
+                        <span>Read: @x.Gelesen.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                    }
+                </div>
+
+                <div class="postit-clearfix"></div>
+            </article>
+        }
+    </div>
 }
 else
 {
