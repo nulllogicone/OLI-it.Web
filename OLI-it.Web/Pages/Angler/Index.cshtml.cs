@@ -19,7 +19,7 @@ namespace OLI_it.Web.Pages.Angler
         public Models.PostIt? PostIt { get; set; }
         public Models.Angler? Angler { get; set; }
         public Models.TopLab? TopLab { get; set; }
-        public List<Models.News>? CatchedPostIts { get; set; }
+        public List<Models.Spiegel>? CatchedPostIts { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
@@ -40,12 +40,12 @@ namespace OLI_it.Web.Pages.Angler
             // Load parent Stamm
             Stamm = Angler.Stamm;
 
-            // Load catched PostIts (News)
-            CatchedPostIts = await _context.News
-                .Include(n => n.Code)
+            // Load catched PostIts via Spiegel -> Code -> PostIt
+            CatchedPostIts = await _context.Spiegels
+                .Include(s => s.Code)
                     .ThenInclude(c => c.PostIt)
-                .Where(n => n.AnglerGuid == id.Value)
-                .OrderByDescending(n => n.Datum)
+                .Where(s => s.AnglerGuid == id.Value)
+                .OrderByDescending(s => s.Zeit)
                 .Take(50)
                 .ToListAsync();
 

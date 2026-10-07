@@ -41,16 +41,14 @@ Deliver a modernized equivalent of the existing live application on ASP.NET Core
 - All critical workflows from the live app are reproduced and verified
 - Existing data can still be used from existing sql server
 - Matchmaking algorithm logic is implemented in sql server and can be used unchanged
-- Wordspace (nodes, trees, nets, branches) is modeled and managed via EF Core
 - Users can register, log in, create messages, manage filter profiles, answer messages, rate answers, and earn/spend credits
 - Multi-language support (EN, DE, ES) preserved
-- RSS feed and public journal/chart views reproduced
+- Public journal/chart views reproduced
 - Deployment is reproducible and documented
 
 ## Scope — Phase 1 (MVP Parity)
 
 - Authentication: register, login, logout
-- Wordspace management (admin: nodes, trees, nets, branches)
 - Message authoring (description: author self-description, message content, recipient criteria with first/second values)
 - Filter profile management (per user, multiple profiles allowed)
 - Matchmaking: run matching of descriptions vs. filter profiles

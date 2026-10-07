@@ -96,14 +96,14 @@ Full setup instructions, configuration reference, and infrastructure deployment 
 
 | Document | Description |
 |----------|-------------|
-| [Vision](docs/00-vision.md) | Background, goals, and success criteria for this rewrite |
+| [Vision](docs/001-vision.md) | Background, goals, and success criteria for this rewrite |
 | [Motivation](docs/000-motivation.md) | Why the technology choices were made |
-| [Domain Entities](docs/01-domain-entities.md) | Core entities and their relationships |
-| [Use Cases](docs/03-use-cases.md) | Detailed user stories and acceptance criteria |
-| [Architecture](docs/06-architecture.md) | Stack, project structure, and key decisions |
-| [Architecture Decisions](docs/07-decisions/) | ADRs (database-first, stored-proc matching, German names) |
+| [Domain Entities](docs/010-domain-entities.md) | Core entities and their relationships |
+| [Use Cases](docs/030-use-cases.md) | Detailed user stories and acceptance criteria |
+| [Architecture](docs/060-architecture.md) | Stack, project structure, and key decisions |
+| [Architecture Decisions](docs/070-decisions/) | ADRs (database-first, stored-proc matching, German names) |
 | [Developer Guide](docs/developer-guide.md) | Setup, configuration, infra deployment, component docs |
-| [Backlog](docs/08-backlog.md) | Upcoming features and known gaps |
+| [Backlog](docs/080-backlog.md) | Upcoming features and known gaps |
 
 ---
 

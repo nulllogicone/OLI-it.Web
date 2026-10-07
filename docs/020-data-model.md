@@ -1,6 +1,6 @@
 # Data Model
 
-Last updated: 2026-03-26
+Last updated: 2026-10-06
 Status: draft
 
 ## Approach
@@ -26,6 +26,7 @@ The database uses German naming conventions from the original implementation. Th
 | **Angler** | Filter Profile | Criteria to receive messages |
 | **PostIt** | Message | Question, offer, or other content |
 | **Code** | Description | Marks author + message + recipient |
+| **Spiegel** | Delivery Match | Maps Code entries to recipient Anglers (defines message recipients) |
 | **TopLab** | Response/Answer | Reply to a PostIt |
 
 ### Wortraum (Wordspace / NKBZ)
@@ -48,10 +49,36 @@ The database uses German naming conventions from the original implementation. Th
 
 ---
 
+## Working with the Generated Model
+
+Keep the generated German entity, property, and DbSet names unchanged. Use descriptive English names for local variables and map to English-named DTOs at the UI or API boundary when useful. Do not edit generated entity classes by hand.
+
+The DbContext exposes pluralized DbSet names. These examples use the current scaffolded names and fields:
+
+```csharp
+var userWithFilters = await context.Stamms
+    .Include(stamm => stamm.Anglers)
+    .FirstOrDefaultAsync(stamm => stamm.StammGuid == userGuid);
+
+var recentMessages = await context.PostIts
+    .OrderByDescending(postIt => postIt.Datum)
+    .Take(10)
+    .ToListAsync();
+
+var nodesInNet = await context.Knotens
+    .Where(knoten => knoten.NetzGuid == netzGuid)
+    .OrderBy(knoten => knoten.Knoten1)
+    .ToListAsync();
+```
+
+
+---
+
 ## Matching Logic
 
 **Important:** The matchmaking algorithm is implemented as a **stored procedure** in the database. The application invokes this procedure rather than implementing matching logic in C# code. This procedure must continue to work without modification.
 
+Match results / recipient assignments are persisted in **`Spiegel`** (joining `Code` and `Angler`), which defines which PostIts are delivered to which recipients.
 See [065-magic-match-logic.md](065-magic-match-logic.md) for the current SQL behavior of `oli.fischen` and `oli.beissen`.
 
 ---
@@ -68,6 +95,7 @@ Stamm (...)         -- User/Author
 Angler (...)        -- Filter Profile
 PostIt (...)        -- Message
 Code (...)          -- Description (author+message+recipient marking)
+Spiegel (...)       -- Delivery match (Code -> Angler recipient assignment)
 TopLab (...)        -- Response/Answer
 
 -- Wortraum (Wordspace)
@@ -111,108 +139,4 @@ dotnet ef dbcontext scaffold "Server=...;Database=OLI_IT;..." \
 - Consider adding XML comments or extension methods for English naming in code
 - Stored procedure names for matching: `oli.fischen` (batch sync) and `oli.beissen` (single pair decision)
 
-### FilterProfiles
 
-```sql
-FilterProfiles (
-  FilterProfileId INT IDENTITY PK,
-  UserId          INT NOT NULL FK → Users,
-  Name            NVARCHAR(200) NOT NULL,
-  IsActive        BIT NOT NULL DEFAULT 1,
-  CreatedAt       DATETIME2 NOT NULL DEFAULT GETUTCDATE()
-)
-```
-
-### Criteria
-
-Stores markings for both Descriptions and FilterProfiles.
-
-```sql
-Criteria (
-  CriterionId  INT IDENTITY PK,
-  ContextType  TINYINT NOT NULL,      -- 1=Description, 2=FilterProfile
-  ContextId    INT NOT NULL,          -- FK to DescriptionId or FilterProfileId
-  ElementType  TINYINT NOT NULL,      -- 1=Node, 2=Branch
-  ElementId    INT NOT NULL,          -- FK to NodeId or BranchId
-  FirstValue   TINYINT NOT NULL,      -- 1, 2, or 3
-  SecondValue  TINYINT NOT NULL       -- 0, 2, or 3
-)
--- Index: (ContextType, ContextId) for fast lookup
-```
-
-### Answers
-
-```sql
-Answers (
-  AnswerId   INT IDENTITY PK,
-  MessageId  INT NOT NULL FK → Messages,
-  AuthorId   INT NOT NULL FK → Users,
-  Content    NVARCHAR(MAX) NOT NULL,
-  IsActive   BIT NOT NULL DEFAULT 1,
-  CreatedAt  DATETIME2 NOT NULL DEFAULT GETUTCDATE()
-)
-```
-
-### Ratings
-
-```sql
-Ratings (
-  RatingId       INT IDENTITY PK,
-  AnswerId       INT NOT NULL FK → Answers,
-  GivenByUserId  INT NOT NULL FK → Users,
-  Score          INT NOT NULL,
-  CreatedAt      DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-  UNIQUE (AnswerId, GivenByUserId)   -- one rating per user per answer
-)
-```
-
-### Transactions
-
-```sql
-Transactions (
-  TransactionId     INT IDENTITY PK,
-  UserId            INT NOT NULL FK → Users,
-  RelatedMessageId  INT NULL FK → Messages,
-  RelatedAnswerId   INT NULL FK → Answers,
-  Amount            DECIMAL(18,4) NOT NULL,
-  Reason            TINYINT NOT NULL,   -- enum: 1=Delivery, 2=Answer, 3=Rating, ...
-  CreatedAt         DATETIME2 NOT NULL DEFAULT GETUTCDATE()
-)
-```
-
-### MessageDeliveries
-
-Junction table recording which messages were delivered to which filter profiles (matchmaking results).
-
-```sql
-MessageDeliveries (
-  DeliveryId      INT IDENTITY PK,
-  MessageId       INT NOT NULL FK → Messages,
-  FilterProfileId INT NOT NULL FK → FilterProfiles,
-  DeliveredAt     DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-  UNIQUE (MessageId, FilterProfileId)
-)
-```
-
----
-
-## EF Core Notes
-
-- Use `HasQueryFilter` for soft-delete (`IsActive = 1`) on User, Message, Answer.
-- Criteria polymorphism: use discriminator column (`ContextType`) or separate tables (to be decided).
-- `WordspaceBranch` self-referencing hierarchy: use `HasOne/WithMany` with `ParentBranchId`.
-- Consider `IEntityTypeConfiguration<T>` classes per entity for clean mapping.
-- Migrations: one migration per significant schema change, named descriptively.
-
----
-
-## Open Questions
-
-- Should Criteria be split into two tables (DescriptionCriteria / FilterCriteria) for cleaner FKs?
-- Should MessageDeliveries be computed at write-time or query-time?
-- What indexes are needed on Criteria for matchmaking performance?
-- Confirm legacy column names and types before first migration.
-
-## Change Log
-
-- 2026-03-26: Initial schema derived from domain entities and paper model.

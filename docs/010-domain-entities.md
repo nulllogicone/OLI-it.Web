@@ -20,6 +20,7 @@ The actual database uses German naming from the original implementation. See `02
 - **Angler** = Filter Profile  
 - **PostIt** = Message
 - **Code** = Description
+- **Spiegel** = Delivery Match (Code ↔ Angler)
 - **TopLab** = Response/Answer
 - **Netz** = Net, **Knoten** = Node
 - **Baum** = Tree, **Zweig** = Branch
@@ -42,6 +43,7 @@ The actual database uses German naming from the original implementation. See `02
 | Branch | An element inside a tree (mutually exclusive alternatives) |
 | Description | A sender's full marking in the wordspace: self, message content, desired recipient |
 | Filter Profile | A recipient's marking in the wordspace describing what messages they want |
+| Delivery Match (Spiegel) | The persisted match row that links a PostIt description (`Code`) to a recipient filter profile (`Angler`) |
 | Criterion / Marking | A wordspace element marked with first-value and second-value by author or recipient |
 | First Value | Controls strictness: 3 = strict (once per structure), 2 = flexible (multiple), 1 = exclude |
 | Second Value | Controls what the other side must have: 3 = must match, 2 = at least one in structure, 0 = voluntary/discoverable |
@@ -202,6 +204,23 @@ Resolved via ENT-Criterion (the individual marked filter elements).
 
 ---
 
+### ENT-DeliveryMatch (Spiegel)
+
+The delivery/junction entity between a message description and a recipient filter profile.  
+`Spiegel` is where recipient delivery is defined: it determines **which PostIt (via Code)** is delivered to **which Angler**.
+
+**Database table:** `Spiegel`
+
+| Attribute | Type | Notes |
+|-----------|------|-------|
+| CodeGuid | GUID | FK → ENT-Description (`Code`) |
+| AnglerGuid | GUID | FK → ENT-FilterProfile (`Angler`) |
+| Status | string? | delivery/match status |
+| Zeit | datetime? | matched/delivered time |
+| Gelesen | datetime? | recipient read time |
+
+---
+
 ### ENT-Criterion (Olis, Ilos, get, fit)
 
 A single marking in either a Description or a FilterProfile. Marks a WordspaceNode or WordspaceBranch with a first-value and second-value.
@@ -282,6 +301,7 @@ User ──< Transaction
 
 Message ──┤ Description ──< Criterion → Node/Branch
 FilterProfile ──< Criterion → Node/Branch
+Description ──< DeliveryMatch (Spiegel) >── FilterProfile
 Message ──< Answer ──< Rating
 
 WordspaceNet ──< WordspaceNode
@@ -312,6 +332,7 @@ Algorithm: for each (Description, FilterProfile) pair, both sides check their cr
 - First value 3 can be used **only once** per net or tree structure.
 - First value 1 means **exclusion**: if the other side marked this criterion, the pair does not match.
 - A user can have **multiple filter profiles**; delivery occurs if **any one** profile matches.
+- Recipient delivery mappings are persisted in **Spiegel** (Code ↔ Angler).
 - Bound- and Flow-KooK can take any value (positive or negative); negative values indicate reversed incentive direction for message flow.
 - Soft-delete preferred over hard-delete for messages, answers, and users.
 - Matchmaking should run efficiently; consider async/background processing for large sets.
@@ -331,3 +352,4 @@ Algorithm: for each (Description, FilterProfile) pair, both sides check their cr
 - 2026-03-26: Initial full entity catalog derived from ISWC 2011 paper and live site review.
 - 2026-04-08: Updated answer/toplab actor rule per OQ-002.
 - 2026-04-08: Updated credit semantics per OQ-004 (Bound-/Flow-KooK signed values, negative = reversed incentive direction).
+- 2026-06-17: Documented `Spiegel` as the delivery match table linking `Code` to `Angler` (recipient assignment of PostIts).

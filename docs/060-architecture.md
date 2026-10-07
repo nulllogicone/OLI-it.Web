@@ -35,7 +35,7 @@ See [070-decisions/](070-decisions/) for ADRs.
 **Confirmed:**
 - Database-First approach (existing schema) → ADR-0001
 - Matching via stored procedure (no C# implementation) → ADR-0002
-- German table names preserved for compatibility → ADR-0003
+- German table names preserved for compatibility → [020-data-model.md](020-data-model.md)
 
 Pending decisions:
 - Authentication provider (ASP.NET Identity vs. existing auth) → ADR-0004
