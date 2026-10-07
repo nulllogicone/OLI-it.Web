@@ -5,6 +5,10 @@
 
 <nav class="sidebar-menu">
     <ul class="menu-list">
+        @if (isAuthenticated)
+        {
+            <li class="menu-item"><a href="/postit/create">New message</a></li>
+        }
         @* Anonymous user menu items *@
         @if (!isAuthenticated)
         {

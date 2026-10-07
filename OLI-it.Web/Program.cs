@@ -22,6 +22,7 @@ builder.Services.AddAntiforgery(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+        options.LoginPath = "/Login";
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
         options.SlidingExpiration = true;
         options.Cookie.HttpOnly = true;
@@ -71,6 +72,9 @@ builder.Services.AddScoped<JournalService>();
 
 // Add Chart Service
 builder.Services.AddScoped<ChartService>();
+
+builder.Services.AddScoped<PostItCreationService>();
+builder.Services.AddSingleton<PostItCreationTicket>();
 
 var app = builder.Build();
 

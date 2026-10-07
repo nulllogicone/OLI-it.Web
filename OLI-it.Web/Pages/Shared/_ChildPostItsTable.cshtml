@@ -27,10 +27,10 @@
                         }
                     </td>
                     <td>
-                        <strong>@(wurzel.PostIt.Titel ?? "(no title)")</strong>
+                        <strong>@(OLI_it.Web.Services.PostItText.Title(wurzel.PostIt.Titel ?? "(no title)"))</strong>
                         @if (!string.IsNullOrEmpty(wurzel.PostIt.PostIt1))
                         {
-                            <br /><span>@wurzel.PostIt.PostIt1</span>
+                            <br /><span>@OLI_it.Web.Services.PostItText.Body(wurzel.PostIt.PostIt1, wurzel.PostIt.Typ)</span>
                         }
                     </td>
                     <td>@wurzel.PostIt.Datum.ToString("yyyy-MM-dd")</td>

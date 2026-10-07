@@ -42,7 +42,6 @@ We will use **EF Core Database-First** approach via scaffolding:
 
 ### Mitigation
 - Create comprehensive German↔English mapping documentation (see `020-data-model.md`)
-- Consider creating English-named DTOs or extension methods for clarity
 - Add XML comments to generated entity classes explaining their purpose
 - Use partial classes to extend generated entities without modifying scaffolded code
 

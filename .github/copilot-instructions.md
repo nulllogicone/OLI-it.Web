@@ -68,8 +68,7 @@ The database schema uses German names — **preserve them exactly**. Do not rena
 | `Baum` | Tree |
 | `Zweig` | Branch |
 
-Full glossary: [`docs/german-english-quick-reference.md`](../docs/german-english-quick-reference.md)  
-Entity details: [`docs/010-domain-entities.md`](../docs/010-domain-entities.md)
+Full glossary: [`docs/020-data-model.md`](../docs/020-data-model.md). Entity details: [`docs/010-domain-entities.md`](../docs/010-domain-entities.md)
 
 ## Key Conventions
 
@@ -112,7 +111,7 @@ Entity details: [`docs/010-domain-entities.md`](../docs/010-domain-entities.md)
 Active ADRs in `docs/070-decisions/`:
 - **ADR-0001**: Database-first approach (no code-first migrations)
 - **ADR-0002**: Matchmaking logic lives in SQL stored procedures, not C#
-- **ADR-0003**: German table/column names must be preserved
+- **Data model**: German table/column names must be preserved; see [`docs/020-data-model.md`](../docs/020-data-model.md).
 
 ### CI/CD
 - Push to any branch → build + test + deploy to **test slot** on `oliitrazorweb` Azure App Service.
@@ -129,17 +128,15 @@ Before answering questions about domain, architecture, decisions, or UI, **alway
 | `docs/000-motivation.md` | Why OLI-it exists; problem statement and goals |
 | `docs/001-vision.md` | Long-term product vision |
 | `docs/010-domain-entities.md` | All domain entities with fields and relationships |
-| `docs/020-data-model.md` | Database schema overview and ER relationships |
+| `docs/020-data-model.md` | Existing database schema and German ↔ English entity name mapping |
 | `docs/030-use-cases.md` | User stories and use-case descriptions |
 | `docs/040-ui-ia.md` | UI information architecture; page hierarchy |
 | `docs/050-ui-wireframes.md` | Wireframe descriptions for key screens |
 | `docs/060-architecture.md` | Technical architecture; layers, patterns, dependencies |
 | `docs/070-decisions/ADR-0001-database-first-approach.md` | Decision: use existing DB schema, no EF migrations |
 | `docs/070-decisions/ADR-0002-stored-procedure-matchmaking.md` | Decision: matchmaking in SQL stored procs, not C# |
-| `docs/070-decisions/ADR-0003-german-table-names.md` | Decision: preserve German table/column names as-is |
 | `docs/080-backlog.md` | Prioritised feature and bug backlog |
 | `docs/990-open-questions.md` | Unresolved design and product questions |
 | `docs/ef-scaffolding-guide.md` | How to re-scaffold EF models from the database |
-| `docs/german-english-quick-reference.md` | German ↔ English entity name mapping |
 | `docs/developer-guide.md` | Local setup, secrets config, ViewComponent usage, infra deployment |
 | `docs/features/entity-visual-identity.md` | Visual identity rules for entity display |

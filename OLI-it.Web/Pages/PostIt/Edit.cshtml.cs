@@ -88,13 +88,13 @@ namespace OLI_it.Web.Pages.PostIt
                 .FirstOrDefaultAsync(w => w.PostItGuid == id.Value && w.StammZust == 1);
 
             PostIt = postit;
-            Titel = postit.Titel;
-            PostIt1 = postit.PostIt1;
+            Titel = PostItText.Title(postit.Titel);
+            PostIt1 = PostItText.Body(postit.PostIt1, postit.Typ);
             Url = postit.Url;
             Typ = postit.Typ;
             // Don't pre-populate DirectImageUrl - leave it empty so gallery selection works
             DirectImageUrl = null;
-            AuthorStammGuid = authorWurzel.StammGuid;
+            AuthorStammGuid = authorWurzel?.StammGuid;
 
             return Page();
         }
@@ -131,9 +131,18 @@ namespace OLI_it.Web.Pages.PostIt
                 return Forbid();
             }
 
+            if (System.Net.WebUtility.HtmlEncode(Titel ?? "").Length > 255 ||
+                (Typ == "txt" ? System.Net.WebUtility.HtmlEncode(PostIt1 ?? "").Length : (PostIt1 ?? "").Length) > 3000)
+                ModelState.AddModelError(string.Empty, "The title or message exceeds the shared database storage limit.");
+            if (!ModelState.IsValid)
+            {
+                PostIt = postItToUpdate;
+                AuthorStammGuid = authorWurzel?.StammGuid;
+                return Page();
+            }
             // Update the fields
-            postItToUpdate.Titel = Titel;
-            postItToUpdate.PostIt1 = PostIt1;
+            postItToUpdate.Titel = System.Net.WebUtility.HtmlEncode(Titel);
+            postItToUpdate.PostIt1 = Typ == "txt" ? System.Net.WebUtility.HtmlEncode(PostIt1)! : PostIt1!;
             postItToUpdate.Url = Url;
             postItToUpdate.Typ = Typ;
             // Note: KooK is not updated here as it's calculated in the backend
@@ -190,7 +199,7 @@ namespace OLI_it.Web.Pages.PostIt
                 _logger.LogError(ex, "Error updating PostIt {PostItId}", id);
                 ModelState.AddModelError(string.Empty, "An error occurred while saving changes.");
                 PostIt = postItToUpdate;
-                AuthorStammGuid = authorWurzel.StammGuid;
+                AuthorStammGuid = authorWurzel?.StammGuid;
                 return Page();
             }
 

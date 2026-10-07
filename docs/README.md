@@ -8,7 +8,7 @@ Last updated: 2026-05-20
 - IDs cross-link files: `UC-001`, `ENT-User`, `ADR-0001`.
 - Refine incrementally; record every decision in `070-decisions/`.
 - Park unresolved items in `990-open-questions.md`.
-- **German→English mapping:** See [german-english-quick-reference.md](german-english-quick-reference.md) for database entity names.
+- **German→English mapping:** See [020-data-model.md](020-data-model.md) for database entity names.
 - **Delivery note:** broad page-content localization rollout is currently deferred until core feature parity progresses further.
 
 ## Infrastructure Deployment Notes
@@ -24,14 +24,15 @@ Last updated: 2026-05-20
 
 ## Files
 
+Live application exploration: [Live experience journey](live-experience/README.md) records side-by-side test-slot walkthroughs, evidence and research references. Initial access baseline: 2026-10-03; feature parity remains unverified.
+
 | File | Purpose | Status |
 |------|---------|--------|
-| [german-english-quick-reference.md](german-english-quick-reference.md) | Quick lookup: German↔English table names | draft |
-| [ef-scaffolding-guide.md](ef-scaffolding-guide.md) | How to scaffold existing database with EF Core | draft |
+
 | [000-motivation.md](000-motivation.md) | Why OLI-it.Web is being built, core drivers | draft |
 | [001-vision.md](001-vision.md) | Product intent, goals, success criteria | draft |
 | [010-domain-entities.md](010-domain-entities.md) | Business entities, relationships, rules (with German mapping) | draft |
-| [020-data-model.md](020-data-model.md) | Existing database schema, German→English mapping | draft |
+| [020-data-model.md](020-data-model.md) | Existing database schema and German→English entity mapping | draft |
 | [030-use-cases.md](030-use-cases.md) | User stories and acceptance criteria | draft |
 | [040-ui-ia.md](040-ui-ia.md) | Information architecture, screens, navigation | draft |
 | [050-ui-wireframes.md](050-ui-wireframes.md) | Low-fidelity wireframes and interaction notes | stub |
@@ -41,5 +42,4 @@ Last updated: 2026-05-20
 | [080-backlog.md](080-backlog.md) | Prioritized MVP slices | stub |
 | [990-open-questions.md](990-open-questions.md) | Unresolved items parking lot | draft |
 
-## Templates
-See [templates/](templates/) for entity, use-case, ADR and backlog-item templates.
+
