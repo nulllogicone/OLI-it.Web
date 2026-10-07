@@ -1,0 +1,52 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "content": {
+        "json": "# Legacy OliWeb password logins\n\nConfirm that production uses role oliweb in the discovery table. Password logins only: remembered-cookie authentication does not emit this event. Sampling can omit individual rows; daily counts use sampling weights. Query scope: select Application Insights oliweb. Lookback: 30 days. Names are entered user names; timestamps are UTC."
+      },
+      "type": 1,
+      "name": "explanation"
+    },
+    {
+      "content": {
+        "query": "customEvents\n| where timestamp > ago(30d)\n| where name == \"Login\"\n| summarize StoredEvents=count(), EstimatedEvents=sum(itemCount), LastSeen=max(timestamp) by cloud_RoleName, Success=tostring(customDimensions.Success)\n| order by LastSeen desc",
+        "size": 0,
+        "resourceType": "microsoft.insights/components",
+        "version": "KqlItem/1.0",
+        "visualization": "table",
+        "title": "Environment discovery: verify production role",
+        "queryType": 0
+      },
+      "type": 3,
+      "name": "Environment discovery: verify production role"
+    },
+    {
+      "content": {
+        "query": "customEvents\n| where timestamp > ago(30d)\n| where name == \"Login\"\n| where cloud_RoleName == \"oliweb\"\n| where tostring(customDimensions.Success) =~ \"true\"\n| project LoginTimeUtc=timestamp, UserName=tostring(customDimensions.StammTextBox), SamplingWeight=itemCount\n| order by LoginTimeUtc desc\n| take 200",
+        "size": 0,
+        "resourceType": "microsoft.insights/components",
+        "version": "KqlItem/1.0",
+        "visualization": "table",
+        "title": "Recent successful password logins (UTC)",
+        "queryType": 0
+      },
+      "type": 3,
+      "name": "Recent successful password logins (UTC)"
+    },
+    {
+      "content": {
+        "query": "customEvents\n| where timestamp > ago(30d)\n| where name == \"Login\"\n| where cloud_RoleName == \"oliweb\"\n| where tostring(customDimensions.Success) =~ \"true\"\n| summarize EstimatedLogins=sum(itemCount) by bin(timestamp, 1d)\n| render timechart",
+        "size": 0,
+        "resourceType": "microsoft.insights/components",
+        "version": "KqlItem/1.0",
+        "visualization": "timechart",
+        "title": "Estimated successful password logins per day",
+        "queryType": 0
+      },
+      "type": 3,
+      "name": "Estimated successful password logins per day"
+    }
+  ],
+  "isLocked": false
+}

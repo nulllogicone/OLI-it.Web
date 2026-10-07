@@ -46,6 +46,7 @@ Live application exploration: [Live experience journey](live-experience/README.m
 | [065-magic-match-logic.md](065-magic-match-logic.md) | SQL matchmaking behavior (`fischen`/`beissen`) | draft |
 | [070-decisions/](070-decisions/) | Architecture Decision Records (ADRs) | draft |
 | [080-backlog.md](080-backlog.md) | Prioritized MVP slices | stub |
+| [090-legacy-login-observability.md](090-legacy-login-observability.md) | Legacy OliWeb login telemetry, operational queries and workbook template | live discovery query verified; workbook rendering unverified |
 | [990-open-questions.md](990-open-questions.md) | Unresolved items parking lot | draft |
 
 
