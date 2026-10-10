@@ -41,5 +41,6 @@ Live application exploration: [Live experience journey](live-experience/README.m
 | [070-decisions/](070-decisions/) | Architecture Decision Records (ADRs) | draft |
 | [080-backlog.md](080-backlog.md) | Prioritized MVP slices | stub |
 | [990-open-questions.md](990-open-questions.md) | Unresolved items parking lot | draft |
+| [review/](review/) | Point-in-time reviews; [2026-10-10 Claude fresh look](review/2026-10-10-claude-fresh-look.md) covers code, docs vs implementation, legacy parity and agent collaboration | draft |
 
 
