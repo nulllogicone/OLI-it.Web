@@ -50,15 +50,19 @@ certutil -d sql:$HOME/.pki/nssdb -A -t "P,," -n "localhost" -i /tmp/localhost.cr
 
 ### CI pipeline steps
 
-These mirror what the GitHub Actions workflow executes:
+The GitHub Actions workflow builds the application and runs the focused creation tests against an isolated database restored from the committed `data/null.bak`. These tests require Windows with SQL Server LocalDB and `sqlcmd` available:
 
 ```powershell
 dotnet restore "OLI-it.Web"
 dotnet build "OLI-it.Web" --configuration Release --no-restore
-dotnet test "OLI-it.Web" --no-build
+SqlLocalDB start MSSQLLocalDB
+sqlcmd -S '(localdb)\MSSQLLocalDB' -d master -E -C -l 10 -b -Q 'SELECT 1'
+dotnet test "OLI-it.Web.Tests" --configuration Release --filter "FullyQualifiedName~PostItCreationTests"
 ```
 
-> There are no test projects yet. When adding tests, use xUnit or NUnit in a new `OLI-it.Web.Tests` project.
+CI explicitly starts LocalDB and retries the connection probe up to six times before running tests. It fails if the database remains unavailable; it does not retry or skip failing tests. The wider matchmaking benchmark is outside this deployment gate.
+
+On 2026-10-21, [push run 186](https://github.com/nulllogicone/OLI-it.Web/actions/runs/39654872813) failed during fixture initialization with a LocalDB pre-login connection timeout. All 11 tests inherited that setup failure. [PR run 187](https://github.com/nulllogicone/OLI-it.Web/actions/runs/39655640013) subsequently passed all 11 tests for branch head `f50de68`. This supports an intermittent startup problem; the explicit readiness check addresses that dependency. The package vulnerability warnings in both runs were separate from the test failure.
 
 ---
 
