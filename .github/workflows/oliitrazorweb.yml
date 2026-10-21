@@ -42,6 +42,22 @@ jobs:
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
     - name: Build
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    - name: Start test database
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        Get-Command SqlLocalDB, sqlcmd -ErrorAction Stop | Out-Null
+        SqlLocalDB start MSSQLLocalDB
+        if ($LASTEXITCODE -ne 0) { throw 'Could not start MSSQLLocalDB.' }
+
+        # Cold runner startup can outlast the test fixture's first connection.
+        # Retry only this readiness probe; test failures must still fail the build.
+        for ($attempt = 1; $attempt -le 6; $attempt++) {
+          sqlcmd -S '(localdb)\MSSQLLocalDB' -d master -E -C -l 10 -b -Q 'SELECT 1'
+          if ($LASTEXITCODE -eq 0) { break }
+          if ($attempt -eq 6) { throw 'MSSQLLocalDB did not become ready after six connection attempts.' }
+          Start-Sleep -Seconds 2
+        }
     - name: Test
       run: dotnet test "OLI-it.Web.Tests" --configuration ${{ env.CONFIGURATION }} --filter "FullyQualifiedName~PostItCreationTests"
     - name: Publish

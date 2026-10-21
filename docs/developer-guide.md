@@ -50,15 +50,38 @@ certutil -d sql:$HOME/.pki/nssdb -A -t "P,," -n "localhost" -i /tmp/localhost.cr
 
 ### CI pipeline steps
 
-These mirror what the GitHub Actions workflow executes:
+The GitHub Actions workflow builds the application and runs the focused creation tests against an isolated database restored from the committed `data/null.bak`. These tests require Windows with SQL Server LocalDB and `sqlcmd` available:
 
 ```powershell
 dotnet restore "OLI-it.Web"
 dotnet build "OLI-it.Web" --configuration Release --no-restore
-dotnet test "OLI-it.Web" --no-build
+SqlLocalDB start MSSQLLocalDB
+sqlcmd -S '(localdb)\MSSQLLocalDB' -d master -E -C -l 10 -b -Q 'SELECT 1'
+dotnet test "OLI-it.Web.Tests" --configuration Release --filter "FullyQualifiedName~PostItCreationTests"
 ```
 
-> There are no test projects yet. When adding tests, use xUnit or NUnit in a new `OLI-it.Web.Tests` project.
+CI explicitly starts LocalDB and retries the connection probe up to six times before running tests. It fails if the database remains unavailable; it does not retry or skip failing tests. The wider matchmaking benchmark is outside this deployment gate.
+
+On 2026-10-21, [push run 186](https://github.com/nulllogicone/OLI-it.Web/actions/runs/39654872813) failed during fixture initialization with a LocalDB pre-login connection timeout. All 11 tests inherited that setup failure. [PR run 187](https://github.com/nulllogicone/OLI-it.Web/actions/runs/39655640013) subsequently passed all 11 tests for branch head `f50de68`. This supports an intermittent startup problem; the explicit readiness check addresses that dependency. The package vulnerability warnings in both runs were separate from the test failure.
+
+---
+
+## Feature worktrees and online previews
+
+Verified against the local workflow and GitHub `main` on 2026-10-21: [the application workflow](../.github/workflows/oliitrazorweb.yml) supports deploying feature branches to the shared Azure App Service `test` slot. Git history records the change as `c231773` ("deploy any branch", 2026-04-02).
+
+The documented preview address is <https://oliitrazorweb-test.azurewebsites.net/>. This configuration review does not establish which commit is currently deployed or whether a new deployment will succeed.
+
+Suggested review cycle:
+
+1. Develop an experiment in a separate worktree on a feature branch, for example `codex/47-fishing-celebration` for [issue #47](https://github.com/nulllogicone/OLI-it.Web/issues/47).
+2. Prepare the implementation and validate it locally; leave changes available for the owner's review. Commit and push only when explicitly requested by the owner.
+3. A push that matches the workflow's path filters builds, runs the selected `PostItCreationTests`, publishes, and deploys to `test`. The workflow also exposes a manual `workflow_dispatch` trigger. Pull-request events build and test but skip deployment.
+4. After deployment succeeds, record the branch, commit, workflow run and preview URL so the owner can review the actual deployed version. Decide whether to revise, abandon, or merge the experiment after online review.
+
+All branches share the same test slot; there is no separate preview environment per worktree or branch. Another successful deployment can replace the experiment, and the workflow currently has no deployment concurrency control. Coordinate preview use while reviewing a feature. A local worktree alone does not deploy anything.
+
+Feature branches cannot enter the production job: it requires `refs/heads/main` and a non-pull-request event. Merging to `main` starts the deployment path toward production, subject to the configured GitHub `production` environment protections. Verify those protections before relying on an approval gate. Test-slot database and storage isolation must also be checked before experiments that modify data; a separate worktree does not isolate hosted data.
 
 ---
 

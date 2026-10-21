@@ -1,6 +1,6 @@
 # OLI-it
 
-> *Connect any sender with any recipient — without prior acquaintance.*
+> *Mutual matching connects any sender with any recipient — without prior acquaintance.*
 
 **OLI-it** is an open messaging platform built around a semantic matchmaking protocol called **0L1** (Null-Logic-One). Instead of routing messages through social graphs or keyword searches, 0L1 matches messages based on precise mutual criteria expressed in a semantic wordspace.
 
@@ -20,6 +20,8 @@ Every message on OLI-it carries three kinds of metadata set by the **author**:
 Every **recipient** maintains one or more **filter profiles** — their own description of themselves and what content they want to receive.
 
 The **matchmaking algorithm** delivers a message to a recipient only when *all mutual criteria are satisfied on both sides*. No message is ever shown to someone who does not match — and no match is left unseen by someone who asked for it.
+
+**From whom, about what, and to whom** are the three pillars. The wordspace and its mutual-match logic are the magic beneath them: they decide whether sender and recipient are soulmates.
 
 ```
 Author (S)          Wordspace (NKBZ)          Recipient (A)
