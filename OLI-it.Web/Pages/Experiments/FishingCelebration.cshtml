@@ -1,0 +1,20 @@
+@page "/experiments/fishing-celebration"
+@{
+    ViewData["Title"] = "A little bite of joy";
+}
+
+<div class="page-header">
+    <h1>A little bite of joy <span aria-hidden="true">🎣</span></h1>
+    <p>A small experiment for the moment a message meets its Angler.</p>
+</div>
+
+<div class="content-section">
+    <p>This is a sample catch. Turn on celebrations below to try it, then replay it as often as you like.</p>
+    @await Html.PartialAsync("_FishingCelebration", new OLI_it.Web.ViewModels.FishingCelebrationModel("demo", new[] { "sample-catch" }))
+    <p class="mt-3">On an Angler page, celebrations appear when you open a list with matches you have not celebrated in this tab. Your choice is saved on this browser. Reduced-motion preferences are respected.</p>
+    <p><a href="/design-overview">Back to the design overview</a></p>
+</div>
+
+@section Scripts {
+    <script src="~/js/fishing-celebration.js" asp-append-version="true"></script>
+}

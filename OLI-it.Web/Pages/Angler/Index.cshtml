@@ -28,7 +28,16 @@
 
         <div id="catched" class="tab-content">
             <h3>Catched PostIts</h3>
+            @if (Model.CatchedPostIts?.Any() == true)
+            {
+                var matchKeys = Model.CatchedPostIts.Select(s => (s.Code?.PostItGuid ?? s.CodeGuid).ToString("N")).Distinct().ToArray();
+                @await Html.PartialAsync("_FishingCelebration", new OLI_it.Web.ViewModels.FishingCelebrationModel(Model.Angler.AnglerGuid.ToString("N"), matchKeys))
+            }
             @await Html.PartialAsync("_ChildCatchedPostItsTable", Model.CatchedPostIts ?? new List<OLI_it.Web.Models.Spiegel>())
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/fishing-celebration.js" asp-append-version="true"></script>
+}

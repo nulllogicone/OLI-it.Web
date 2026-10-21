@@ -62,6 +62,12 @@ dotnet test "OLI-it.Web" --no-build
 
 ---
 
+## Feature preview experiments
+
+See [the optional fishing celebration](experiments/fishing-celebration.md) for the issue #47 experiment, sample route, validation, and shared test-slot deployment workflow.
+
+---
+
 ## Infrastructure Deployment
 
 Infrastructure is defined in `infra/main.bicep` and deployed via GitHub Actions (`.github/workflows/infra-main-bicep.yml`).

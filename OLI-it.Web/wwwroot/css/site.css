@@ -2207,3 +2207,35 @@ body.slot-dev::before {
 /* Preserve the author's plain-text message layout without rendering markup. */
 .postit-card .entity-description { white-space: pre-wrap; overflow-wrap: anywhere; }
 .postit-form { max-width: 48rem; }
+
+/* Optional Angler catch celebration (issue #47). */
+.fishing-celebration {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 1rem 0;
+  padding: 1.25rem;
+  border: 1px solid #b8d9d6;
+  border-radius: 12px;
+  background: #f1faf8;
+  color: #174b48;
+}
+.fishing-copy { min-width: 0; }
+.fishing-copy p { margin: .35rem 0 .75rem; }
+.fishing-controls:not([hidden]) { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
+.fishing-controls label { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
+.fishing-controls input { width: 1.1rem; height: 1.1rem; accent-color: #176b65; }
+.fishing-scene { position: relative; flex: 0 0 104px; height: 94px; overflow: hidden; }
+.fishing-water { position: absolute; top: 60px; left: 0; right: 0; height: 34px; border-top: 2px solid #438e95; border-radius: 45%; background: #c3e5e6; }
+.fishing-float { position: absolute; z-index: 2; top: 42px; left: 50px; width: 10px; height: 24px; border: 1px solid #174b48; border-radius: 50%; background: linear-gradient(#d95c47 50%, #fff 50%); transform: rotate(12deg); }
+.fishing-float::before { content: ""; position: absolute; bottom: 22px; left: 4px; width: 1px; height: 42px; background: #438e95; }
+.fishing-ripple { position: absolute; z-index: 3; top: 57px; left: 32px; width: 45px; height: 10px; border: 2px solid #438e95; border-radius: 50%; opacity: 0; }
+.fishing-fish { position: absolute; z-index: 4; left: 24px; top: 53px; font-size: 2rem; opacity: 0; }
+.is-celebrating .fishing-float { animation: fishing-bob 1.6s ease-in-out; }
+.is-celebrating .fishing-ripple { animation: fishing-ripple 1.6s ease-out; }
+.is-celebrating .fishing-fish { animation: fishing-leap 1.6s ease-in-out; }
+@keyframes fishing-bob { 25%, 65% { transform: translateY(10px) rotate(-18deg); } 45%, 85% { transform: translateY(-4px) rotate(18deg); } }
+@keyframes fishing-ripple { 15% { opacity: 1; } 100% { opacity: 0; transform: scale(2); } }
+@keyframes fishing-leap { 0%, 100% { opacity: 0; transform: translate(0, 18px) rotate(-25deg); } 25% { opacity: 1; } 50% { opacity: 1; transform: translate(20px, -40px) rotate(15deg); } 85% { opacity: 0; transform: translate(40px, 18px) rotate(55deg); } }
+@media (max-width: 540px) { .fishing-celebration { flex-direction: column; align-items: flex-start; } .fishing-scene { flex-basis: auto; width: 104px; } }
+@media (prefers-reduced-motion: reduce) { .fishing-celebration * { animation: none !important; } }

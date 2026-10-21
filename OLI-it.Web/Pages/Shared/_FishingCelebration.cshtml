@@ -1,0 +1,24 @@
+@model OLI_it.Web.ViewModels.FishingCelebrationModel
+
+<section class="fishing-celebration" data-fishing-celebration
+         data-angler-key="@Model.AnglerKey" data-match-keys="@string.Join(",", Model.MatchKeys)"
+         aria-label="Catch celebration">
+    <div class="fishing-scene" aria-hidden="true">
+        <span class="fishing-float"></span>
+        <span class="fishing-ripple"></span>
+        <span class="fishing-fish">🐟</span>
+        <span class="fishing-water"></span>
+    </div>
+    <div class="fishing-copy">
+        <strong>Every match starts a conversation.</strong>
+        <p data-fishing-status role="status" aria-live="polite">A little celebration when your Angler has a bite.</p>
+        <div class="fishing-controls" hidden>
+            <label>
+                <input type="checkbox" data-fishing-enabled />
+                Celebrate catches on this browser
+            </label>
+            <button type="button" class="btn btn-outline-primary btn-sm" data-fishing-replay disabled>Celebrate this catch</button>
+        </div>
+        <noscript><p>Enable JavaScript to try the optional catch celebration.</p></noscript>
+    </div>
+</section>
