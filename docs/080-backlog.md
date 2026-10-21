@@ -34,7 +34,7 @@ Status: draft
 | BL-103 | Admin moderation dashboard | Flag/review messages | not started |
 | BL-104 | Advanced wordspace editing (drag-drop ordering) | | not started |
 | BL-105 | Analytics/reporting for authors | Views, delivery count | not started |
-| BL-106 | Modern API exposure (.NET Core rewrite) | Completely rewritten modern .NET Core page at https://nulllogicone.net with API endpoints for JSON, XML, and RDF. Public repo: https://github.com/nulllogicone/nulllogicone.net | in progress |
+| BL-106 | Modern API exposure (.NET Core rewrite) | Separate [semantic API](https://github.com/nulllogicone/nulllogicone.net), deployed at https://nulllogicone.net per owner; good enough for current needs. HTML/JSON/RDF/XML entity routes plus Ontop SPARQL; broader entity/ontology expansion remains optional follow-up there. See [consistency review](review/2026-10-19-semantic-api-consistency.md). | available per owner; separate scope |
 | BL-107 | Implement rate limiting for login endpoint | Fixed window: 5 attempts/minute per IP using built-in RateLimiter | ✅ completed |
 | BL-108 | Add anti-forgery token handling to login API | Re-enable CSRF protection for login/logout endpoints | ✅ completed |
 | BL-109 | Hash passwords instead of plaintext storage | Use BCrypt or ASP.NET Core Identity password hasher | not started |
@@ -45,6 +45,7 @@ Status: draft
 
 ## Change Log
 
+- 2026-10-19: Clarified BL-106 as a separately maintained API, sufficient for current needs per owner; XML means RDF/XML, not an additional generic XML API. Source coverage checked; deployment unverified.
 - 2026-03-26: Initial backlog from use case and entity analysis.
 - 2026-03-26: Added authentication security enhancements (BL-107 to BL-110).
 - 2026-03-26: Completed BL-107 - Rate limiting implemented with fixed window (5 attempts/min).

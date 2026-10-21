@@ -1,13 +1,13 @@
 # Live experience journey
 
-Updated: 2026-10-03  
+Updated: 2026-10-21  
 Status: draft
 
 ## Purpose
 
 Explore the legacy and modern test applications together. Compare the same user intent in each, preserve meaningful protocol behavior, and distinguish missing behavior from opportunities to improve the experience. Start with [the transition overview](../000-motivation.md).
 
-Working branch: `codex/live-experience-journey`. Keep this exploration local until its documentation and screenshots have been reviewed for publication. Credentials must never be recorded here.
+The initial journey and PostIt create/update increment were merged through [PR #49](https://github.com/nulllogicone/OLI-it.Web/pull/49). Further walkthrough notes remain local until reviewed. Credentials must never be recorded here.
 
 ## Environments
 
@@ -16,7 +16,9 @@ Working branch: `codex/live-experience-journey`. Keep this exploration local unt
 | Legacy .NET Framework 4.8 (owner description) | https://oliweb-test.azurewebsites.net/ | Azure DevOps OLI-it repository |
 | Modern Razor Pages | https://oliitrazorweb-test.azurewebsites.net/ | This GitHub repository |
 
-The owner authorizes exploration using the supplied test account and explicitly confirms both test applications share the same database. A legacy PostIt has been created and read in the modern UI; modern creation is blocked by a feature gap. Registration and TopLab creation remain untested. Outbound notification behavior and deployed revisions are not yet verified.
+The owner authorizes exploration using the supplied test account and explicitly confirms both test applications share the same database. Legacy creation was verified on 2026-10-03; modern creation was verified in Azure test on 2026-10-04 after deployment of commit `0c0261a`. Registration and TopLab creation remain untested. Description and sending are deferred until the intrinsic NKBZ/OgIf behavior is understood with the owner. Outbound notification behavior and the current deployed revisions are unverified.
+
+Scope follows the transition overview: OliWeb end-user workflows. KatWeb vocabulary administration, reward payouts and notification email administration are outside this repository's migration scope.
 
 ## How we work
 
@@ -45,6 +47,7 @@ These are investigation topics, not verified feature claims or a duplicate imple
 
 - [2026-10-03: access baseline](sessions/2026-10-03-access.md)
 - [2026-10-03: message creation](sessions/2026-10-03-message-creation.md)
+- [2026-10-21: journey reset and read-only message-flow walkthrough](sessions/2026-10-21-message-flow.md)
 - [Comparison matrix](comparison.md)
 - [Paper and implementation references](references.md)
 - Screenshots: `evidence/YYYY-MM-DD/`, linked from session notes. Capture only what is needed to establish a finding.

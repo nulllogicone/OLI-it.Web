@@ -1,6 +1,6 @@
 # OLI-it — Motivation and transition overview
 
-Updated: 2026-10-02
+Updated: 2026-10-19
 Status: draft; initial orientation, not a verified feature audit
 
 ## Purpose and ownership
@@ -29,7 +29,7 @@ For each completed slice, update its issue and any affected decision or status d
 | System | Role | Initial assessment | Evidence boundary |
 |---|---|---|---|
 | Azure DevOps OLI-it | Legacy system with two distinct applications: OliWeb for end users and KatWeb for administration, plus WCF services and older experiments | OliWeb is the behavioral reference for this repository's end-user migration; KatWeb remains a separate administration application | README review only; production revision and classic pipeline definitions not inspected |
-| GitHub nulllogicone.net | Modern semantic API: HTML, JSON, RDF; Ontop SPARQL over SQL Server | Owner reports fairly stable; READMEs describe deployment and remaining entity/ontology expansion | Local README review; runtime/API coverage not tested |
+| GitHub nulllogicone.net | Separate modern semantic API: HTML, JSON, RDF/XML; Ontop SPARQL over SQL Server | Owner reports deployed and good enough for now; four entity routes and twelve Ontop entity mappings inspected | [2026-10-19 consistency review](review/2026-10-19-semantic-api-consistency.md); live availability and deployed revision unverified |
 | GitHub OLI-it.Web | Migration of the OliWeb end-user application only | READMEs describe .NET 10 Razor Pages, EF Core database-first, SQL Server, Bootstrap/vanilla JS and Azure hosting | UI basically works per owner; end-user feature completion not audited |
 | KatWeb | Separate legacy admin interface for Wortraum management, reward payouts, and notification emails | Not being migrated or replaced by this repository | Admin workflow status is outside this repository's scope |
 
@@ -37,7 +37,9 @@ Local workspaces observed:
 
 - Legacy: `C:/Users/luchtfr/source/repos/DevOps/nulllogicone/OLI-it`
 - Modern UI: `C:/Users/luchtfr/source/repos/GitHub/nulllogicone/OLI-it.Web`
-- Semantic API: `C:/Users/luchtfr/source/repos/GitHub/nulllogicone/nulllogicone.net` (readable; outside this chat's configured writable roots)
+- Semantic API: `C:/Users/luchtfr/source/repos/GitHub/nulllogicone/nulllogicone.net`
+
+The semantic API is a parallel part of the legacy modernization journey, not a prerequisite for completing the OliWeb end-user UI. OLI-it.Web currently uses SQL Server directly through EF Core; it does not consume this API. Entity and ontology expansion in the API repository remain separate from this repository's feature-parity work.
 
 ## Protocol and compatibility constraints
 
