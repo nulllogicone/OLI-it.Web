@@ -1,5 +1,6 @@
 @page "~/stamm/{id:guid}/angler"
 @model OLI_it.Web.Pages.Stamm.AnglerModel
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Anglers";
 }
@@ -14,6 +15,12 @@
 
     <div class="content-section">
         <h3>Anglers (Filter Profiles)</h3>
+        @if (User.Identity?.IsAuthenticated == true &&
+             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var ownerId) &&
+             ownerId == Model.Stamm?.StammGuid)
+        {
+            <p><a asp-page="/Angler/Create" class="btn btn-primary">New Angler</a></p>
+        }
         @if (Model.Anglers.Any())
         {
             @await Html.PartialAsync("_ChildAnglersTable", Model.Anglers)

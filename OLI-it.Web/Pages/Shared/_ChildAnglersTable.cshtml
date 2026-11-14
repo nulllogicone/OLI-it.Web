@@ -1,4 +1,5 @@
 @model List<OLI_it.Web.Models.Angler>
+@using System.Net
 @{
     var anglerCatchCounts = ViewData["AnglerCatchCounts"] as IReadOnlyDictionary<Guid, int>;
 }
@@ -20,7 +21,7 @@
                 var catchesCount = (anglerCatchCounts != null && anglerCatchCounts.TryGetValue(angler.AnglerGuid, out var count)) ? count : 0;
                 var targetUrl = $"/angler/{angler.AnglerGuid}";
                 <tr class="trunk-row" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
-                    <td>@angler.Angler1</td>
+                    <td>@WebUtility.HtmlDecode(angler.Angler1)</td>
                     <td>@angler.Datum.ToString("yyyy-MM-dd")</td>
                     <td>@(angler.Gescannt ? "Yes" : "No")</td>
                     <td><span class="count-badge">@catchesCount</span></td>

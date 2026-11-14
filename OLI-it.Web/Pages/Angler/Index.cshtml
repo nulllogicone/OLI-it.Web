@@ -21,13 +21,13 @@
     {
         var tabs = new List<(string Id, string Label, bool IsActive)>
         {
-            ("catched", $"Catched PostIts ({Model.CatchedPostIts?.Count ?? 0})", true)
+            ("catched", "Caught PostIts", true)
         };
 
         @await Html.PartialAsync("_TabsNavigation", tabs)
 
-        <div id="catched" class="tab-content">
-            <h3>Catched PostIts</h3>
+        <div id="catched" class="tab-content active">
+            <h3>Latest caught PostIts</h3>
             @await Html.PartialAsync("_ChildCatchedPostItsTable", Model.CatchedPostIts ?? new List<OLI_it.Web.Models.Spiegel>())
         </div>
     }

@@ -100,8 +100,8 @@
                 </a>
             </li>
             <li class="menu-item">
-                <a href="/angler/@anglerGuid/catched" class="@(currentPage.Equals("/Angler/Catched", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                    catched
+                <a asp-page="/Angler/Index" asp-route-id="@anglerGuid" asp-fragment="catched">
+                    caught PostIts
                 </a>
                 <span class="menu-description">matching postits</span>
             </li>

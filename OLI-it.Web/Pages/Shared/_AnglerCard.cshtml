@@ -1,9 +1,22 @@
 @model OLI_it.Web.Models.Angler
+@using System.Net
+@using System.Security.Claims
 
 <div class="entity-card angler-card">
     <div class="entity-card-header">
-        <h3>Angler: @Model.Angler1</h3>
+        <h3>Angler: @WebUtility.HtmlDecode(Model.Angler1)</h3>
         <div class="card-actions-top-right">
+            @if (User.Identity?.IsAuthenticated == true &&
+                 Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var ownerId) &&
+                 ownerId == Model.StammGuid)
+            {
+                <a asp-page="/Angler/Edit" asp-route-id="@Model.AnglerGuid" class="edit-btn"
+                   title="Edit Angler" aria-label="Edit Angler">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207l-8 8V11.5h.5v.5h.5v.5H4v.5h.5v.5h.293l8-8z"/>
+                    </svg>
+                </a>
+            }
             <a href="/stamm/@Model.StammGuid" class="close-btn" title="Close to Stamm">&times;</a>
         </div>
     </div>
@@ -28,7 +41,7 @@
         @if (!string.IsNullOrEmpty(Model.Beschreibung))
         {
             <div class="entity-description">
-                <strong>Description:</strong> @Model.Beschreibung
+                <strong>Description:</strong> @WebUtility.HtmlDecode(Model.Beschreibung)
             </div>
         }
     </div>
