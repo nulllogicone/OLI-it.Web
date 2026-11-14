@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Configuration;
 using OLI_it.Web.Pages.TopLab;
 using OLI_it.Web.Services;
 
@@ -58,6 +59,35 @@ public sealed class TopLabCreationTests(PostItCreationDatabase database) : IClas
         Assert.Equal(0m, answer.Lohn);
         Assert.Equal(body, PostItText.Body(answer.TopLab1, answer.Typ));
         Assert.Contains("&lt;markup&gt;", answer.TopLab1);
+
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string, string?> { ["ConnectionStrings:OliItStorageConnectionString"] = "UseDevelopmentStorage=true" }).Build();
+        var gallery = new AzureBlobStorageService(configuration, NullLogger<AzureBlobStorageService>.Instance);
+        var editPage = new EditModel(db, gallery, NullLogger<EditModel>.Instance)
+        {
+            PageContext = page.PageContext,
+            TempData = page.TempData
+        };
+        var owner = httpContext.User;
+        httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())], "test"));
+        Assert.IsType<ForbidResult>(await editPage.OnGetAsync(answer.TopLabGuid, default));
+        Assert.IsType<ForbidResult>(await editPage.OnPostAsync(answer.TopLabGuid, default));
+
+        httpContext.User = owner;
+        Assert.IsType<PageResult>(await editPage.OnGetAsync(answer.TopLabGuid, default));
+        Assert.Equal(body, editPage.Input.Body);
+        editPage.Input.Title = "Updated <title>";
+        editPage.Input.Body = "Updated & clarified";
+        editPage.SelectedImageUrl = $"/{authorId}/answer.png";
+        Assert.IsType<RedirectToPageResult>(await editPage.OnPostAsync(answer.TopLabGuid, default));
+
+        var updated = await db.TopLabs.AsNoTracking().SingleAsync(t => t.TopLabGuid == answer.TopLabGuid);
+        Assert.Equal(editPage.Input.Title, PostItText.Title(updated.Titel));
+        Assert.Equal(editPage.Input.Body, PostItText.Body(updated.TopLab1, updated.Typ));
+        Assert.Equal(answer.Datum, updated.Datum);
+        Assert.Equal(answer.Lohn, updated.Lohn);
+        Assert.Equal(editPage.SelectedImageUrl, updated.Datei);
     }
 
     private sealed class NoopTempDataProvider : ITempDataProvider

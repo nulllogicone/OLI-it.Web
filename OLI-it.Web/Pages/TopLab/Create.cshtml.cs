@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,13 +35,6 @@ public sealed class CreateModel(OliItDbContext context, PostItCreationTicket tic
         }
 
         if (!ModelState.IsValid) return Page();
-        var title = string.IsNullOrWhiteSpace(Input.Title) ? null : WebUtility.HtmlEncode(Input.Title.Trim());
-        var body = WebUtility.HtmlEncode(Input.Body);
-        if (title?.Length > 255)
-            ModelState.AddModelError("Input.Title", "The title is too long after encoding for the shared database.");
-        if (body.Length > 3000)
-            ModelState.AddModelError("Input.Body", "The answer is too long after encoding for the shared database.");
-        if (!ModelState.IsValid) return Page();
 
         if (!await AnswerExistsAsync())
         {
@@ -52,8 +43,8 @@ public sealed class CreateModel(OliItDbContext context, PostItCreationTicket tic
                 TopLabGuid = answerId,
                 PostItGuid = id,
                 StammGuid = AuthorId,
-                Titel = title,
-                TopLab1 = body,
+                Titel = Input.EncodedTitle,
+                TopLab1 = Input.EncodedBody,
                 Typ = "txt",
                 Lohn = 0
             });
@@ -100,12 +91,4 @@ public sealed class CreateModel(OliItDbContext context, PostItCreationTicket tic
         return null;
     }
 
-    public sealed class AnswerInput
-    {
-        [StringLength(255)]
-        public string? Title { get; set; }
-
-        [Required, StringLength(3000)]
-        public string Body { get; set; } = "";
-    }
 }

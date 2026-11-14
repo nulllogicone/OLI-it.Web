@@ -103,6 +103,9 @@ The form accepts a required plain-text answer and an optional title. Saving open
 the PostIt's answers page. Each submission is tied to the signed-in Stamm and
 the PostIt. Repeating the same submission saves a single TopLab.
 
+The answer's author can use the edit pencil on the TopLab card to update the
+title and text, pick an image from their gallery, or upload an image.
+
 TopLabs use the shared database's legacy text encoding and start with zero
 reward. On databases with the legacy `insTopLabInbox` trigger, inserting a
 TopLab also creates inbox entries for the PostIt's associated Stamms.
