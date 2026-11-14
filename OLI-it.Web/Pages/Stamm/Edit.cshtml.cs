@@ -123,11 +123,15 @@ namespace OLI_it.Web.Pages.Stamm
                 }
             }
             // Priority 2: Selected existing image
-            else if (!string.IsNullOrEmpty(SelectedImageUrl))
+            else if (!string.IsNullOrEmpty(SelectedImageUrl) && SelectedImageUrl != stammToUpdate.Datei)
             {
-                // Store the relative path (should already be in format /{guid}/name.ext)
-                newImagePath = SelectedImageUrl;
-                _logger.LogInformation("Existing image selected for Stamm {StammId}: {ImageUrl}", id, SelectedImageUrl);
+                newImagePath = await _blobService.ResolveGallerySelectionAsync(id.Value, SelectedImageUrl);
+                if (newImagePath == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Choose an image from your gallery.");
+                    Stamm = stammToUpdate;
+                    return Page();
+                }
             }
 
             // Update the Datei field if a new image was set

@@ -48,17 +48,14 @@ public sealed class EditModel(OliItDbContext context, AzureBlobStorageService bl
         }
         else if (!string.IsNullOrEmpty(SelectedImageUrl) && SelectedImageUrl != Answer.Datei)
         {
-            var prefix = $"/{Answer.StammGuid}/";
-            if (SelectedImageUrl.Length > 255 ||
-                !SelectedImageUrl.StartsWith(prefix, StringComparison.Ordinal) ||
-                Uri.UnescapeDataString(SelectedImageUrl[prefix.Length..]).Split('/')
-                    .Any(segment => segment is "" or "." or ".." || segment.Contains('\\')))
+            var imagePath = await blobService.ResolveGallerySelectionAsync(Answer.StammGuid, SelectedImageUrl);
+            if (imagePath == null)
             {
                 ModelState.AddModelError(string.Empty, "Choose an image from your gallery.");
                 return Page();
             }
 
-            Answer.Datei = SelectedImageUrl;
+            Answer.Datei = imagePath;
         }
 
         Answer.Titel = Input.EncodedTitle;
