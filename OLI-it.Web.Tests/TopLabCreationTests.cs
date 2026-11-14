@@ -79,7 +79,14 @@ public sealed class TopLabCreationTests(PostItCreationDatabase database) : IClas
         Assert.Equal(body, editPage.Input.Body);
         editPage.Input.Title = "Updated <title>";
         editPage.Input.Body = "Updated & clarified";
-        editPage.SelectedImageUrl = $"/{authorId}/answer.png";
+        editPage.SelectedImageUrl = $"/{Guid.NewGuid()}/answer.png";
+        Assert.IsType<PageResult>(await editPage.OnPostAsync(answer.TopLabGuid, default));
+        Assert.False(editPage.ModelState.IsValid);
+        Assert.Equal(answer.Datei, await db.TopLabs.AsNoTracking()
+            .Where(t => t.TopLabGuid == answer.TopLabGuid).Select(t => t.Datei).SingleAsync());
+
+        editPage.ModelState.Clear();
+        editPage.SelectedImageUrl = answer.Datei;
         Assert.IsType<RedirectToPageResult>(await editPage.OnPostAsync(answer.TopLabGuid, default));
 
         var updated = await db.TopLabs.AsNoTracking().SingleAsync(t => t.TopLabGuid == answer.TopLabGuid);
@@ -87,7 +94,7 @@ public sealed class TopLabCreationTests(PostItCreationDatabase database) : IClas
         Assert.Equal(editPage.Input.Body, PostItText.Body(updated.TopLab1, updated.Typ));
         Assert.Equal(answer.Datum, updated.Datum);
         Assert.Equal(answer.Lohn, updated.Lohn);
-        Assert.Equal(editPage.SelectedImageUrl, updated.Datei);
+        Assert.Equal(answer.Datei, updated.Datei);
     }
 
     private sealed class NoopTempDataProvider : ITempDataProvider

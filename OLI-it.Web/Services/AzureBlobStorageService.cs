@@ -49,6 +49,18 @@ public class AzureBlobStorageService
         }
     }
 
+    public async Task<string?> ResolveGallerySelectionAsync(Guid stammGuid, string selection)
+    {
+        if (selection.Length > 255 || !selection.StartsWith($"/{stammGuid}/", StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var images = await ListStammImagesAsync(stammGuid);
+        var blobName = images.Find(name => string.Equals(name, selection[1..], StringComparison.Ordinal));
+        return blobName == null ? null : $"/{blobName}";
+    }
+
     /// <summary>
     /// Uploads an image to the Stamm's folder
     /// </summary>

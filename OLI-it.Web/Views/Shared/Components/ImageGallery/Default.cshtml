@@ -10,7 +10,7 @@
             {
                 <div class="gallery-image-item @(imageItem.RelativePath == Model.CurrentImage ? "selected" : "")" 
                      data-image-path="@imageItem.RelativePath"
-                     onclick="selectImage('@imageItem.RelativePath')">
+                     onclick="selectImage(this)">
                     <img src="@imageItem.FullUrl" alt="Gallery Image" class="gallery-thumbnail" />
                     @if (imageItem.RelativePath == Model.CurrentImage)
                     {
@@ -53,17 +53,17 @@
 </div>
 
 <script>
-    function selectImage(relativePath) {
+    function selectImage(item) {
         // Remove selected class from all items
         document.querySelectorAll('.gallery-image-item').forEach(item => {
             item.classList.remove('selected');
         });
 
         // Add selected class to clicked item
-        event.currentTarget.classList.add('selected');
+        item.classList.add('selected');
 
         // Update hidden field with relative path
-        document.getElementById('selectedImageUrl').value = relativePath;
+        document.getElementById('selectedImageUrl').value = item.dataset.imagePath;
 
         // Clear file upload if any
         const fileInput = document.getElementById('imageUploadInput');

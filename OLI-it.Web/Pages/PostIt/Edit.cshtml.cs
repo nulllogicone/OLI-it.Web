@@ -171,10 +171,16 @@ namespace OLI_it.Web.Pages.PostIt
                 }
             }
             // Priority 2: Selected existing image from gallery
-            else if (!string.IsNullOrEmpty(SelectedImageUrl))
+            else if (!string.IsNullOrEmpty(SelectedImageUrl) && SelectedImageUrl != postItToUpdate.Datei)
             {
-                newImagePath = SelectedImageUrl;
-                _logger.LogInformation("Existing image selected for PostIt {PostItId}: {ImageUrl}", id, SelectedImageUrl);
+                newImagePath = await _blobService.ResolveGallerySelectionAsync(userGuid, SelectedImageUrl);
+                if (newImagePath == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Choose an image from your gallery.");
+                    PostIt = postItToUpdate;
+                    AuthorStammGuid = authorWurzel.StammGuid;
+                    return Page();
+                }
             }
             // Priority 3: Direct URL input
             else if (!string.IsNullOrEmpty(DirectImageUrl))
