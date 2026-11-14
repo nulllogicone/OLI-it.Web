@@ -1,4 +1,5 @@
 @model List<OLI_it.Web.Models.TopLab>
+@using OLI_it.Web.Services
 @{
     var context = ViewData["Context"]?.ToString() ?? "stamm"; // "stamm" or "postit"
     var sourceType = ViewData["SourceType"]?.ToString() ?? context;
@@ -49,7 +50,7 @@
                     <td>
                         @if (!string.IsNullOrWhiteSpace(toplab.Titel))
                         {
-                            <strong>@toplab.Titel</strong>
+                            <strong>@PostItText.Title(toplab.Titel)</strong>
                         }
                         @if (!string.IsNullOrEmpty(toplab.TopLab1))
                         {
@@ -57,7 +58,7 @@
                             {
                                 <br />
                             }
-                            <span>@toplab.TopLab1</span>
+                            <span>@PostItText.Body(toplab.TopLab1, toplab.Typ)</span>
                         }
                     </td>
                     @if (isStammContext)

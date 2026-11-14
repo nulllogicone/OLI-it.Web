@@ -1,4 +1,5 @@
 @model OLI_it.Web.Models.TopLab
+@using OLI_it.Web.Services
 
 <div class="entity-card toplab-card">
     <div class="entity-card-header">
@@ -9,7 +10,7 @@
                     @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"TopLab {Model.Titel ?? "Untitled"} Image", width = 60, height = 60 })
                 </div>
             }
-            <h3>@(Model.Titel ?? "Untitled Answer")</h3>
+            <h3>@PostItText.Title(Model.Titel ?? "Untitled Answer")</h3>
         </div>
         <div class="card-meta-box">
             <div class="card-meta-datum">@Model.Datum.ToString("dd MMM yyyy")</div>
@@ -21,7 +22,7 @@
     </div>
     <div class="entity-card-body">
         <div class="entity-description">
-            @Model.TopLab1
+            @PostItText.Body(Model.TopLab1, Model.Typ)
         </div>
         @if (!string.IsNullOrEmpty(Model.Url))
         {

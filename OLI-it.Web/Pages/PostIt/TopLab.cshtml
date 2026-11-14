@@ -4,6 +4,11 @@
     ViewData["Title"] = "TopLabs";
 }
 
+@if (TempData["AnswerSaved"] is string savedMessage)
+{
+    <div class="alert alert-success" role="status">@savedMessage</div>
+}
+
 <div class="browse-container">
     <div class="entity-stack">
         @if (Model.Stamm != null)
@@ -20,6 +25,10 @@
 
     <div class="content-section">
         <h3>TopLabs (Answers)</h3>
+        @if (User.Identity?.IsAuthenticated == true && Model.PostIt != null)
+        {
+            <p><a asp-page="/TopLab/Create" asp-route-id="@Model.PostIt.PostItGuid" class="btn btn-primary">Add answer</a></p>
+        }
         @if (Model.TopLabs.Any())
         {
             ViewData["Context"] = "postit";

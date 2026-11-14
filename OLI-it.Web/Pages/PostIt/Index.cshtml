@@ -25,6 +25,11 @@
 
     @if (Model.PostIt != null)
     {
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <p><a asp-page="/TopLab/Create" asp-route-id="@Model.PostIt.PostItGuid" class="btn btn-primary">Add answer</a></p>
+        }
+
         var tabs = new List<(string Id, string Label, bool IsActive)>
         {
             ("stamms", $"Stamms ({Model.PostItStamms?.Count ?? 0})", true),
