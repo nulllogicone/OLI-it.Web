@@ -1,0 +1,19 @@
+@page "/postit/{id:guid}/toplab/create"
+@model OLI_it.Web.Pages.TopLab.CreateModel
+@using OLI_it.Web.Services
+@{
+    ViewData["Title"] = "Add answer";
+}
+
+<div class="content-section">
+    <h1>Add answer</h1>
+    <p>Replying to <a asp-page="/PostIt/Index" asp-route-id="@Model.PostIt.PostItGuid">@(string.IsNullOrWhiteSpace(Model.PostIt.Titel) ? "this PostIt" : PostItText.Title(Model.PostIt.Titel))</a>.</p>
+
+    <form method="post" class="postit-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <input asp-for="Submission" type="hidden" />
+        <partial name="_AnswerFields" for="Input" />
+        <button type="submit" class="btn btn-primary">Save answer</button>
+        <a asp-page="/PostIt/Index" asp-route-id="@Model.PostIt.PostItGuid" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

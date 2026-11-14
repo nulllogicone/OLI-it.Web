@@ -742,8 +742,7 @@ body.slot-dev::before {
   border-bottom: 1px solid #ddd;
 }
 
-.angler-card .entity-card-header,
-.toplab-card .entity-card-header {
+.angler-card .entity-card-header {
   padding-right: 64px;
 }
 
@@ -1298,7 +1297,7 @@ body.slot-dev::before {
 .toplab-card .card-meta-box {
   background-color: rgba(34, 139, 34, 0.09);
   border-color: rgba(34, 139, 34, 0.3);
-  margin-right: 44px;
+  margin-left: 12px;
 }
 
 .toplab-card .card-meta-datum {

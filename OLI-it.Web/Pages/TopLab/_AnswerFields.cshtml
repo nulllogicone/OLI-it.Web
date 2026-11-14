@@ -1,0 +1,12 @@
+@model OLI_it.Web.Pages.TopLab.AnswerInput
+
+<div class="mb-3">
+    <label asp-for="Title" class="form-label">Title (optional)</label>
+    <input asp-for="Title" class="form-control" maxlength="255" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Body" class="form-label">Answer</label>
+    <textarea asp-for="Body" class="form-control" rows="8" maxlength="3000" required></textarea>
+    <span asp-validation-for="Body" class="text-danger"></span>
+</div>

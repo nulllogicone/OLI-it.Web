@@ -1279,7 +1279,7 @@ public partial class OliItDbContext : DbContext
         {
             entity.HasKey(e => e.TopLabGuid).HasName("PK_TopLabGuid");
 
-            entity.ToTable("TopLab", "oli");
+            entity.ToTable("TopLab", "oli", table => table.UseSqlOutputClause(false));
 
             entity.HasIndex(e => e.PostItGuid, "Idx_TopLab_PostItGuid");
 

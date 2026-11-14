@@ -4,6 +4,11 @@
     ViewData["Title"] = "TopLab";
 }
 
+@if (TempData["AnswerSaved"] is string savedMessage)
+{
+    <div class="alert alert-success" role="status">@savedMessage</div>
+}
+
 <div class="browse-container">
     <div class="entity-stack">
         @if (Model.Stamm != null)
