@@ -11,12 +11,6 @@
                     @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = Model.Datei, altText = $"TopLab {Model.Titel ?? "Untitled"} Image", width = 60, height = 60 })
                 </div>
             }
-            else
-            {
-                <div class="header-thumbnail">
-                    <img src="~/images/toplab.png" class="thumbnail-img" width="60" height="60" alt="" />
-                </div>
-            }
             <h3>@PostItText.Title(Model.Titel ?? "Untitled Answer")</h3>
         </div>
         <div class="card-meta-box">

@@ -46,10 +46,6 @@
                         {
                             @await Component.InvokeAsync("ImageThumbnail", new { dateiPath = toplab.Datei, altText = $"TopLab {toplab.Titel ?? "Untitled"} Image", width = 80, height = 80 })
                         }
-                        else
-                        {
-                            <img src="~/images/toplab.png" class="thumbnail-img" width="80" height="80" alt="" loading="lazy" />
-                        }
                     </td>
                     <td>
                         @if (!string.IsNullOrWhiteSpace(toplab.Titel))
