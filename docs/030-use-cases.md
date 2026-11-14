@@ -67,6 +67,20 @@ Acceptance criteria:
 - User can activate/deactivate individual profiles
 - User can edit or delete profiles
 
+### Angler creation and editing
+
+A signed-in Stamm can create an Angler from their Anglers list and edit it
+from the Angler detail card. The form has a required title and an optional
+description. Both use OliWeb's HTML-encoded storage format and must fit the
+existing database limits of 50 and 255 characters respectively after encoding.
+The server assigns the owner from the signed-in Stamm and checks ownership
+before serving or saving edits.
+
+The Angler detail page shows the latest 50 recorded catches, newest first,
+from `Spiegel` through `Code` to `PostIt`. The Stamm's Anglers list counts
+distinct caught PostIts. Wortraum configuration and matchmaking are outside
+this delivery slice.
+
 ---
 
 ## UC-005 — Receive Matched Messages

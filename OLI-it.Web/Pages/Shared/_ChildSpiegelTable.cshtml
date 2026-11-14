@@ -16,7 +16,7 @@
             @foreach (var spiegel in Model)
             {
                 <tr>
-                    <td>@(spiegel.Angler?.Angler1 ?? "Unknown")</td>
+                    <td>@(System.Net.WebUtility.HtmlDecode(spiegel.Angler?.Angler1) ?? "Unknown")</td>
                     <td>@(spiegel.Status ?? "-")</td>
                     <td>@(spiegel.Zeit?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
                     <td>@(spiegel.Gelesen?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
