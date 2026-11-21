@@ -9,21 +9,18 @@
                 <th>Status</th>
                 <th>Scanned</th>
                 <th>Receivers</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var code in Model)
             {
                 var receiversCount = code.Spiegels?.Count ?? 0;
-                <tr>
+                var targetUrl = $"/code/{code.CodeGuid}";
+                <tr class="code-row" tabindex="0" role="link" onclick="window.location='@targetUrl'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.location='@targetUrl'; }">
                     <td>@code.Kommentar</td>
                     <td>@(code.CodeZust?.ToString() ?? "-")</td>
                     <td>@(code.Gescannt ? "Yes" : "No")</td>
                     <td><span class="count-badge">@receiversCount</span></td>
-                    <td>
-                        <a href="/code/@code.CodeGuid">view</a>
-                    </td>
                 </tr>
             }
         </tbody>

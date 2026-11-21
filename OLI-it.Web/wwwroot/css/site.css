@@ -412,6 +412,15 @@ body.slot-dev::before {
   text-decoration: underline;
 }
 
+.simple-table .code-row {
+  cursor: pointer;
+}
+
+.simple-table .code-row:hover,
+.simple-table .code-row:focus-visible {
+  background-color: #f9f9f9;
+}
+
 .simple-table td .image-thumbnail {
   margin: 0;
 }
