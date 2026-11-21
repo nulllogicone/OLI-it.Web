@@ -9,37 +9,39 @@ This guide covers local development setup, configuration, and implementation det
 ### Prerequisites
 
 - .NET 10 SDK
-- SQL Server (local or remote)
+- Windows SQL Server LocalDB with the `null` database for default development, or access to the Azure test database for the `azure-test` profile
 - Azure Blob Storage account (or a local substitute for images)
 
 ### Configuration
 
-Update `appsettings.Development.json` with your local values:
+The `http` and `https` profiles use the `null` database on `(localdb)\MSSQLLocalDB` with Windows authentication by default. To use the legacy SQL login or a different local database, save its connection string under `ConnectionStrings:OliItLocalDb` in .NET User Secrets.
 
-```json
-{
-  "ConnectionStrings": {
-    "OliItDb": "<your SQL Server connection string>"
-  },
-  "ImagesRootUrl": "https://oliit.blob.core.windows.net/oliupload"
-}
-```
+The `azure-test` profile selects `ConnectionStrings:OliItDb`. For a local launch, populate that User Secrets key with the resolved `null-test-connection` secret from the test Key Vault. Azure App Service resolves its own Key Vault references.
 
 **Configuration keys:**
 
 | Key | Description |
 |-----|-------------|
-| `ConnectionStrings:OliItDb` | SQL Server connection string for the OLI-it database |
+| `ConnectionStrings:OliItLocalDb` | SQL Server connection string for default development |
+| `ConnectionStrings:OliItDb` | SQL Server connection string for the Azure test profile and deployed environments |
 | `ImagesRootUrl` | Root URL for the Azure Blob Storage image repository. Combined with the relative `Datei` field to build full image URLs. Supports paths with or without a leading slash. |
 
 ### Running locally
 
 ```powershell
 dotnet restore OLI-it.Web
-dotnet run --project OLI-it.Web
+dotnet run --project OLI-it.Web --launch-profile https
 # HTTP:  http://localhost:5113
 # HTTPS: https://localhost:7119
 ```
+
+To run locally against Azure test:
+
+```powershell
+dotnet run --project OLI-it.Web --launch-profile azure-test
+```
+
+In VS Code, open **Run and Debug**, select **OLI-it.Web (LocalDB)** or **OLI-it.Web (Azure test)**, and press **F5**.
 
 On Ubuntu/Linux, trust the .NET dev certificate for browser HTTPS:
 
@@ -112,7 +114,7 @@ The workflow selects the parameter file based on the `environment` input:
 
 - Local secrets are managed via **User Secrets** (ID: `936429e2-4c07-4bde-9c3e-40e1f6531612`).
 - In Azure, connection strings and keys come from **Azure Key Vault** (`oli-it-kv-test`).
-- Never commit secrets or connection strings to source.
+- Keep connection strings containing credentials in User Secrets or Key Vault.
 
 ---
 

@@ -77,16 +77,13 @@ Localization work (EN/DE/ES UI content rollout) is intentionally paused while co
 
 ## Getting Started
 
-**Prerequisites:** .NET 10 SDK, SQL Server
+**Prerequisites:** .NET 10 SDK, Windows SQL Server LocalDB with the `null` database
 
 ```powershell
 git clone https://github.com/nulllogicone/OLI-it.Web
 cd OLI-it.Web
 
-# copy and fill in your local connection string and image storage URL
-# edit OLI-it.Web/appsettings.Development.json
-
-dotnet run --project OLI-it.Web
+dotnet run --project OLI-it.Web --launch-profile https
 # → https://localhost:7119
 ```
 

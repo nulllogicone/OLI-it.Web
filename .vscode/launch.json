@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch OLI-it.Web (VS ports)",
+      "name": "OLI-it.Web (LocalDB)",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build web app",
@@ -10,10 +10,20 @@
       "args": [],
       "cwd": "${workspaceFolder}/OLI-it.Web",
       "stopAtEntry": false,
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7119;http://localhost:5113"
-      },
+      "launchSettingsProfile": "https",
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      }
+    },
+    {
+      "name": "OLI-it.Web (Azure test)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build web app",
+      "program": "${workspaceFolder}/OLI-it.Web/bin/Debug/net10.0/OLI-it.Web.dll",
+      "cwd": "${workspaceFolder}/OLI-it.Web",
+      "launchSettingsProfile": "azure-test",
       "serverReadyAction": {
         "action": "openExternally",
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
