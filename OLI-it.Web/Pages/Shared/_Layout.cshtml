@@ -14,8 +14,11 @@
     var slotName = _config["slot"];
     var isTestSlot = string.Equals(slotName, "test", StringComparison.OrdinalIgnoreCase);
     var isDevSlot = _hostEnv.IsDevelopment();
+    var isLocalSlot = string.IsNullOrEmpty(slotName) || string.Equals(slotName, "dev", StringComparison.OrdinalIgnoreCase);
+    var showDeploymentFooter = isTestSlot || (isLocalSlot && !_hostEnv.IsProduction());
+    var slotClass = isTestSlot ? "slot-test" : isDevSlot ? "slot-dev" : string.Empty;
 }
-<body class="@(isTestSlot ? "slot-test" : isDevSlot ? "slot-dev" : string.Empty)">
+<body class="@slotClass @(showDeploymentFooter ? "has-deployment-footer" : string.Empty)">
     @await Html.PartialAsync("_Header")
 
     <div class="app-container">
@@ -35,6 +38,11 @@
             @RenderBody()
         </main>
     </div>
+
+    @if (showDeploymentFooter)
+    {
+        @await Html.PartialAsync("_DeploymentFooter", isTestSlot ? "Test slot" : _hostEnv.EnvironmentName)
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

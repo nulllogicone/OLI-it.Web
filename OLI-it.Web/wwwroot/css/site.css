@@ -2206,3 +2206,61 @@ body.slot-dev::before {
 /* Preserve the author's plain-text message layout without rendering markup. */
 .postit-card .entity-description { white-space: pre-wrap; overflow-wrap: anywhere; }
 .postit-form { max-width: 48rem; }
+.has-deployment-footer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.has-deployment-footer .app-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.deployment-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  padding: .4rem .85rem;
+  border-top: 1px solid rgb(148 163 184 / .4);
+  background: rgb(248 250 252 / .82);
+  backdrop-filter: blur(12px);
+  color: #334155;
+  font-size: .75rem;
+  line-height: 1.4;
+}
+
+.deployment-footer dl {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  row-gap: .2rem;
+  margin: 0;
+}
+
+.deployment-footer dl > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.deployment-footer-subject {
+  flex: 1 1 16rem;
+}
+
+.deployment-footer dt {
+  display: inline;
+  margin-inline-end: .2rem;
+  color: #475569;
+}
+
+.deployment-footer dd {
+  display: inline;
+  margin: 0;
+}
+
+@media (max-width: 575.98px), (max-height: 420px) {
+  .deployment-footer {
+    position: static;
+  }
+}
