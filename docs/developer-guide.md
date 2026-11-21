@@ -39,6 +39,8 @@ To run locally against Azure test:
 
 ```powershell
 dotnet run --project OLI-it.Web --launch-profile azure-test
+# HTTP:  http://localhost:5114
+# HTTPS: https://localhost:7120
 ```
 
 In VS Code, open **Run and Debug**, select **OLI-it.Web (LocalDB)** or **OLI-it.Web (Azure test)**, and press **F5**.
@@ -49,6 +51,14 @@ On Ubuntu/Linux, trust the .NET dev certificate for browser HTTPS:
 dotnet dev-certs https --export-path /tmp/localhost.crt --format PEM --no-password
 certutil -d sql:$HOME/.pki/nssdb -A -t "P,," -n "localhost" -i /tmp/localhost.crt
 ```
+
+### Deployment footer
+
+Feature discussion and test-slot validation are tracked in [issue #59](https://github.com/nulllogicone/OLI-it.Web/issues/59).
+
+The shared layout shows deployment details in the test slot and in non-production ASP.NET Core environments with the `dev` slot or no configured slot. The production slot suppresses the footer. It displays the machine name, selected SQL connection setting and server/database, and Blob Storage account/container. These values identify the configured targets and require no network probes. The footer is visible to visitors in those environments and omits connection strings and credentials. An unresolved Key Vault reference in a local `azure-test` run indicates that the local `OliItDb` override is missing or still contains a reference.
+
+The application assembly records the Git branch, source revision, commit subject, and UTC build time. A published artifact carries these values across deployments. Builds without Git information show the missing fields as unavailable.
 
 ### CI pipeline steps
 

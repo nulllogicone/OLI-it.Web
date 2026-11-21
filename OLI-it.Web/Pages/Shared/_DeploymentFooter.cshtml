@@ -1,0 +1,15 @@
+@model string
+@inject OLI_it.Web.Services.DeploymentDetails Deployment
+
+<footer class="deployment-footer" aria-label="Deployment details">
+    <dl>
+        <div><dt>Environment</dt><dd>@Model</dd></div>
+        <div><dt>Database</dt><dd>@Deployment.DatabaseConnectionName · @Deployment.Database</dd></div>
+        <div><dt>Blob storage</dt><dd>@Deployment.Storage</dd></div>
+        <div><dt>Machine</dt><dd>@Deployment.Machine</dd></div>
+        <div><dt>Branch</dt><dd>@Deployment.Branch</dd></div>
+        <div><dt>Commit</dt><dd>@Deployment.Commit</dd></div>
+        <div><dt>Built</dt><dd>@Deployment.BuiltAt</dd></div>
+        <div class="deployment-footer-subject"><dt>Message</dt><dd>@Deployment.CommitSubject</dd></div>
+    </dl>
+</footer>

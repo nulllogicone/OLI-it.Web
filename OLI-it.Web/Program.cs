@@ -55,6 +55,7 @@ builder.Services.AddRateLimiter(options =>
 var databaseConnectionName = builder.Configuration["DatabaseConnectionName"] ?? "OliItDb";
 builder.Services.AddDbContext<OliItDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString(databaseConnectionName)));
+builder.Services.AddScoped(_ => new DeploymentDetails(builder.Configuration, databaseConnectionName));
 
 // Add memory cache
 builder.Services.AddMemoryCache();

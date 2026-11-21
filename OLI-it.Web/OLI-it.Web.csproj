@@ -17,4 +17,32 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
   </ItemGroup>
 
+  <Target Name="AddDeploymentMetadata" BeforeTargets="GetAssemblyAttributes" DependsOnTargets="InitializeSourceControlInformation">
+    <Exec Command="git branch --show-current" WorkingDirectory="$(MSBuildProjectDirectory)"
+          ConsoleToMSBuild="true" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true"
+          StandardOutputImportance="Low" StandardErrorImportance="Low"
+          Condition="'$(GITHUB_REF_NAME)' == ''">
+      <Output TaskParameter="ConsoleOutput" PropertyName="LocalGitBranch" />
+      <Output TaskParameter="ExitCode" PropertyName="LocalGitExitCode" />
+    </Exec>
+    <Exec Command="git -c i18n.logOutputEncoding=UTF-8 show -s --pretty=oneline --no-abbrev-commit --no-decorate --no-notes --no-show-signature $(SourceRevisionId)"
+          WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMSBuild="true" IgnoreExitCode="true"
+          IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="Low" StandardErrorImportance="Low"
+          StdOutEncoding="UTF-8" Condition="'$(SourceRevisionId)' != ''">
+      <Output TaskParameter="ConsoleOutput" PropertyName="CommitSummary" />
+      <Output TaskParameter="ExitCode" PropertyName="CommitSubjectExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <DeploymentBranch Condition="'$(GITHUB_REF_NAME)' != ''">$(GITHUB_REF_NAME)</DeploymentBranch>
+      <DeploymentBranch Condition="'$(GITHUB_REF_NAME)' == '' and '$(LocalGitExitCode)' == '0'">$(LocalGitBranch)</DeploymentBranch>
+      <DeploymentCommitSubject Condition="'$(CommitSubjectExitCode)' == '0'">$([System.Text.RegularExpressions.Regex]::Replace($(CommitSummary), '^[0-9a-f]+( |$)', ''))</DeploymentCommitSubject>
+    </PropertyGroup>
+    <ItemGroup>
+      <AssemblyMetadata Include="DeploymentBranch" Value="$(DeploymentBranch)" Condition="'$(DeploymentBranch)' != ''" />
+      <AssemblyMetadata Include="DeploymentCommit" Value="$(SourceRevisionId)" Condition="'$(SourceRevisionId)' != ''" />
+      <AssemblyMetadata Include="DeploymentCommitSubject" Value="$(DeploymentCommitSubject)"
+                        Condition="'$(CommitSubjectExitCode)' == '0' and '$(DeploymentCommitSubject)' != ''" />
+      <AssemblyMetadata Include="DeploymentBuildUtc" Value="$([System.DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm')) UTC" />
+    </ItemGroup>
+  </Target>
 </Project>
