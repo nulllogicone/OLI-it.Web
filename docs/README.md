@@ -26,7 +26,7 @@ Last updated: 2026-05-20
 
 Live application exploration: [Live experience journey](live-experience/README.md) records side-by-side test-slot walkthroughs, evidence and research references. Initial access baseline: 2026-10-03; feature parity remains unverified.
 
-Cross-repository context: [Semantic API consistency review (2026-10-19)](review/2026-10-19-semantic-api-consistency.md) places nulllogicone.net in the legacy modernization journey and distinguishes entity routes from Ontop coverage.
+Cross-repository context: [Semantic API consistency review (2026-10-19)](review/2026-10-19-semantic-api-consistency.md) places nulllogicone.net in the legacy modernization journey and distinguishes entity routes from Ontop coverage. The [three-repository landscape review (2026-11-24)](review/2026-11-24-three-repo-landscape.md) assesses legacy OLI-it, OLI-it.Web and nulllogicone.net together: shared-schema risks, cut-over and order of work.
 
 | File | Purpose | Status |
 |------|---------|--------|
